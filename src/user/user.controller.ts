@@ -21,7 +21,7 @@ export class UserController {
         return await this.userService.createData(data)
     }
 
-    @Put(':id')
+    @Put(':idd')
     async updateData(@Param('id') id: string, @Body() data: { username: string, password: string }): Promise<user> {
         return await this.userService.updateData(id, data)
     }
