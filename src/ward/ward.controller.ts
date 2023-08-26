@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { WardService } from './ward.service';
 import { CreateWardDto } from './dto/create-ward.dto';
 import { UpdateWardDto } from './dto/update-ward.dto';
@@ -17,17 +17,17 @@ export class WardController {
     return this.wardService.findAll();
   }
 
-  @Get('find/:id')
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.wardService.findOne(id);
   }
 
-  @Put('update/:id')
+  @Patch(':id')
   update(@Param('id') id: string, @Body() updateWardDto: UpdateWardDto) {
     return this.wardService.update(id, updateWardDto);
   }
 
-  @Delete('delete/:id')
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.wardService.remove(id);
   }

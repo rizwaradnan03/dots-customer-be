@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
@@ -17,17 +17,17 @@ export class CityController {
     return await this.cityService.findAll();
   }
 
-  @Get('find/:id')
+  @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.cityService.findOne(id);
   }
 
-  @Put('update/:id')
+  @Patch(':id')
   async update(@Param('id') id: string, @Body() updateCityDto: UpdateCityDto) {
     return await this.cityService.update(id, updateCityDto);
   }
 
-  @Delete('delete/:id')
+  @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.cityService.remove(id);
   }
