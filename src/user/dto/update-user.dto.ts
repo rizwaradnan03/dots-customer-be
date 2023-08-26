@@ -3,7 +3,7 @@ import { UserEntity } from "../entities/user.entity";
 import { IsNotEmpty, IsEmail, IsDate, IsOptional } from "@nestjs/class-validator";
 
 export class UpdateUserDto extends OmitType(UserEntity, [
-    'createdAt', 'updatedAt'
+    'id', 'createdAt', 'updatedAt'
 ]) {
     @IsNotEmpty()
     name: string;

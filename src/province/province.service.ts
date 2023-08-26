@@ -1,26 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProvinceDto } from './dto/create-province.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ProvinceService {
-  create(createProvinceDto: CreateProvinceDto) {
-    return 'This action adds a new province';
+  constructor(private prisma: PrismaService) { }
+
+  async create(createProvinceDto: CreateProvinceDto) {
+    return await this.prisma.province.create({
+      data: createProvinceDto
+    });
   }
 
-  findAll() {
-    return `This action returns all province`;
+  async findAll() {
+    return await this.prisma.province.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} province`;
+  async findOne(id: string) {
+    return await this.prisma.province.findUnique({
+      where: { id }
+    });
   }
 
-  update(id: number, updateProvinceDto: UpdateProvinceDto) {
-    return `This action updates a #${id} province`;
+  async update(id: string, updateProvinceDto: UpdateProvinceDto) {
+    return await this.prisma.province.update({
+      where: {id},
+      data: updateProvinceDto
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} province`;
+  async remove(id: string) {
+    return await this.prisma.province.delete({
+      where: {id}
+    });
   }
 }
