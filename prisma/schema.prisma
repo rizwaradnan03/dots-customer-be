@@ -115,7 +115,7 @@ model User {
   name                 String
   nik                  String
   placeOfBirth         String
-  dateOfBirth          DateTime
+  dateOfBirth          DateTime?
   biologicalMotherName String
   email                String    @unique
   referralCode         String
