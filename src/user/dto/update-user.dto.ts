@@ -1,6 +1,6 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { UserEntity } from "../entities/user.entity";
-import { IsNotEmpty, IsEmail, IsDate, IsOptional } from "@nestjs/class-validator";
+import { IsNotEmpty, IsEmail, IsDate, IsOptional, Length} from "@nestjs/class-validator";
 
 export class UpdateUserDto extends OmitType(UserEntity, [
     'id', 'createdAt', 'updatedAt'
@@ -32,5 +32,6 @@ export class UpdateUserDto extends OmitType(UserEntity, [
     username: string
 
     @IsNotEmpty()
+    @Length(6)
     password: string
 }
