@@ -35,4 +35,24 @@ export class SavingsService {
       where: {id}
     });
   }
+
+  async findView() {
+    return await this.prisma.savings.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        office:{
+          select:{
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+  }
+
 }

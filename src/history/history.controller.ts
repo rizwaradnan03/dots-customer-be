@@ -31,4 +31,10 @@ export class HistoryController {
   async remove(@Param('id') id: string) {
     return await this.historyService.remove(id);
   }
+
+  @Get('view/')
+  async findView(){
+    return await this.historyService.findView()
+  }
+
 }

@@ -31,4 +31,9 @@ export class ReservationController {
   async remove(@Param('id') id: string) {
     return await this.reservationService.remove(id);
   }
+
+  @Get('view/')
+  async findView(){
+    return await this.reservationService.findView()
+  }
 }

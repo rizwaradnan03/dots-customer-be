@@ -35,4 +35,18 @@ export class CreditService {
       where: {id}
     });
   }
+
+  async findView(){
+    return await this.prisma.credit.findMany({
+      include:{
+        user:{
+          select:{
+            id : true,
+            name : true
+          }
+        }
+      }
+    })
+  }
+
 }

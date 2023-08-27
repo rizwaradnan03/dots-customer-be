@@ -35,4 +35,18 @@ export class SubdistrictService {
       where: { id }
     });
   }
+
+  async findView() {
+    return await this.prisma.subdistrict.findMany({
+      include: {
+        city: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+  }
+
 }

@@ -35,4 +35,18 @@ export class ReservationService {
       where: {id}
     });
   }
+
+  async findView() {
+    return await this.prisma.reservation.findMany({
+      include: {
+        officeDestination: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+  }
+
 }

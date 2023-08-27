@@ -31,4 +31,10 @@ export class CreditController {
   async remove(@Param('id') id: string) {
     return this.creditService.remove(id);
   }
+
+  @Get('view/')
+    async findView(){
+      return await this.creditService.findView()
+    }
+
 }

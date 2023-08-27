@@ -35,4 +35,25 @@ export class DepositService {
       where: {id}
     });
   }
-}
+
+  async findView() {
+    return await this.prisma.deposit.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        office: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+  }
+  
+
+} 

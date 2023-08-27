@@ -31,4 +31,11 @@ export class DepositController {
   async remove(@Param('id') id: string) {
     return await this.depositService.remove(id);
   }
+
+  @Get('view/')
+  async findView(){
+    return await this.depositService.findView()
+  }
+
+
 }

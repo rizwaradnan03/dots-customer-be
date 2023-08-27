@@ -31,4 +31,10 @@ export class SubdistrictController {
   remove(@Param('id') id: string) {
     return this.subdistrictService.remove(id);
   }
+
+  @Get('view/')
+  async findView(){
+    return await this.subdistrictService.findView()
+  }
+
 }

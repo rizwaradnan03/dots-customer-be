@@ -36,4 +36,18 @@ export class CityService {
       where: { id }
     });
   }
+
+  async findView(){
+    return await this.prisma.city.findMany({
+      include:{
+        province:{
+          select:{
+            id : true,
+            name : true
+          }
+        }
+      }
+    })
+  }
+
 }

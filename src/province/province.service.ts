@@ -35,4 +35,5 @@ export class ProvinceService {
       where: {id}
     });
   }
+  
 }

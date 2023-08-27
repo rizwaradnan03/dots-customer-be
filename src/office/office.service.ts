@@ -35,4 +35,24 @@ export class OfficeService {
       where: {id}
     });
   }
+
+  async findView() {
+    return await this.prisma.office.findMany({
+      include: {
+        province: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        city: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+  }
+
 }

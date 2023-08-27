@@ -31,4 +31,10 @@ export class CityController {
   async remove(@Param('id') id: string) {
     return await this.cityService.remove(id);
   }
+
+  @Get('view/')
+    async findView(){
+      return await this.cityService.findView()
+    }
+
 }

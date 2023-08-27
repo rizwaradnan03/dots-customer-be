@@ -35,4 +35,18 @@ export class WardService {
       where: {id}
     });
   }
+
+  async findView() {
+    return await this.prisma.ward.findMany({
+      include: {
+        subdistrict: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      }
+    });
+  }
+
 }

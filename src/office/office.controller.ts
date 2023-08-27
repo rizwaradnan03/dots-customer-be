@@ -31,4 +31,10 @@ export class OfficeController {
   async remove(@Param('id') id: string) {
     return await this.officeService.remove(id);
   }
+
+  @Get('view/')
+  async findView(){
+    return await this.officeService.findView()
+  }
+
 }

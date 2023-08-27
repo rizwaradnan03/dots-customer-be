@@ -35,4 +35,18 @@ export class HistoryService {
       where: {id}
     });
   }
+
+  async findView(){
+    return await this.prisma.history.findMany({
+      include:{
+        user:{
+          select:{
+            id : true,
+            name : true
+          }
+        }
+      }
+    })
+  }
+
 }

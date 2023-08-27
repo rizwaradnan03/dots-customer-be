@@ -31,4 +31,9 @@ export class SavingsController {
   async remove(@Param('id') id: string) {
     return await this.savingsService.remove(id);
   }
+
+  @Get('view/')
+  async findView(){
+    return await this.savingsService.findView()
+  }
 }

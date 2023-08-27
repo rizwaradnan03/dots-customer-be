@@ -31,4 +31,10 @@ export class WardController {
   remove(@Param('id') id: string) {
     return this.wardService.remove(id);
   }
+
+  @Get('view/')
+  async findView(){
+    return await this.wardService.findView()
+  }
+
 }
