@@ -67,7 +67,7 @@ model Office {
 model Reservation {
   id                  String   @id @default(uuid())
   reason              String
-  date                DateTime
+  date                DateTime?
   time                String
   qrcodedata          String
   officeDestination   Office   @relation(fields: [officeDestinationId], references: [id])

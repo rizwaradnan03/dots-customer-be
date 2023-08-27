@@ -14,10 +14,6 @@ export class UpdateUserDto extends OmitType(UserEntity, [
     @IsNotEmpty()
     placeOfBirth: string
 
-    @IsOptional()
-    @IsDate()
-    dateOfBirth: Date
-
     @IsNotEmpty()
     biologicalMotherName: string
 
