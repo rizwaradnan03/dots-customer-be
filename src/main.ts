@@ -9,7 +9,7 @@ async function bootstrap() {
 
   
   await app.listen(process.env.PORT, '192.168.18.210', () => {
-    console.log('Berhasil TOD:' + process.env.PORT);
+    console.log('Berhasil TOD ' + process.env.PORT);
   });
 }
 
