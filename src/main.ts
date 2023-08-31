@@ -3,9 +3,14 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors
-  await app.listen(process.env.PORT,'192.168.18.210',()=>{
-    console.log('BERHASIL TOD')
+
+
+  app.enableCors();
+
+  
+  await app.listen(process.env.PORT, '192.168.18.210', () => {
+    console.log('Server is running at http://192.168.18.210:' + process.env.PORT);
   });
 }
+
 bootstrap();
