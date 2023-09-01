@@ -5,7 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-} 
+}
 
 model Province {
   id        String   @id @default(uuid())
@@ -67,7 +67,8 @@ model Office {
 model Reservation {
   id                  String   @id @default(uuid())
   reason              String
-  date                DateTime?
+  service             String
+  date                DateTime
   time                String
   qrcodedata          String
   officeDestination   Office   @relation(fields: [officeDestinationId], references: [id])
@@ -115,7 +116,7 @@ model User {
   name                 String
   nik                  String
   placeOfBirth         String
-  dateOfBirth          DateTime?
+  dateOfBirth          DateTime
   biologicalMotherName String
   email                String    @unique
   referralCode         String

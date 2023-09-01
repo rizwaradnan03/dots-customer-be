@@ -10,6 +10,6 @@ export class AuthController {
     @UseGuards(LocalAuthGuard )
     @Post('')
     async create(@Body() loginDto: LoginDto) {
-      return await this.authService.login(loginDto);
+      return await this.authService.validateUser(loginDto);
     } 
 }

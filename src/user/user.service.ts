@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -26,7 +26,7 @@ export class UserService {
     }
 
     if (createUserDto.password.length < 6) {
-      throw new Error('Password less than 6 characters')
+      throw new UnauthorizedException('Password less than 6 characters')
     }
 
     const hashPassword = await bcrypt.hash(createUserDto.password, 10)

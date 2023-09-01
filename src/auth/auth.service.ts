@@ -11,7 +11,7 @@ export class AuthService {
         private jwt: JwtService
     ) { }
 
-    async login(loginDto: LoginDto): Promise<{ token: string }> {
+    async validateUser(loginDto: LoginDto): Promise<{ token: string }> {
         const isUserValid = await this.prisma.user.findUnique({
             where: { username: loginDto.username }
         })

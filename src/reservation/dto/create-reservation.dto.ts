@@ -5,9 +5,11 @@ export class CreateReservationDto extends OmitType(ReservationEntity, [
     'id', 'createdAt', 'updatedAt'
 ]) {
     reason: string;
-    // date: Date;
+    service: string;
+    date: Date;
     time: string;
     qrcodedata: string;
     officeDestinationId: string;
     isactive: string;
 }
+ 
