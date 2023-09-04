@@ -8,7 +8,7 @@ export class ReservationEntity implements ReservationModel{
     qrcodedata: string;
     officeDestinationId: string;
     isactive: string;
-    
+    serviceId: string;
     createdAt: Date;
     updatedAt: Date;
 }
