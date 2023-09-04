@@ -1,19 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards,Request } from '@nestjs/common';
 import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 
 @Controller('city')
 export class CityController {
   constructor(private readonly cityService: CityService) {}
 
+  @UseGuards(LocalAuthGuard)
   @Post()
   async create(@Body() createCityDto: CreateCityDto) {
     return await this.cityService.create(createCityDto);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Get()
-  async findAll() {
+  async findAll(@Request() Req ) {
     return await this.cityService.findAll();
   }
 
