@@ -66,24 +66,17 @@ model Office {
 
 model Reservation {
   id                  String   @id @default(uuid())
-  reason              String
+  purpose             String
   date                DateTime
   time                String
   qrcodedata          String
+  service             String
   officeDestination   Office   @relation(fields: [officeDestinationId], references: [id])
   officeDestinationId String
   isactive            String
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
 
-  Service   Service? @relation(fields: [serviceId], references: [id])
-  serviceId String?
-}
-
-model Service {
-  id          String        @id @default(uuid())
-  purpose     String
-  reservation Reservation[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Savings {
@@ -120,22 +113,29 @@ model Credit {
 }
 
 model User {
-  id                   String    @id @default(uuid())
-  name                 String
-  nik                  String
-  placeOfBirth         String
-  dateOfBirth          DateTime
-  biologicalMotherName String
-  email                String    @unique
-  referralCode         String
-  username             String    @unique
-  password             String
-  histories            History[]
-  savings              Savings[]
-  deposits             Deposit[]
-  credits              Credit[]
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  id           String    @id @default(uuid())
+  name         String
+  nik          String
+  placeOfBirth String
+  dateOfBirth  DateTime
+  motherMaiden String
+  email        String    @unique
+  referralCode String
+  username     String    @unique
+  password     String
+  histories    History[]
+  savings      Savings[]
+  deposits     Deposit[]
+  credits      Credit[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Image {
+  id           String @id @default(uuid())
+  filename     String
+  path         String
+  isOnCarousel String
 }
 
 model History {
