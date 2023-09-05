@@ -1,15 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
+import { BaseResponse } from 'src/helper/base.response';
 
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
   @Post()
+  @HttpCode(200)
   async create(@Body() createReservationDto: CreateReservationDto) {
-    return await this.reservationService.create(createReservationDto);
+    const data = {"message": "Reservasi Berhasil Dibuat"}
+    const response = new BaseResponse(200, "success", "Data Berhasil Dibuat", data)
+    return await this.reservationService.create(createReservationDto), response;
   }
 
   @Get()
