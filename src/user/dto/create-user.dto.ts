@@ -18,7 +18,7 @@ export class CreateUserDto extends OmitType(UserEntity, [
     dateOfBirth: Date;
 
     @IsNotEmpty()
-    biologicalMotherName: string
+    motherMaiden: string;
 
     @IsNotEmpty()
     @IsEmail()

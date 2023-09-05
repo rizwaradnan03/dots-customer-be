@@ -59,10 +59,11 @@ CREATE TABLE "Office" (
 -- CreateTable
 CREATE TABLE "Reservation" (
     "id" TEXT NOT NULL,
-    "reason" TEXT NOT NULL,
+    "purpose" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "time" TEXT NOT NULL,
     "qrcodedata" TEXT NOT NULL,
+    "service" TEXT NOT NULL,
     "officeDestinationId" TEXT NOT NULL,
     "isactive" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -110,10 +111,29 @@ CREATE TABLE "Credit" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "nik" TEXT NOT NULL,
+    "placeOfBirth" TEXT NOT NULL,
+    "dateOfBirth" TIMESTAMP(3) NOT NULL,
+    "motherMaiden" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "referralCode" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Image" (
+    "id" TEXT NOT NULL,
+    "filename" TEXT NOT NULL,
+    "path" TEXT NOT NULL,
+    "isOnCarousel" TEXT NOT NULL,
+
+    CONSTRAINT "Image_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -132,6 +152,12 @@ CREATE UNIQUE INDEX "Office_name_key" ON "Office"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Office_email_key" ON "Office"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- AddForeignKey
 ALTER TABLE "City" ADD CONSTRAINT "City_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Province"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

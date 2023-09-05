@@ -6,8 +6,8 @@ export class UserEntity implements UserModel {
     nik: string
     placeOfBirth: string
     dateOfBirth: Date
-    biologicalMotherName: string
     email: string
+    motherMaiden: string;
     referralCode: string
     username: string
     password: string

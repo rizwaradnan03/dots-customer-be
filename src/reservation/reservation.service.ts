@@ -10,16 +10,27 @@ export class ReservationService {
   async create(createReservationDto: CreateReservationDto) {
     return await this.prisma.reservation.create({
       data: createReservationDto
-    });
+    })
   }
 
   async findAll() {
-    return await this.prisma.reservation.findMany();
+    return await this.prisma.reservation.findMany({
+      include: {
+        officeDestination: {
+          select: {name: true}
+        }
+      }
+    });
   }
 
   async findOne(id: string) {
     return await this.prisma.reservation.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        officeDestination: {
+          select: {name: true}
+        }
+      }
     });
   }
 

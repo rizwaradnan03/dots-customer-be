@@ -13,7 +13,8 @@ export class ReservationController {
   async create(@Body() createReservationDto: CreateReservationDto) {
     const data = {"message": "Reservasi Berhasil Dibuat"}
     const response = new BaseResponse(200, "success", "Data Berhasil Dibuat", data)
-    return await this.reservationService.create(createReservationDto), response;
+    console.log(response)
+    return await this.reservationService.create(createReservationDto)
   }
 
   @Get()
@@ -36,7 +37,7 @@ export class ReservationController {
     return await this.reservationService.remove(id);
   }
 
-  @Get('view/')
+  @Get('/view')
   async findView(){
     return await this.reservationService.findView()
   }
