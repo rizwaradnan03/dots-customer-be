@@ -10,11 +10,13 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req) {
+
     return req.user;
-  } 
+  }
 
   @Post('register')
-  async creat(@Body() loginDto: LoginDto) {
+  async register(@Body() loginDto: LoginDto) {
+    // Validasi dan logika pendaftaran pengguna dilakukan dalam AuthService
     return await this.authService.validateUser(loginDto);
   }
 }
