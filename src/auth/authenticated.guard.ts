@@ -1,9 +1,10 @@
-import React from 'react'
+import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 
-const authenticated.guard = () => {
-  return (
-    <div>authenticated.guard</div>
-  )
+@Injectable()
+export class AuthenticatedGuard implements CanActivate { 
+    async canActivate(context: ExecutionContext) {
+        const request = context.switchToHttp().getRequest();
+
+        return request.isAuthenticated();
+    } 
 }
-
-export default authenticated.guard

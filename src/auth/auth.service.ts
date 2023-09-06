@@ -38,8 +38,12 @@ export class AuthService {
 
         const payload = { sub: isUserValid.id, name: isUserValid.name, email: isUserValid.email };
 
-        const token = this.jwt.sign(payload);
+       
 
-        return {token: token}
+        return {token : this.jwt.sign (payload) }
+
+
     }
+
+    
 }
