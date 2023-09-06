@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import * as fs from 'fs';
+import { NotFound } from 'src/helper/base.response';
 
 @Injectable()
 export class ImageService {
@@ -18,9 +20,20 @@ export class ImageService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.image.findFirst({
+
+    const findImg = await this.prisma.image.findUnique({
       where: {id}
-    });
+    })
+
+    if (!findImg) {
+      return NotFound("Image Not Found")
+    }
+
+    const imagePath = 'path_to_your_image.jpg'; 
+    const image = fs.readFileSync(imagePath);
+    const imageBase64 = Buffer.from(image).toString('base64');
+
+    return imageBase64
   }
 
   update(id: number, updateImageDto: UpdateImageDto) {
