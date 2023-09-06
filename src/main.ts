@@ -8,17 +8,8 @@ import * as passport from 'passport'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  app.use(session({
-    secret : '12345',
-    resave : false,
-    saveUnitialized : false,
-    cookie: {maxAge : 1000},
-  })
-  );
 
-  app.use(passport.initialize());
-  app.use(passport.session())
+
   app.enableCors();
 
   app.use('/img', express.static('img'));

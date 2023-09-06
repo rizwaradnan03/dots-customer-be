@@ -3,18 +3,21 @@ import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('city')
 export class CityController {
   constructor(private readonly cityService: CityService) {}
 
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Body() createCityDto: CreateCityDto) {
     return await this.cityService.create(createCityDto);
   }
 
-  @UseGuards()
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Request() Req ) {
     return await this.cityService.findAll();
