@@ -6,13 +6,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { LocalAuthGuard } from './local-auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.Strategy';
+import { SessionSerialized } from './session.serialized';
 
 @Module({
-  imports: [PassportModule,JwtModule.register({
-    secret: 'secretkey',
-    signOptions: {expiresIn: '24h'}
-  }),],
+  imports: [JwtModule.register({
+    secret: '12345',
+    signOptions: {expiresIn:'1h'}
+  }),PassportModule,PassportModule.register({
+    session : true
+  })],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, LocalAuthGuard, LocalStrategy]
+  providers: [AuthService, PrismaService, LocalAuthGuard, LocalStrategy, SessionSerialized]
 })
 export class AuthModule { }

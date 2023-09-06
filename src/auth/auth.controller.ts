@@ -11,7 +11,7 @@ export class AuthController {
   @Post('login')
   async login(@Request() req) {
 
-    return req.user;
+    return {msg :'Logged in!'};
   }
 
   @Post('register')

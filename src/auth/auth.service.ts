@@ -6,10 +6,14 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+
+    
     constructor(
         private prisma: PrismaService,
         private jwt: JwtService
     ) { }
+
+        
 
     async validateUser(loginDto: LoginDto): Promise<{ token: string }> {
         const isUserValid = await this.prisma.user.findUnique({
