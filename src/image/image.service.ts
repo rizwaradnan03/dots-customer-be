@@ -13,8 +13,8 @@ export class ImageService {
     });
   }
 
-  findAll() {
-    return `This action returns all image`;
+  async findAll() {
+    return await this.prisma.image.findMany();
   }
 
   async findOne(id: string) {

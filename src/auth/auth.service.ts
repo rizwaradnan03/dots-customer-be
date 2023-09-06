@@ -36,13 +36,24 @@ export class AuthService {
             throw new UnauthorizedException('Wrong Password');
         }
 
-        const payload = { sub: isUserValid.id, name: isUserValid.name, email: isUserValid.email };
-
-       
+        const payload = { sub: isUserValid.id,username: isUserValid.username, name: isUserValid.name, email: isUserValid.email };
 
         return {token : this.jwt.sign (payload) }
 
+    }
 
+    async muhaha(loginDto: LoginDto) {
+        const isUserValid = await this.prisma.user.findUnique({
+            where: { username: loginDto.username }
+        })
+
+        if (!isUserValid) {
+            throw new NotFoundException(`No user found for username: ${loginDto.username}`);
+        }
+
+        const payload = { sub: isUserValid.id,username: isUserValid.username, name: isUserValid.name, email: isUserValid.email };
+
+        return {token : this.jwt.sign (payload) }
     }
 
     
