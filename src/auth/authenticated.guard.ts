@@ -1,9 +1,9 @@
-import React from 'react'
+// import React from 'react'
 
-const authenticated.guard = () => {
-  return (
-    <div>authenticated.guard</div>
-  )
-}
+// const authenticated.guard = () => {
+//   return (
+//     <div>authenticated.guard</div>
+//   )
+// }
 
-export default authenticated.guard
+// export default authenticated.guard
