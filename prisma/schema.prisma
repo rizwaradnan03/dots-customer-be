@@ -134,7 +134,6 @@ model User {
 model Image {
   id           String @id @default(uuid())
   filename     String
-  path         String
   isOnCarousel String
 }
 
