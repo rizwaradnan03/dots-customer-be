@@ -1,11 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, NotFoundException } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { CreateImageDto } from './dto/create-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
+import { Response } from 'express';
+import { join } from 'path';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { existsSync } from 'fs';
 
 @Controller('image')
 export class ImageController {
-  constructor(private readonly imageService: ImageService) {}
+  constructor(
+    private readonly imageService: ImageService,
+    private readonly prisma: PrismaService
+    ) {}
 
   @Post()
   create(@Body() createImageDto: CreateImageDto) {
@@ -17,25 +24,18 @@ export class ImageController {
     return this.imageService.findAll();
   }
 
-  @Get(':id')
-  async getImage(@Param('id') id: string, @Res() res) {
-    try {
-      const imageBase64 = await this.imageService.findOne(id);
-      if (!imageBase64) {
-        return res.status(HttpStatus.NOT_FOUND).send('Image not found');
-      }
+  @Get(':filename')
+  async getImage(@Param('filename') filename: string, @Res() res: Response) {
+    // Gunakan jalur absolut ke direktori 'src' di dalam proyek Anda. 
+   const imagePath = join(__dirname, '..', '..', 'src', 'image', 'img', filename);
 
-      res.setHeader('Content-Type', 'image/jpeg');
-      res.send(Buffer.from(imageBase64, 'base64'));
-    } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send('Internal server error');
+    // Pastikan file ada sebelum mengirimkannya.
+    if (!existsSync(imagePath)) {
+      throw new NotFoundException('File not found');
     }
-  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.imageService.findOne(id);
-  // }
+    res.sendFile(imagePath);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateImageDto: UpdateImageDto) {
