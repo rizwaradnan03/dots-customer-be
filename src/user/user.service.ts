@@ -3,6 +3,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { BadRequest, InternalServerError, NotFound, OK } from 'src/helper/base.response';
+import { error } from 'console';
 
 @Injectable()
 export class UserService {
@@ -18,15 +20,15 @@ export class UserService {
     })
 
     if (isUserValid) {
-      throw new Error('User already exists');
+      return new UnauthorizedException('User already exists');
     }
 
     if (isEmailValid) {
-      throw new Error('Email already exists');
+      return new UnauthorizedException('Email already exists');
     }
 
     if (createUserDto.password.length < 6) {
-      throw new UnauthorizedException('Password less than 6 characters')
+      return new UnauthorizedException('Password less than 6 characters')
     }
 
     const hashPassword = await bcrypt.hash(createUserDto.password, 10)
@@ -42,13 +44,24 @@ export class UserService {
   }
 
   async findAll() {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany(), OK();
   }
 
   async findOne(id: string) {
-    return await this.prisma.user.findUnique({
+    const isUserValid =  await this.prisma.user.findUnique({
       where: { id }
     });
+
+    if (!isUserValid) {
+      return NotFound("User Not Found")
+    }
+
+    if (error) {
+      return InternalServerError(), console.error();
+      
+    }
+
+    return OK(), isUserValid
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -58,11 +71,12 @@ export class UserService {
     })
 
     if (!userUpdate) {
-      throw new Error('User not found')
+      NotFound()
+      return
     }
 
     if (updateUserDto.password.length < 6) {
-      throw new Error('Password less than 6 characters')
+      BadRequest('Password less than 6 characters')
     }
 
     const updatedUser = { ...userUpdate, ...updateUserDto }
