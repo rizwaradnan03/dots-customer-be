@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LoginDto } from './dto/login-auth.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { CustomerEntity } from 'src/customer/entities/customer.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,28 +13,29 @@ export class AuthService {
     ) { }
 
     async register(
-        full_name: string,
-        identity_number: string,
-        birth_date: Date,
-        birth_place: string,
-        mother_maiden_name: string,
-        email: string,
-        username: string,
-        password: string
+        data: {
+            full_name: string,
+            identity_number: string
+            birth_date: Date,
+            birth_place: string,
+            mother_maiden_name: string,
+            email: string,
+            username: string,
+            password: string
+        }
     ) {
         const customer = await this.prisma.customers.create({
             data: {
-                full_name,
-                identity_number,
-                birth_date,
-                birth_place,
-                mother_maiden_name,
-                email
+                full_name: data.full_name,
+                birth_date: data.birth_date,
+                birth_place: data.birth_place,
+                mother_maiden_name: data.mother_maiden_name,
+                email: data.email
             }
         })
 
         const isPasswordValid = await this.prisma.users.findFirst({
-            where: { password: password }
+            where: { password: data.password }
         })
 
         if (isPasswordValid.password.length < 6) {
@@ -45,7 +46,7 @@ export class AuthService {
 
         const user = await this.prisma.users.create({
             data: {
-                username: username,
+                username: data.username,
                 password: hashPassword,
                 ...UserEntity,
                 customer_id: customer.id
