@@ -64,7 +64,7 @@ model Users {
   first_name         String?
   created_at         DateTime?  @default(now())
   delete_at          DateTime?  @updatedAt
-  account_officer_id String?
+  account_officer_id String?    @default("CORPORATE")
   client_type        String?
   Customers          Customers? @relation(fields: [customer_id], references: [id])
   customer_id        Int?

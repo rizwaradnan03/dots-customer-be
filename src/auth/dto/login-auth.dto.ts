@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString, Length } from "@nestjs/class-validator";
 import { OmitType } from "@nestjs/mapped-types";
-import { UserEntity } from "src/user/entities/user.entity";
+import { UserEntity } from "../entity/user.entity";
 
 export class LoginDto extends OmitType(UserEntity, []) {
     @IsString()

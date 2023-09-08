@@ -3,7 +3,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { CustomerEntity } from 'src/customer/entities/customer.entity';
+import { LoginDto } from './dto/login-auth.dto';
+import { OK } from 'src/helper/base.response';
 
 @Injectable()
 export class AuthService {
@@ -56,45 +57,43 @@ export class AuthService {
         return { customer, user }
     }
 
-    // async validateUser(loginDto: LoginDto): Promise<{ token: string }> {
-    //     const isUserValid = await this.prisma.users.findUnique({
-    //         where: { username: loginDto.username }
-    //     })
+    async validateUser(loginDto: LoginDto) {
+        const isUserValid = await this.prisma.users.findFirst({
+            where: { username: loginDto.username }
+        })
 
-    //     if (!isUserValid) {
-    //         throw new NotFoundException(`No user found for username: ${loginDto.username}`);
-    //     }
+        if (!isUserValid) {
+            throw new NotFoundException(`No user found for username: ${loginDto.username}`);
+        }
 
-    //     const isPasswordValid = await bcrypt.compare(
-    //         loginDto.password, isUserValid.password
-    //     )
+        const isPasswordValid = await bcrypt.compare(
+            loginDto.password, isUserValid.password
+        )
 
-    //     if (loginDto.password.length < 6) {
-    //         throw new UnauthorizedException('Password less than 6 characters');
-    //     }
+        if (loginDto.password.length < 6) {
+            throw new UnauthorizedException('Password less than 6 characters');
+        }
 
-    //     if (!isPasswordValid) {
-    //         throw new UnauthorizedException('Wrong Password');
-    //     }
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Wrong Password');
+        }
 
-    //     const payload = { sub: isUserValid.id, username: isUserValid.username, name: isUserValid.name, email: isUserValid.email };
+        return "Login Berhasil"
 
-    //     return { token: this.jwt.sign(payload) }
+    }
 
-    // }
+    async login(loginDto: LoginDto) {
+        const isUserValid = await this.prisma.users.findFirst({
+            where: { username: loginDto.username }
+        })
 
-    // async login(loginDto: LoginDto) {
-    //     const isUserValid = await this.prisma.user.findUnique({
-    //         where: { username: loginDto.username }
-    //     })
+        if (!isUserValid) {
+            throw new NotFoundException(`No user found for username: ${loginDto.username}`);
+        }
 
-    //     if (!isUserValid) {
-    //         throw new NotFoundException(`No user found for username: ${loginDto.username}`);
-    //     }
+        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email };
 
-    //     const payload = { sub: isUserValid.id, username: isUserValid.username, name: isUserValid.name, email: isUserValid.email };
-
-    //     return { token: this.jwt.sign(payload) }
-    // }
+        return { token: this.jwt.sign(payload) }
+    }
 
 }
