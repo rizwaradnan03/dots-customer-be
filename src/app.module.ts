@@ -16,10 +16,11 @@ import { CreditModule } from './credit/credit.module';
 import { HistoryModule } from './history/history.module';
 import { AuthModule } from './auth/auth.module';
 import { ImageModule } from './image/image.module';
+import { ServiceModule } from './service/service.module';
 
 
 @Module({
-  imports: [PrismaModule, UserModule, ProvinceModule, CityModule, SubdistrictModule, WardModule, OfficeModule, ReservationModule, SavingsModule, DepositModule, CreditModule, HistoryModule, AuthModule, ImageModule],
+  imports: [PrismaModule, UserModule, ProvinceModule, CityModule, SubdistrictModule, WardModule, OfficeModule, ReservationModule, SavingsModule, DepositModule, CreditModule, HistoryModule, AuthModule, ImageModule, ServiceModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

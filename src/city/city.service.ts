@@ -2,15 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Accepted } from 'src/helper/base.response';
 
 @Injectable()
 export class CityService {
   constructor(private prisma: PrismaService) { }
 
   async create(createCityDto: CreateCityDto) {
-    const city = await this.prisma.city.create({
+    await this.prisma.city.create({
       data: createCityDto
-    });
+    }), Accepted();
 
   }
 

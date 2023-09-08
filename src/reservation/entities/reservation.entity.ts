@@ -6,7 +6,7 @@ export class ReservationEntity implements ReservationModel{
     date: Date;
     time: string;
     qrcodedata: string;
-    service: string;
+    serviceId: string;
     officeDestinationId: string;
     isactive: string;
 

@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ReservationService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createReservationDto: CreateReservationDto) {
     return await this.prisma.reservation.create({
@@ -21,6 +21,13 @@ export class ReservationService {
         }
       }
     });
+  }
+
+  async getQrCode(id: string) {
+    return await this.prisma.reservation.findUnique({
+      where: {id},
+      select: {qrcodedata:true}
+    })
   }
 
   async findOne(id: string) {

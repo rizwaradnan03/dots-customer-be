@@ -1,42 +1,50 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, UseGuards } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
-import { BaseResponse } from 'src/helper/base.response';
+import { Accepted } from 'src/helper/base.response';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
+  // @UseGuards(JwtAuthGuard)
   @Post()
-  @HttpCode(200)
   async create(@Body() createReservationDto: CreateReservationDto) {
-    const data = {"message": "Reservasi Berhasil Dibuat"}
-    const response = new BaseResponse(200, "success", "Data Berhasil Dibuat", data)
-    console.log(response)
-    return await this.reservationService.create(createReservationDto)
+    return await this.reservationService.create(createReservationDto) 
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return await this.reservationService.findAll();
   }
 
+  @Get('/qr/:id')
+  async getQr(@Param('id') id: string) {
+    return await this.reservationService.getQrCode(id)
+  }
+
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.reservationService.findOne(id);
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
     return await this.reservationService.update(id, updateReservationDto);
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.reservationService.remove(id);
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get('/view')
   async findView(){
     return await this.reservationService.findView()

@@ -42,7 +42,7 @@ export class AuthService {
 
     }
 
-    async muhaha(loginDto: LoginDto) {
+    async login(loginDto: LoginDto) {
         const isUserValid = await this.prisma.user.findUnique({
             where: { username: loginDto.username }
         })
@@ -54,7 +54,6 @@ export class AuthService {
         const payload = { sub: isUserValid.id,username: isUserValid.username, name: isUserValid.name, email: isUserValid.email };
 
         return {token : this.jwt.sign (payload) }
-    }
-
+    } 
     
 }

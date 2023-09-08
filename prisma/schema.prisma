@@ -67,16 +67,24 @@ model Office {
 model Reservation {
   id                  String   @id @default(uuid())
   purpose             String
-  date                DateTime
-  time                String
-  qrcodedata          String
-  service             String
+  date                DateTime @db.Date
+  time                String?
+  qrcodedata          String?
   officeDestination   Office   @relation(fields: [officeDestinationId], references: [id])
   officeDestinationId String
-  isactive            String
+  isactive            String   @default("1")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Service   Service? @relation(fields: [serviceId], references: [id])
+  serviceId String?
+}
+
+model Service {
+  id   String @id @default(uuid())
+  name String
+
+  reservation Reservation[]
 }
 
 model Savings {
