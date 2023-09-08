@@ -4,24 +4,17 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma/prisma.service';
-import { ProvinceModule } from './province/province.module';
-import { CityModule } from './city/city.module';
-import { SubdistrictModule } from './subdistrict/subdistrict.module';
-import { WardModule } from './ward/ward.module';
-import { OfficeModule } from './office/office.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { SavingsModule } from './savings/savings.module';
-import { DepositModule } from './deposit/deposit.module';
-import { CreditModule } from './credit/credit.module';
-import { HistoryModule } from './history/history.module';
 import { AuthModule } from './auth/auth.module';
 import { ImageModule } from './image/image.module';
-import { ServiceModule } from './service/service.module';
+import { CustomerModule } from './customer/customer.module';
+import { UsersModule } from './users/users.module';
 
 
 @Module({
-  imports: [PrismaModule, UserModule, ProvinceModule, CityModule, SubdistrictModule, WardModule, OfficeModule, ReservationModule, SavingsModule, DepositModule, CreditModule, HistoryModule, AuthModule, ImageModule, ServiceModule],
+  imports: [PrismaModule, UserModule, ReservationModule, SavingsModule, AuthModule, ImageModule, CustomerModule, UsersModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
-export class AppModule {}
+export class AppModule { }

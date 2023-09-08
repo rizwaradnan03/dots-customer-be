@@ -7,149 +7,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Province {
-  id        String   @id @default(uuid())
-  name      String
-  cities    City[]
-  offices   Office[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model City {
-  id           String        @id @default(uuid())
-  name         String
-  province     Province      @relation(fields: [provinceId], references: [id])
-  provinceId   String
-  subdistricts Subdistrict[]
-  offices      Office[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-}
-
-model Subdistrict {
-  id        String   @id @default(uuid())
-  name      String
-  city      City     @relation(fields: [cityId], references: [id])
-  cityId    String
-  wards     Ward[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Ward {
-  id            String      @id @default(uuid())
-  name          String
-  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id])
-  subdistrictId String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model Office {
-  id           String        @id @default(uuid())
-  name         String        @unique
-  email        String        @unique
-  phone        String
-  address      String
-  province     Province      @relation(fields: [provinceId], references: [id])
-  provinceId   String
-  city         City          @relation(fields: [cityId], references: [id])
-  cityId       String
-  reservations Reservation[]
-  savings      Savings[]
-  deposits     Deposit[]
-  credits      Credit[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-}
-
 model Reservation {
-  id                  String   @id @default(uuid())
-  purpose             String
-  date                DateTime @db.Date
-  time                String?
-  qrcodedata          String?
-  officeDestination   Office   @relation(fields: [officeDestinationId], references: [id])
-  officeDestinationId String
-  isactive            String   @default("1")
+  id                  String    @id @default(uuid())
+  branch_id           String?
+  destination_service Int?
+  reason              String?
+  attend_at_start     DateTime?
+  attend_at_end       DateTime?
+  created_at          DateTime? @db.Timestamp()
+  created_by          Int?
+  deleted_at          DateTime? @db.Timestamp()
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Service   Service? @relation(fields: [serviceId], references: [id])
-  serviceId String?
-}
-
-model Service {
-  id   String @id @default(uuid())
-  name String
-
-  reservation Reservation[]
+  tenants   tenants? @relation(fields: [tenant_id], references: [id])
+  tenant_id Int?
 }
 
 model Savings {
-  id        String   @id @default(uuid())
-  account   String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  office    Office   @relation(fields: [officeId], references: [id])
-  officeId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                Int        @id @default(autoincrement())
+  Customers         Customers? @relation(fields: [customer_id], references: [id])
+  customer_id       Int?
+  external_id       String?
+  current_balance   Int?
+  available_balance Int?
+  status            Int?
+  product_type      String?
+  last_synced_at    DateTime   @db.Timestamp()
+  created_by        Int?
+  updated_by        Int?
+  craated_at        DateTime?  @default(now())
+  updated_at        DateTime?  @updatedAt
+  deleted_at        DateTime?  @db.Timestamp()
 }
 
-model Deposit {
-  id        String   @id @default(uuid())
-  account   String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  office    Office   @relation(fields: [officeId], references: [id])
-  officeId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model tenants {
+  id                   Int     @id @default(autoincrement())
+  public_id            String?
+  name                 String?
+  database_schema_name String?
+  core_type            String?
+  core_database_type   String?
+  core_database_dsn    String?
+  logo_url_base64      String?
+
+  reservation Reservation[]
+  users       Users[]
 }
 
-model Credit {
-  id        String   @id @default(uuid())
-  account   String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  office    Office   @relation(fields: [officeId], references: [id])
-  officeId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Users {
+  id                 Int        @id @default(autoincrement())
+  is_active          Boolean?
+  email              String?
+  email_confirmed_at DateTime?  @db.Timestamp()
+  username           String?
+  password           String?
+  last_name          String?
+  first_name         String?
+  created_at         DateTime?  @default(now())
+  delete_at          DateTime?  @updatedAt
+  account_officer_id String?
+  client_type        String?
+  Customers          Customers? @relation(fields: [customer_id], references: [id])
+  customer_id        Int?
+  tenants            tenants?   @relation(fields: [tenant_id], references: [id])
+  tenant_id          Int?
+  branch_id          String?
 }
 
-model User {
-  id           String    @id @default(uuid())
-  name         String
-  nik          String
-  placeOfBirth String
-  dateOfBirth  DateTime
-  motherMaiden String
-  email        String    @unique
-  referralCode String
-  username     String    @unique
-  password     String
-  histories    History[]
-  savings      Savings[]
-  deposits     Deposit[]
-  credits      Credit[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+model Customers {
+  id                 Int       @id @default(autoincrement())
+  external_id        String?
+  full_name          String?
+  identity_number    String?
+  identity_type      String?
+  email              String?
+  phone_number       String?
+  mobile_number      String?
+  gender             String?
+  address            String?
+  subdistrict        String?
+  district           String?
+  mother_maiden_name String?
+  dati2_code         String?
+  identity_photo_url String?
+  selfie_photo_url   String?
+  birth_place        String?
+  birth_date         DateTime? @db.Date
+  status             Int?
+  last_synced_at     DateTime? @db.Timestamp()
+
+  created_by Int?
+  updated_by Int?
+  deleted_by Int?
+
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  delete_at  DateTime? @db.Timestamp()
+  users      Users[]
+  savings    Savings[]
 }
 
 model Image {
-  id           String @id @default(uuid())
-  filename     String
-  isOnCarousel String
-}
-
-model History {
-  id        String   @id @default(uuid())
-  name      String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  filename     String?
+  isOnCarousel Boolean?
 }
