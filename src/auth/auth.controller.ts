@@ -22,14 +22,9 @@ export class AuthController {
   }
 
   // @UseGuards(LocalAuthGuard)
-  // @Post('login')
-  // async login(@Body() LoginDto: LoginDto) {
-  //   return await this.authService.validateUser(LoginDto);
-  // }
+  @Post('login')
+  async login(@Body() LoginDto: LoginDto) {
+    return await this.authService.validateUser(LoginDto);
+  }
 
-  // @Post('register')
-  // async register(@Body() loginDto: LoginDto) {
-  //   // Validasi dan logika pendaftaran pengguna dilakukan dalam AuthService
-  //   return await this.authService.validateUser(loginDto);
-  // }
 }

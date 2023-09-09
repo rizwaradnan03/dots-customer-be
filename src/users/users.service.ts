@@ -12,7 +12,7 @@ export class UsersService {
   }
   
   findAll() {
-    return `This action returns all users`;
+    return `BISA NGENTOT`;
   }
 
   findOne(id: number) {
