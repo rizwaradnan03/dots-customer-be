@@ -16,7 +16,7 @@ async function bootstrap() {
   app.use('/image', express.static(join(__dirname, 'img')));
 
   
-  await app.listen(process.env.PORT, '192.168.18.253', () => {
+  await app.listen(process.env.PORT, '192.168.18.210', () => {
     console.log('connected on PORT ' + process.env.PORT);
   });
 }

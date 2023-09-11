@@ -53,7 +53,7 @@ export class AuthService {
                     username: data.username,
                     password: hashPassword,
                     ...UserEntity,
-                    customer_id: customer.id
+                    customerId: customer.id
                 }
             })
     

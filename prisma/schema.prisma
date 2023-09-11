@@ -24,9 +24,9 @@ model Reservation {
 }
 
 model Savings {
-  id                Int        @id @default(autoincrement())
+  id                String     @id @default(uuid())
   Customers         Customers? @relation(fields: [customer_id], references: [id])
-  customer_id       Int?
+  customer_id       String?
   external_id       String?
   current_balance   Int?
   available_balance Int?
@@ -55,27 +55,30 @@ model tenants {
 }
 
 model Users {
-  id                 Int        @id @default(autoincrement())
-  is_active          Boolean?
-  email              String?
-  email_confirmed_at DateTime?  @db.Timestamp()
-  username           String?
-  password           String?
-  last_name          String?
-  first_name         String?
-  created_at         DateTime?  @default(now())
-  delete_at          DateTime?  @updatedAt
-  account_officer_id String?    @default("CORPORATE")
-  client_type        String?
-  Customers          Customers? @relation(fields: [customer_id], references: [id])
-  customer_id        Int?
-  tenants            tenants?   @relation(fields: [tenant_id], references: [id])
-  tenant_id          Int?
-  branch_id          String?
+  id               String    @id @default(uuid()) @map(name: "id")
+  isActive         Boolean?  @map(name: "is_active")
+  email            String?   @map(name: "email")
+  emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
+  username         String?   @map(name: "username")
+  password         String?   @map(name: "password")
+  lastName         String?   @map(name: "last_name")
+  firstName        String?   @map(name: "first_name")
+  createdAt        DateTime? @default(now()) @map(name: "created_at")
+  deleteAt         DateTime? @updatedAt @map(name: "delete_at")
+  accountOfficerId String?   @default("CORPORATE") @map(name: "account_officer_id")
+  clientType       String?   @map(name: "client_type")
+  customerId       String?   @map(name: "customer_id")
+  tenantId         Int?      @map(name: "tenant_id")
+  branchId         String?   @map(name: "branch_id")
+
+  tenants     tenants?   @relation(fields: [tenantsId], references: [id])
+  tenantsId   Int?
+  Customers   Customers? @relation(fields: [customersId], references: [id])
+  customersId String?
 }
 
 model Customers {
-  id                 Int       @id @default(autoincrement())
+  id                 String    @id @default(uuid())
   external_id        String?
   full_name          String?
   identity_number    String?

@@ -1,19 +1,21 @@
 import { Users as UserModel} from "@prisma/client";
 
 export class UserEntity implements UserModel {
-    id: number;
-    is_active: boolean;
+    id: string;
+    isActive: boolean;
     email: string;
-    email_confirmed_at: Date;
+    emailConfirmedAt: Date;
     username: string;
     password: string;
-    last_name: string;
-    first_name: string;
-    created_at: Date;
-    delete_at: Date;
-    account_officer_id: string;
-    client_type: string;
-    customer_id: number;
-    tenant_id: number;
-    branch_id: string;
+    lastName: string;
+    firstName: string;
+    createdAt: Date;
+    deleteAt: Date;
+    accountOfficerId: string;
+    clientType: string;
+    customerId: string;
+    tenantId: number;
+    branchId: string;
+    tenantsId: number | null;
+    customersId: string | null; 
 }
