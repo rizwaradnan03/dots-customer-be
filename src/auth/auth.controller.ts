@@ -15,6 +15,7 @@ export class AuthController {
     birth_place: string,
     mother_maiden_name: string,
     email: string,
+    referral_code: string,
     username: string,
     password: string
   }) {

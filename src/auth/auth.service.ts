@@ -21,6 +21,7 @@ export class AuthService {
         birth_place: string,
         mother_maiden_name: string,
         email: string,
+        referral_code: string,
         username: string,
         password: string,
     }) {
@@ -42,7 +43,8 @@ export class AuthService {
                     birth_date: data.birth_date,
                     birth_place: data.birth_place,
                     mother_maiden_name: data.mother_maiden_name,
-                    email: data.email
+                    email: data.email,
+                    referral_code: data.referral_code
                 }
             })
     
