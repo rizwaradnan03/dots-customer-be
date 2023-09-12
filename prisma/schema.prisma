@@ -22,14 +22,14 @@ model Reservation {
 model savings {
   id               String    @id @default(uuid())
   externalId       String?   @map(name: "externalId")
-  currentBalance   Int?      @map(name: "currentBalance")
-  availableBalance Int?      @map(name: "availableBalance")
-  status           Int?      @map(name: "status")
-  productType      String?   @map(name: "productType")
-  lastSycnedAt     DateTime  @map(name: "last_synced_at") @db.Timestamp()
+  currentBalance   Int? @map(name: "currentBalance")
+  availableBalance Int? @map(name: "availableBalance")
+  status           Int? @map(name: "status")
+  productType      String? @map(name: "productType")
+  lastSyncedAt     DateTime?  @db.Timestamp() @map(name: "last_synced_at")
   createdAt        DateTime? @default(now()) @map(name: "created_at")
   updatedAt        DateTime? @updatedAt @map(name: "updated_at")
-  deletedAt        DateTime? @map(name: "deleted_at") @db.Timestamp()
+  deletedAt        DateTime? @db.Timestamp() @map(name: "deleted_at")
 
   updatedBy   users?     @relation("savingUpdatedBy", fields: [updatedById], references: [id])
   updatedById String?
