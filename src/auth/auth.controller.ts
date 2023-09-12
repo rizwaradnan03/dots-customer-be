@@ -9,13 +9,13 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() data: {
-    full_name: string,
-    identity_number: string
-    birth_date: Date,
-    birth_place: string,
-    mother_maiden_name: string,
+    fullName: string,
+    identityNumber: string
+    birthDate: Date,
+    birthPlace: string,
+    motherMaidenName: string,
     email: string,
-    referral_code: string,
+    referralCode: string,
     username: string,
     password: string
   }) {

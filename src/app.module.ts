@@ -7,10 +7,11 @@ import { AuthModule } from './auth/auth.module';
 import { ImageModule } from './image/image.module';
 import { UsersModule } from './users/users.module';
 import { ReservationsModule } from './reservations/reservations.module';
+import { CustomersModule } from './customers/customers.module';
 
 
 @Module({
-  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule],
+  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

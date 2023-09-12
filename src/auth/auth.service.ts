@@ -2,10 +2,9 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { CustomerEntity } from 'src/customers/entities/customer.entity';
 import { LoginDto } from './dto/login-auth.dto';
-import { OK } from 'src/helper/base.response';
 import * as bcrypt from 'bcrypt';
-import passport from 'passport';
 
 @Injectable()
 export class AuthService {
@@ -28,14 +27,14 @@ export class AuthService {
         console.log(data)
         if (data.password.length == null) {
             return new UnauthorizedException("bruhk")
-        }   
-    
+        }
+
         if (data.password.length < 6) {
             return new UnauthorizedException('Password less than 6 characters')
         }
-    
+
         const hashPassword = await bcrypt.hash(data.password, 10)
-    
+
         try {
             const customer = await this.prisma.customers.create({
                 data: {
@@ -44,20 +43,33 @@ export class AuthService {
                     birthPlace: data.birthPlace,
                     motherMaidenName: data.motherMaidenName,
                     email: data.email,
-                    referralCode: data.referralCode
+                    referralCode: data.referralCode,
                 }
             })
-    
+
             const user = await this.prisma.users.create({
                 data: {
                     username: data.username,
                     password: hashPassword,
-                    ...UserEntity,
                     customerId: customer.id
                 }
             })
-    
-            return { customer, user }
+
+            const customerCreatedBy = await this.prisma.customers.update({
+                where: {
+                    id: customer.id
+                },
+
+                data: {
+                    createdBy: {
+                        connect: { id: user.id },
+                    }
+                }
+            })
+
+
+            return { customer, user, customerCreatedBy }
+
         } catch (error) {
             console.error("Terjadi kesalahan saat membuat user atau customer:", error);
             throw error;
@@ -85,12 +97,12 @@ export class AuthService {
             throw new UnauthorizedException('Wrong Password');
         }
 
-         const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email };
+        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email };
 
         return { token: this.jwt.sign(payload) }
     }
 
-    
+
 
     async login(loginDto: LoginDto) {
         const isUserValid = await this.prisma.users.findFirst({

@@ -8,24 +8,25 @@ datasource db {
 }
 
 model Reservation {
-  id                  String    @id @default(uuid())
-  branch_id           String?
-  destination_service Int?
-  reason              String?
-  attend_at_start     DateTime?
-  attend_at_end       DateTime?
-  created_at          DateTime? @db.Timestamp()
-  created_by          Int?
-  deleted_at          DateTime? @db.Timestamp()
-  is_active           Boolean?  @default(false)
+  id                 String    @id @default(uuid())
+  branchId           String?   @map(name: "branch_id")
+  destinationService Int?
+  reason             String?
+  attendAtStart      DateTime?
+  attendAtEnd        DateTime?
+  createdAt          DateTime? @default(now()) @db.Timestamp()
+  deletedAt          DateTime? @db.Timestamp()
+  isActive           Boolean?  @default(false)
 
+  createdBy users    @relation(fields: [createdId], references: [id])
+  createdId String
   tenants   tenants? @relation(fields: [tenant_id], references: [id])
   tenant_id Int?
 }
 
 model Savings {
   id                String     @id @default(uuid())
-  customers         customers? @relation(fields: [customer_id], references: [id])
+  // customers         customers? @relation(fields: [customer_id], references: [id])
   customer_id       String?
   external_id       String?
   current_balance   Int?
@@ -33,11 +34,14 @@ model Savings {
   status            Int?
   product_type      String?
   last_synced_at    DateTime   @db.Timestamp()
-  created_by        Int?
-  updated_by        Int?
-  craated_at        DateTime?  @default(now())
+  created_at        DateTime?  @default(now())
   updated_at        DateTime?  @updatedAt
   deleted_at        DateTime?  @db.Timestamp()
+
+  updatedBy   users?  @relation("SavingsUpdatedBy", fields: [updatedById], references: [id])
+  updatedById String?
+  createdBy   users?  @relation("SavingsCreatedBy", fields: [createdById], references: [id])
+  createdById String?
 }
 
 model tenants {
@@ -55,26 +59,35 @@ model tenants {
 }
 
 model users {
-  id               String    @id @default(uuid()) @map(name: "id")
-  isActive         Boolean?  @map(name: "is_active")
-  email            String?   @map(name: "email")
-  emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
-  username         String?   @map(name: "username")
-  password         String?   @map(name: "password")
-  lastName         String?   @map(name: "last_name")
-  firstName        String?   @map(name: "first_name")
-  createdAt        DateTime? @default(now()) @map(name: "created_at")
-  deleteAt         DateTime? @updatedAt @map(name: "delete_at")
-  accountOfficerId String?   @default("CORPORATE") @map(name: "account_officer_id")
-  clientType       String?   @map(name: "client_type")
-  customerId       String?   @map(name: "customer_id")
-  tenantId         Int?      @map(name: "tenant_id")
-  branchId         String?   @map(name: "branch_id")
+  id               String        @id @default(uuid()) @map(name: "id")
+  isActive         Boolean?      @map(name: "is_active")
+  email            String?       @map(name: "email")
+  emailConfirmedAt DateTime?     @map(name: "email_confirmed_at") @db.Timestamp()
+  username         String?       @map(name: "username")
+  password         String?       @map(name: "password")
+  lastName         String?       @map(name: "last_name")
+  firstName        String?       @map(name: "first_name")
+  createdAt        DateTime?     @default(now()) @map(name: "created_at")
+  deleteAt         DateTime?     @updatedAt @map(name: "delete_at")
+  accountOfficerId String?       @default("CORPORATE") @map(name: "account_officer_id")
+  clientType       String?       @map(name: "client_type")
+  tenantId         Int?          @map(name: "tenant_id")
+  branchId         String?       @map(name: "branch_id")
+  Reservation      Reservation[]
 
-  tenants     tenants?   @relation(fields: [tenantsId], references: [id])
-  tenantsId   Int?
-  customers   customers? @relation(fields: [customersId], references: [id])
-  customersId String?
+  tenants   tenants? @relation(fields: [tenantsId], references: [id])
+  tenantsId Int?
+
+  savingsUpdated Savings[] @relation("SavingsUpdatedBy")
+  savingsCreated Savings[] @relation("SavingsCreatedBy")
+
+  customerCreated customers[] @relation("CustomerCreatedBy")
+  customerUpdated customers[] @relation("CustomerUpdatedBy")
+  customerDeleted customers[] @relation("CustomerDeletedBy")
+
+  customer   customers?  @relation("CustomerId", fields: [customerId], references: [id])
+  customerId String?
+
 }
 
 model customers {
@@ -100,15 +113,19 @@ model customers {
   status           Int?      @map(name: "status")
   lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
 
-  createdBy Int? @map(name: "created_by")
-  updatedBy Int? @map(name: "updated_by")
-  deletedBy Int? @map(name: "deleted_by")
-
   createdAt DateTime? @default(now()) @map(name: "created_at")
   updatedAt DateTime? @updatedAt @map(name: "updated_at")
   deletedAt DateTime? @map(name: "deleted_at") @db.Timestamp()
-  users     users[]
-  savings   Savings[]
+
+  user users[] @relation("CustomerId")
+
+  createdBy   users?  @relation("CustomerCreatedBy", fields: [createdById], references: [id])
+  createdById String?
+  updatedBy   users?  @relation("CustomerUpdatedBy", fields: [updatedById], references: [id])
+  updatedById String?
+  deletedBy   users?  @relation("CustomerDeletedBy", fields: [deletedById], references: [id])
+  deletedById String?
+
 }
 
 model images {

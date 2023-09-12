@@ -1,4 +1,4 @@
-import { Users as UserModel } from "@prisma/client";
+import { users as UserModel } from "@prisma/client";
 
 export class UserEntity implements UserModel {
     id: string
