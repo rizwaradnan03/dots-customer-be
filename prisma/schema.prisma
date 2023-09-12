@@ -8,15 +8,15 @@ datasource db {
 }
 
 model Reservation {
-  id                 String    @id @default(uuid())
+  id                 String    @id @default(uuid()) @map(name: "id")
   branchId           String?   @map(name: "branch_id")
-  destinationService Int?
-  reason             String?
-  attendAtStart      DateTime?
-  attendAtEnd        DateTime?
-  createdAt          DateTime? @default(now()) @db.Timestamp()
-  deletedAt          DateTime? @db.Timestamp()
-  isActive           Boolean?  @default(false)
+  destinationService Int?      @map(name: "destinationService")
+  reason             String?   @map(name: "reason")
+  attendAtStart      DateTime? @map(name: "attendAtStart")
+  attendAtEnd        DateTime? @map(name: "attendAtEnd")
+  createdAt          DateTime? @default(now()) @map(name: "createdAt") @db.Timestamp()
+  deletedAt          DateTime? @map(name: "deletedAt") @db.Timestamp()
+  isActive           Boolean?  @default(false) @map(name: "isActive")
 }
 
 model savings {
