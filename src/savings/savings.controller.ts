@@ -13,8 +13,8 @@ export class SavingsController {
   }
 
   @Get()
-  findAll() {
-    return this.savingsService.findAll();
+  async findAll() {
+    return await this.savingsService.findAll();
   }
 
   @Get(':id')
@@ -24,7 +24,7 @@ export class SavingsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSavingDto: UpdateSavingDto) {
-    return this.savingsService.update(+id, updateSavingDto);
+    return this.savingsService.update(id, updateSavingDto);
   }
 
   @Delete(':id')

@@ -7,36 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Reservation {
+model reservations {
   id                 String    @id @default(uuid()) @map(name: "id")
   branchId           String?   @map(name: "branch_id")
-  destinationService Int?      @map(name: "destinationService")
+  destinationService Int?      @map(name: "destination_service")
   reason             String?   @map(name: "reason")
-  attendAtStart      DateTime? @map(name: "attendAtStart")
-  attendAtEnd        DateTime? @map(name: "attendAtEnd")
-  createdAt          DateTime? @default(now()) @map(name: "createdAt") @db.Timestamp()
-  deletedAt          DateTime? @map(name: "deletedAt") @db.Timestamp()
-  isActive           Boolean?  @default(false) @map(name: "isActive")
+  attendAtStart      DateTime? @map(name: "attend_at_start")
+  attendAtEnd        DateTime? @map(name: "attend_at_end")
+  createdAt          DateTime? @default(now()) @map(name: "created_at") @db.Timestamp()
+  deletedAt          DateTime? @map(name: "delete_at") @db.Timestamp()
+  isActive           Boolean?  @default(false) @map(name: "is_active")
+
+  createdBy   users?  @relation("reservationCreatedBy", fields: [createdById], references: [id])
+  createdById String? @map(name: "created_by_id")
 }
 
 model savings {
   id               String    @id @default(uuid())
   externalId       String?   @map(name: "externalId")
-  currentBalance   Int? @map(name: "currentBalance")
-  availableBalance Int? @map(name: "availableBalance")
-  status           Int? @map(name: "status")
-  productType      String? @map(name: "productType")
-  lastSyncedAt     DateTime?  @db.Timestamp() @map(name: "last_synced_at")
+  currentBalance   Int?      @map(name: "currentBalance")
+  availableBalance Int?      @map(name: "availableBalance")
+  status           Int?      @map(name: "status")
+  productType      String?   @map(name: "productType")
+  lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
   createdAt        DateTime? @default(now()) @map(name: "created_at")
   updatedAt        DateTime? @updatedAt @map(name: "updated_at")
-  deletedAt        DateTime? @db.Timestamp() @map(name: "deleted_at")
+  deletedAt        DateTime? @map(name: "deleted_at") @db.Timestamp()
 
   updatedBy   users?     @relation("savingUpdatedBy", fields: [updatedById], references: [id])
-  updatedById String?
+  updatedById String?    @map(name: "updated_by_id")
   createdBy   users?     @relation("savingCreatedBy", fields: [createdById], references: [id])
-  createdById String?
+  createdById String?    @map(name: "created_by_id")
   customer    customers? @relation("savingId", fields: [customerId], references: [id])
-  customerId  String?
+  customerId  String?    @map(name: "customer_id")
 }
 
 model tenants {
@@ -66,15 +69,15 @@ model users {
   tenantId         Int?      @map(name: "tenant_id")
   branchId         String?   @map(name: "branch_id")
 
-  savingsUpdated savings[] @relation("savingUpdatedBy")
-  savingsCreated savings[] @relation("savingCreatedBy")
-
-  customerCreated customers[] @relation("customerCreatedBy")
-  customerUpdated customers[] @relation("customerUpdatedBy")
-  customerDeleted customers[] @relation("customerDeletedBy")
+  savingsUpdated     savings[]      @relation("savingUpdatedBy")
+  savingsCreated     savings[]      @relation("savingCreatedBy")
+  customerCreated    customers[]    @relation("customerCreatedBy")
+  customerUpdated    customers[]    @relation("customerUpdatedBy")
+  customerDeleted    customers[]    @relation("customerDeletedBy")
+  reservationCreated reservations[] @relation("reservationCreatedBy")
 
   customer   customers? @relation("userId", fields: [customerId], references: [id])
-  customerId String?
+  customerId String?    @map(name: "customer_id")
 }
 
 model customers {
@@ -108,15 +111,15 @@ model customers {
   saving savings[] @relation("savingId")
 
   createdBy   users?  @relation("customerCreatedBy", fields: [createdById], references: [id])
-  createdById String?
+  createdById String? @map(name: "created_by_id")
   updatedBy   users?  @relation("customerUpdatedBy", fields: [updatedById], references: [id])
-  updatedById String?
+  updatedById String? @map(name: "updated_by_id")
   deletedBy   users?  @relation("customerDeletedBy", fields: [deletedById], references: [id])
-  deletedById String?
+  deletedById String? @map(name: "deleted_by_id")
 }
 
 model images {
   id           Int      @id @default(autoincrement())
-  filename     String?
-  isOnCarousel Boolean?
+  fileName     String?  @map(name: "file_name")
+  isOnCarousel Boolean? @map(name: "is_on_carousel")
 }
