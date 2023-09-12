@@ -1,6 +1,6 @@
-import { OmitType } from "@nestjs/mapped-types";
-import { UserEntity } from "../entity/user.entity";
+// import { OmitType } from "@nestjs/mapped-types";
+// import { UserEntity } from "../entity/user.entity";
 
-export class registerDto extends OmitType(UserEntity,[]) {
-    username: string
-} 
+// export class registerDto extends OmitType(UserEntity,[]) {
+//     username: string
+// } 

@@ -25,7 +25,7 @@ model Reservation {
 
 model Savings {
   id                String     @id @default(uuid())
-  Customers         Customers? @relation(fields: [customer_id], references: [id])
+  customers         customers? @relation(fields: [customer_id], references: [id])
   customer_id       String?
   external_id       String?
   current_balance   Int?
@@ -51,10 +51,10 @@ model tenants {
   logo_url_base64      String?
 
   reservation Reservation[]
-  users       Users[]
+  users       users[]
 }
 
-model Users {
+model users {
   id               String    @id @default(uuid()) @map(name: "id")
   isActive         Boolean?  @map(name: "is_active")
   email            String?   @map(name: "email")
@@ -73,45 +73,45 @@ model Users {
 
   tenants     tenants?   @relation(fields: [tenantsId], references: [id])
   tenantsId   Int?
-  Customers   Customers? @relation(fields: [customersId], references: [id])
+  customers   customers? @relation(fields: [customersId], references: [id])
   customersId String?
 }
 
-model Customers {
-  id                 String    @id @default(uuid())
-  external_id        String?
-  full_name          String?
-  identity_number    String?
-  identity_type      String?
-  email              String?
-  phone_number       String?
-  mobile_number      String?
-  gender             String?
-  address            String?
-  subdistrict        String?
-  district           String?
-  mother_maiden_name String?
-  referral_code      String?
-  dati2_code         String?
-  identity_photo_url String?
-  selfie_photo_url   String?
-  birth_place        String?
-  birth_date         DateTime? @db.Date
-  status             Int?
-  last_synced_at     DateTime? @db.Timestamp()
+model customers {
+  id               String    @id @default(uuid()) @map(name: "id")
+  externalId       String?   @map(name: "external_id")
+  fullName         String?   @map(name: "full_name")
+  identityNumber   String?   @map(name: "identity_number")
+  identityType     String?   @map(name: "identity_type")
+  email            String?   @map(name: "email")
+  phoneNumber      String?   @map(name: "phone_number")
+  mobileNumber     String?   @map(name: "mobile_number")
+  gender           String?   @map(name: "gender")
+  address          String?   @map(name: "address")
+  subdistrict      String?   @map(name: "subdistrict")
+  district         String?   @map(name: "district")
+  motherMaidenName String?   @map(name: "mother_maiden_name")
+  referralCode     String?   @map(name: "referral_code")
+  dati2Code        String?   @map(name: "dati2_code")
+  identityPhotoUrl String?   @map(name: "identity_photo_url")
+  selfiePhotoUrl   String?   @map(name: "selfie_photo_url")
+  birthPlace       String?   @map(name: "birth_place")
+  birthDate        DateTime? @map(name: "birth_date") @db.Date
+  status           Int?      @map(name: "status")
+  lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
 
-  created_by Int?
-  updated_by Int?
-  deleted_by Int?
+  createdBy Int? @map(name: "created_by")
+  updatedBy Int? @map(name: "updated_by")
+  deletedBy Int? @map(name: "deleted_by")
 
-  created_at DateTime? @default(now())
-  updated_at DateTime? @updatedAt
-  delete_at  DateTime? @db.Timestamp()
-  users      Users[]
-  savings    Savings[]
+  createdAt DateTime? @default(now()) @map(name: "created_at")
+  updatedAt DateTime? @updatedAt @map(name: "updated_at")
+  deletedAt DateTime? @map(name: "deleted_at") @db.Timestamp()
+  users     users[]
+  savings   Savings[]
 }
 
-model Image {
+model images {
   id           Int      @id @default(autoincrement())
   filename     String?
   isOnCarousel Boolean?

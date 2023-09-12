@@ -15,13 +15,13 @@ export class AuthService {
     ) { }
 
     async register(data: {
-        full_name: string,
-        identity_number: string,
-        birth_date: Date,
-        birth_place: string,
-        mother_maiden_name: string,
+        fullName: string,
+        identityNumber: string,
+        birthDate: Date,
+        birthPlace: string,
+        motherMaidenName: string,
         email: string,
-        referral_code: string,
+        referralCode: string,
         username: string,
         password: string,
     }) {
@@ -39,12 +39,12 @@ export class AuthService {
         try {
             const customer = await this.prisma.customers.create({
                 data: {
-                    full_name: data.full_name,
-                    birth_date: data.birth_date,
-                    birth_place: data.birth_place,
-                    mother_maiden_name: data.mother_maiden_name,
+                    fullName: data.fullName,
+                    birthDate: data.birthDate,
+                    birthPlace: data.birthPlace,
+                    motherMaidenName: data.motherMaidenName,
                     email: data.email,
-                    referral_code: data.referral_code
+                    referralCode: data.referralCode
                 }
             })
     

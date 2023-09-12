@@ -49,7 +49,7 @@ CREATE TABLE "tenants" (
 );
 
 -- CreateTable
-CREATE TABLE "Users" (
+CREATE TABLE "users" (
     "id" TEXT NOT NULL,
     "is_active" BOOLEAN,
     "email" TEXT,
@@ -68,11 +68,11 @@ CREATE TABLE "Users" (
     "tenantsId" INTEGER,
     "customersId" TEXT,
 
-    CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Customers" (
+CREATE TABLE "customers" (
     "id" TEXT NOT NULL,
     "external_id" TEXT,
     "full_name" TEXT,
@@ -99,28 +99,28 @@ CREATE TABLE "Customers" (
     "deleted_by" INTEGER,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
-    "delete_at" TIMESTAMP,
+    "deleted_at" TIMESTAMP,
 
-    CONSTRAINT "Customers_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "customers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Image" (
+CREATE TABLE "images" (
     "id" SERIAL NOT NULL,
     "filename" TEXT,
     "isOnCarousel" BOOLEAN,
 
-    CONSTRAINT "Image_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "images_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey
 ALTER TABLE "Reservation" ADD CONSTRAINT "Reservation_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Savings" ADD CONSTRAINT "Savings_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "Customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Savings" ADD CONSTRAINT "Savings_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Users" ADD CONSTRAINT "Users_tenantsId_fkey" FOREIGN KEY ("tenantsId") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_tenantsId_fkey" FOREIGN KEY ("tenantsId") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Users" ADD CONSTRAINT "Users_customersId_fkey" FOREIGN KEY ("customersId") REFERENCES "Customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_customersId_fkey" FOREIGN KEY ("customersId") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
