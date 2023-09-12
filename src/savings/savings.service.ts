@@ -7,28 +7,26 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  create(createSavingDto: CreateSavingDto) {
-    return 'This action adds a new saving';
-  }
-
   async findAll() {
     return await this.prisma.savings.findMany({
       select: {
+        id: true,
         currentBalance: true,
-        availableBalance: true,
+        customerId: true
       }
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} saving`;
+  async findOne(customerId: string) {
+    return await this.prisma.savings.findFirst({
+      where: { customerId }
+    });
   }
 
   async update(id: string, updateSavingDto: UpdateSavingDto) {
     return await this.prisma.savings.update({
       where: { id },
       data: updateSavingDto,
-
     });
   }
 

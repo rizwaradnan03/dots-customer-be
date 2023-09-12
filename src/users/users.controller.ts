@@ -8,15 +8,20 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
-  // @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('')
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('active')
+  findAllIsActive() {
+    return this.usersService.findAllIsActive();
+  }
+
+  @Get('not-active')
+  findAllNotActive() {
+    return this.usersService.findAllNotActive();
   }
 
   @Get(':id')
@@ -29,8 +34,8 @@ export class UsersController {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Patch(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }

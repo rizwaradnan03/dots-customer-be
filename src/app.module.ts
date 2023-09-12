@@ -9,10 +9,11 @@ import { UsersModule } from './users/users.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { CustomersModule } from './customers/customers.module';
 import { SavingsModule } from './savings/savings.module';
+import { TenantsModule } from './tenants/tenants.module';
 
 
 @Module({
-  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule, SavingsModule],
+  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule, SavingsModule, TenantsModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

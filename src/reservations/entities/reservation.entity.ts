@@ -1,6 +1,6 @@
-import { Reservation as ReservationModel } from "@prisma/client";
+import { reservations as ReservationModel } from "@prisma/client";
 
-export class Reservation implements ReservationModel{
+export class ReservationEntity implements ReservationModel {
     id: string;
     branchId: string;
     destinationService: number;
@@ -10,6 +10,5 @@ export class Reservation implements ReservationModel{
     createdAt: Date;
     deletedAt: Date;
     isActive: boolean;
-
-
+    createdById: string;
 }

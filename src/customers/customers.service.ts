@@ -16,9 +16,9 @@ export class CustomersService {
     return `This action returns a #${id} customer`;
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
-  }
+  // update(id: number, updateCustomerDto: UpdateCustomerDto, req: Request) {
+  //   const userId = req.user.id;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} customer`;

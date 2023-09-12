@@ -5,9 +5,9 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ImageService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async getImage(filename: string) {
+    async getImage(fileName: string) {
         return await this.prisma.images.findFirst({
-            where: { filename }
+            where: { fileName }
         })
     }
 

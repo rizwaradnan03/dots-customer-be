@@ -14,4 +14,5 @@ export class SavingEntity implements SavingModel {
     updatedById: string;
     createdById: string;
     customerId: string;
+    deletedById: string;
 }

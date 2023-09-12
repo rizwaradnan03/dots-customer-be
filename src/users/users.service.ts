@@ -5,14 +5,26 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma:PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
 
-  create(createUserDto: CreateUserDto) {
-    return `This action returns all users`;
+  async findAll() {
+    return await this.prisma.users.findMany();
   }
-  
-  findAll() {
-    return `BISA NGENTOT`;
+
+  async findAllIsActive() {
+    return await this.prisma.users.findMany({
+      where: {
+        isActive: true
+      }
+    });
+  }
+
+  async findAllNotActive() {
+    return await this.prisma.users.findMany({
+      where: {
+        isActive: false
+      }
+    });
   }
 
   findOne(id: number) {
@@ -23,7 +35,13 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    return await this.prisma.users.update({
+      where: { id },
+      data: {
+        isActive: false
+      }
+
+    })
   }
 }

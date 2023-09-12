@@ -22,7 +22,7 @@ export class AuthController {
     return await this.authService.register(data)
   }
 
-  // @UseGuards(LocalAuthGuard)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() LoginDto: LoginDto) {
     return await this.authService.validateUser(LoginDto);
