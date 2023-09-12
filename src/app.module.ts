@@ -8,10 +8,11 @@ import { ImageModule } from './image/image.module';
 import { UsersModule } from './users/users.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { CustomersModule } from './customers/customers.module';
+import { SavingsModule } from './savings/savings.module';
 
 
 @Module({
-  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule],
+  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule, SavingsModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

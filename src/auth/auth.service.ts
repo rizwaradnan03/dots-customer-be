@@ -1,8 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import { UserEntity } from 'src/users/entities/user.entity';
-import { CustomerEntity } from 'src/customers/entities/customer.entity';
 import { LoginDto } from './dto/login-auth.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -59,7 +57,6 @@ export class AuthService {
                 where: {
                     id: customer.id
                 },
-
                 data: {
                     createdBy: {
                         connect: { id: user.id },
@@ -67,8 +64,7 @@ export class AuthService {
                 }
             })
 
-
-            return { customer, user, customerCreatedBy }
+            return { user, customerCreatedBy }
 
         } catch (error) {
             console.error("Terjadi kesalahan saat membuat user atau customer:", error);

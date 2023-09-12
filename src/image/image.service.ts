@@ -10,4 +10,8 @@ export class ImageService {
             where: { filename }
         })
     }
+
+    async getUrlImage() {
+        return await this.prisma.images.findMany()
+    }
 }

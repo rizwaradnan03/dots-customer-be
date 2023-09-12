@@ -17,31 +17,26 @@ model Reservation {
   createdAt          DateTime? @default(now()) @db.Timestamp()
   deletedAt          DateTime? @db.Timestamp()
   isActive           Boolean?  @default(false)
-
-  createdBy users    @relation(fields: [createdId], references: [id])
-  createdId String
-  tenants   tenants? @relation(fields: [tenant_id], references: [id])
-  tenant_id Int?
 }
 
-model Savings {
-  id                String     @id @default(uuid())
-  // customers         customers? @relation(fields: [customer_id], references: [id])
-  customer_id       String?
-  external_id       String?
-  current_balance   Int?
-  available_balance Int?
-  status            Int?
-  product_type      String?
-  last_synced_at    DateTime   @db.Timestamp()
-  created_at        DateTime?  @default(now())
-  updated_at        DateTime?  @updatedAt
-  deleted_at        DateTime?  @db.Timestamp()
+model savings {
+  id               String    @id @default(uuid())
+  externalId       String?   @map(name: "externalId")
+  currentBalance   Int?      @map(name: "currentBalance")
+  availableBalance Int?      @map(name: "availableBalance")
+  status           Int?      @map(name: "status")
+  productType      String?   @map(name: "productType")
+  lastSycnedAt     DateTime  @map(name: "last_synced_at") @db.Timestamp()
+  createdAt        DateTime? @default(now()) @map(name: "created_at")
+  updatedAt        DateTime? @updatedAt @map(name: "updated_at")
+  deletedAt        DateTime? @map(name: "deleted_at") @db.Timestamp()
 
-  updatedBy   users?  @relation("SavingsUpdatedBy", fields: [updatedById], references: [id])
+  updatedBy   users?     @relation("savingUpdatedBy", fields: [updatedById], references: [id])
   updatedById String?
-  createdBy   users?  @relation("SavingsCreatedBy", fields: [createdById], references: [id])
+  createdBy   users?     @relation("savingCreatedBy", fields: [createdById], references: [id])
   createdById String?
+  customer    customers? @relation("savingId", fields: [customerId], references: [id])
+  customerId  String?
 }
 
 model tenants {
@@ -53,41 +48,33 @@ model tenants {
   core_database_type   String?
   core_database_dsn    String?
   logo_url_base64      String?
-
-  reservation Reservation[]
-  users       users[]
 }
 
 model users {
-  id               String        @id @default(uuid()) @map(name: "id")
-  isActive         Boolean?      @map(name: "is_active")
-  email            String?       @map(name: "email")
-  emailConfirmedAt DateTime?     @map(name: "email_confirmed_at") @db.Timestamp()
-  username         String?       @map(name: "username")
-  password         String?       @map(name: "password")
-  lastName         String?       @map(name: "last_name")
-  firstName        String?       @map(name: "first_name")
-  createdAt        DateTime?     @default(now()) @map(name: "created_at")
-  deleteAt         DateTime?     @updatedAt @map(name: "delete_at")
-  accountOfficerId String?       @default("CORPORATE") @map(name: "account_officer_id")
-  clientType       String?       @map(name: "client_type")
-  tenantId         Int?          @map(name: "tenant_id")
-  branchId         String?       @map(name: "branch_id")
-  Reservation      Reservation[]
+  id               String    @id @default(uuid()) @map(name: "id")
+  isActive         Boolean?  @map(name: "is_active")
+  email            String?   @map(name: "email")
+  emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
+  username         String?   @map(name: "username")
+  password         String?   @map(name: "password")
+  lastName         String?   @map(name: "last_name")
+  firstName        String?   @map(name: "first_name")
+  createdAt        DateTime? @default(now()) @map(name: "created_at")
+  deleteAt         DateTime? @updatedAt @map(name: "delete_at")
+  accountOfficerId String?   @default("CORPORATE") @map(name: "account_officer_id")
+  clientType       String?   @map(name: "client_type")
+  tenantId         Int?      @map(name: "tenant_id")
+  branchId         String?   @map(name: "branch_id")
 
-  tenants   tenants? @relation(fields: [tenantsId], references: [id])
-  tenantsId Int?
+  savingsUpdated savings[] @relation("savingUpdatedBy")
+  savingsCreated savings[] @relation("savingCreatedBy")
 
-  savingsUpdated Savings[] @relation("SavingsUpdatedBy")
-  savingsCreated Savings[] @relation("SavingsCreatedBy")
+  customerCreated customers[] @relation("customerCreatedBy")
+  customerUpdated customers[] @relation("customerUpdatedBy")
+  customerDeleted customers[] @relation("customerDeletedBy")
 
-  customerCreated customers[] @relation("CustomerCreatedBy")
-  customerUpdated customers[] @relation("CustomerUpdatedBy")
-  customerDeleted customers[] @relation("CustomerDeletedBy")
-
-  customer   customers?  @relation("CustomerId", fields: [customerId], references: [id])
+  customer   customers? @relation("userId", fields: [customerId], references: [id])
   customerId String?
-
 }
 
 model customers {
@@ -117,15 +104,15 @@ model customers {
   updatedAt DateTime? @updatedAt @map(name: "updated_at")
   deletedAt DateTime? @map(name: "deleted_at") @db.Timestamp()
 
-  user users[] @relation("CustomerId")
+  user   users[]   @relation("userId")
+  saving savings[] @relation("savingId")
 
-  createdBy   users?  @relation("CustomerCreatedBy", fields: [createdById], references: [id])
+  createdBy   users?  @relation("customerCreatedBy", fields: [createdById], references: [id])
   createdById String?
-  updatedBy   users?  @relation("CustomerUpdatedBy", fields: [updatedById], references: [id])
+  updatedBy   users?  @relation("customerUpdatedBy", fields: [updatedById], references: [id])
   updatedById String?
-  deletedBy   users?  @relation("CustomerDeletedBy", fields: [deletedById], references: [id])
+  deletedBy   users?  @relation("customerDeletedBy", fields: [deletedById], references: [id])
   deletedById String?
-
 }
 
 model images {

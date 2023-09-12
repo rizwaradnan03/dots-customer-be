@@ -22,4 +22,9 @@ export class ImageController {
 
     return muhaha
   }
+
+  @Get()
+  async getUrlImage() {
+    return await this.imageService.getUrlImage()
+  }
 }
