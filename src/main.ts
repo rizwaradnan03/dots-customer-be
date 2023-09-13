@@ -1,22 +1,29 @@
 import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
-import * as passport from 'passport'
-import * as express from 'express'; 
+import * as passport from 'passport';
+import * as express from 'express';
 import { join } from 'path';
-
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-
   app.enableCors();
-  
+
   // Mengaktifkan penyediaan file statis dari direktori 'uploads'
   app.use('/image', express.static(join(__dirname, 'img')));
 
-  
-  await app.listen(process.env.PORT, '192.168.1.3', () => {
+  const config = new DocumentBuilder()
+    .setTitle('Cats example')
+    .setDescription('The cats API description')
+    .setVersion('1.0')
+    .addTag('cats')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
+  await app.listen(process.env.PORT, '192.168.18.93', () => {
     console.log('connected on PORT ' + process.env.PORT);
   });
 }
