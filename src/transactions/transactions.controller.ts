@@ -7,9 +7,9 @@ import { UpdateTransactionDto } from './dto/update-transaction.dto';
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
-  @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+  @Post(':id')
+  async create(@Body() createTransactionDto: CreateTransactionDto,@Param('id') id: string) {
+    return await this.transactionsService.create(createTransactionDto, id);
   }
 
   @Get()

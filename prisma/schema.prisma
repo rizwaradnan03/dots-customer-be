@@ -32,7 +32,7 @@ model transactions {
   createdBy       String?  @map(name: "created_by")
   tenantId        Int?     @map(name: "tenant_id")
 
-  saving             savings? @relation("transactionId", fields: [savingId], references: [id])
+  savings            savings? @relation("transactionId", fields: [savingId], references: [id])
   tenants            tenants? @relation("transactionId", fields: [tenantId], references: [id])
   transactionCreated users?   @relation("transactionCreatedBy", fields: [createdBy], references: [id])
 

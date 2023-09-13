@@ -18,6 +18,7 @@ export class CustomerEntity implements CustomerModel {
     updatedBy: string;
     deletedBy: string;
     
+    
     // externalId: string;
     // identityType: string;
     // phoneNumber: string;

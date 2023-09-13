@@ -79,7 +79,7 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "customers" (
     "id" TEXT NOT NULL,
-    "external_id" TEXT,
+    "identity_number" TEXT,
     "full_name" TEXT,
     "email" TEXT,
     "mother_maiden_name" TEXT,

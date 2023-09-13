@@ -37,6 +37,7 @@ export class AuthService {
             const customer = await this.prisma.customers.create({
                 data: {
                     fullName: data.fullName,
+                    identityNumber: data.identityNumber,
                     birthDate: data.birthDate,
                     birthPlace: data.birthPlace,
                     motherMaidenName: data.motherMaidenName,
