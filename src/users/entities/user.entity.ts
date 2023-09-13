@@ -2,7 +2,7 @@ import { users as UserModel } from "@prisma/client";
 
 export class UserEntity implements UserModel {
     id: string
-    isActive: boolean
+    isActive: number
     email: string
     emailConfirmedAt: Date
     password: string

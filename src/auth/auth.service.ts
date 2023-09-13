@@ -58,13 +58,13 @@ export class AuthService {
                     id: customer.id
                 },
                 data: {
-                    createdById: user.id
+                    createdBy: user.id
                 }
             })
 
             const savingCustomerId = await this.prisma.savings.create({
                 data: {
-                    createdById: user.id,
+                    createdBy: user.id,
                     customerId: customer.id
                 }
             });

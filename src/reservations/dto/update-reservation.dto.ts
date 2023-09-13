@@ -7,5 +7,5 @@ export class UpdateReservationDto extends OmitType(ReservationEntity,[]) {
     reason: string;
     attendAtStart: Date;
     attendAtEnd: Date;
-    isActive: boolean
+    isActive: number
 }

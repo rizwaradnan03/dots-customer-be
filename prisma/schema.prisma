@@ -108,7 +108,7 @@ model users {
 
 model customers {
   id               String    @id @default(uuid()) @map(name: "id")
-  externalId       String?   @map(name: "external_id")
+  identityNumber   String?   @map(name: "identity_number")
   fullName         String?   @map(name: "full_name")
   email            String?   @map(name: "email")
   motherMaidenName String?   @map(name: "mother_maiden_name")
@@ -129,7 +129,7 @@ model customers {
   customerUpdated users?    @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
   customerDeleted users?    @relation("customerDeletedBy", fields: [deletedBy], references: [id])
 
-  // identityNumber   String?   @map(name: "identity_number")
+  // externalId       String?   @map(name: "external_id")
   // identityType     String?   @map(name: "identity_type")
   // phoneNumber      String?   @map(name: "phone_number")
   // mobileNumber     String?   @map(name: "mobile_number")
