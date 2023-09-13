@@ -16,10 +16,28 @@ model reservations {
   attendAtEnd        DateTime? @map(name: "attend_at_end")
   createdAt          DateTime? @default(now()) @map(name: "created_at") @db.Timestamp()
   deletedAt          DateTime? @map(name: "delete_at") @db.Timestamp()
-  isActive           Boolean?  @default(false) @map(name: "is_active")
+  isActive           Int?      @default(1) @map(name: "is_active")
+  createdById        String?   @map(name: "created_by_id")
 
-  createdBy   users?  @relation("reservationCreatedBy", fields: [createdById], references: [id])
-  createdById String? @map(name: "created_by_id")
+  createdBy users? @relation("reservationCreatedBy", fields: [createdById], references: [id])
+}
+
+model transactions {
+  id              String   @id @default(uuid())
+  amount          Int
+  savingId        String?  @map(name: "saving_id")
+  transactionType Int?     @map(name: "transaction_type")
+  status          Int?
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  createdBy       String?  @map(name: "created_by")
+  tenantId        Int?     @map(name: "tenant_id")
+
+  saving             savings? @relation("transactionId", fields: [savingId], references: [id])
+  tenants            tenants? @relation("transactionId", fields: [tenantId], references: [id])
+  transactionCreated users?   @relation("transactionCreatedBy", fields: [createdBy], references: [id])
+
+  // saving savings? @relation("transactionId", fields: [savingId?], references: [id])
+  // savingId String? @map(name: "saving_id")
 }
 
 model savings {
@@ -27,21 +45,22 @@ model savings {
   externalId       String?   @map(name: "externalId")
   currentBalance   Int?      @default(0) @map(name: "currentBalance")
   availableBalance Int?      @map(name: "availableBalance")
-  status           Int?      @map(name: "status")
-  productType      String?   @map(name: "productType")
   lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
   createdAt        DateTime? @default(now()) @map(name: "created_at")
   updatedAt        DateTime? @updatedAt @map(name: "updated_at")
   deletedAt        DateTime? @map(name: "deleted_at") @db.Timestamp()
+  createdBy        String?   @map(name: "created_by")
+  updatedBy        String?   @map(name: "updated_by")
+  deletedBy        String?   @map(name: "deleted_by")
+  customerId       String?   @map(name: "customer_id")
 
-  createdBy   users?     @relation("savingCreatedBy", fields: [createdById], references: [id])
-  createdById String?    @map(name: "created_by_id")
-  updatedBy   users?     @relation("savingUpdatedBy", fields: [updatedById], references: [id])
-  updatedById String?    @map(name: "updated_by_id")
-  deletedBy   users?     @relation("savingDeletedBy", fields: [deletedById], references: [id])
-  deletedById String?    @map(name: "del_by_id")
-  customer    customers? @relation("savingId", fields: [customerId], references: [id])
-  customerId  String?    @map(name: "customer_id")
+  transaction   transactions[] @relation("transactionId")
+  savingCreated users?         @relation("savingCreatedBy", fields: [createdBy], references: [id])
+  savingUpdated users?         @relation("savingUpdatedBy", fields: [updatedBy], references: [id])
+  savingDeleted users?         @relation("savingDeletedBy", fields: [deletedBy], references: [id])
+  customer      customers?     @relation("savingId", fields: [customerId], references: [id])
+  // status           Int?      @map(name: "status")
+  // productType      String?   @map(name: "productType")
 }
 
 model tenants {
@@ -54,21 +73,21 @@ model tenants {
   core_database_dsn    String?
   logo_url_base64      String?
 
-  user users[] @relation("userId")
+  user        users[]        @relation("userId")
+  transaction transactions[] @relation("transactionId")
 }
 
 model users {
-  id               String    @id @default(uuid()) @map(name: "id")
-  isActive         Boolean?  @default(true) @map(name: "is_active")
-  email            String?   @map(name: "email")
-  emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
-  username         String?   @map(name: "username")
-  password         String?   @map(name: "password")
-  createdAt        DateTime? @default(now()) @map(name: "created_at")
-  deleteAt         DateTime? @updatedAt @map(name: "delete_at")
-  accountOfficerId String?   @default("CORPORATE") @map(name: "account_officer_id")
-  clientType       String?   @map(name: "client_type")
-  branchId         String?   @map(name: "branch_id")
+  id         String    @id @default(uuid()) @map(name: "id")
+  email      String?   @map(name: "email")
+  username   String?   @unique @map(name: "username")
+  password   String?   @map(name: "password")
+  createdAt  DateTime? @default(now()) @map(name: "created_at")
+  deleteAt   DateTime? @updatedAt @map(name: "delete_at")
+  clientType String?   @default("CORPORATE") @map(name: "client_type")
+  isActive   Int?      @default(0) @map(name: "is_active")
+  tenantId   Int?      @map(name: "tenant_id")
+  customerId String?   @map(name: "customer_id")
 
   savingsUpdated     savings[]      @relation("savingUpdatedBy")
   savingsCreated     savings[]      @relation("savingCreatedBy")
@@ -77,54 +96,53 @@ model users {
   customerUpdated    customers[]    @relation("customerUpdatedBy")
   customerDeleted    customers[]    @relation("customerDeletedBy")
   reservationCreated reservations[] @relation("reservationCreatedBy")
+  transactionCreated transactions[] @relation("transactionCreatedBy")
 
-  tenant   tenants? @relation("userId", fields: [tenantId], references: [id])
-  tenantId Int?     @map(name: "tenant_id")
+  tenant   tenants?   @relation("userId", fields: [tenantId], references: [id])
+  customer customers? @relation("userId", fields: [customerId], references: [id])
 
-  customer   customers? @relation("userId", fields: [customerId], references: [id])
-  customerId String?    @map(name: "customer_id")
+  // emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
+  // accountOfficerId String?   @map(name: "account_officer_id")
+  // branchId         String?   @map(name: "branch_id")
 }
 
 model customers {
   id               String    @id @default(uuid()) @map(name: "id")
   externalId       String?   @map(name: "external_id")
   fullName         String?   @map(name: "full_name")
-  identityNumber   String?   @map(name: "identity_number")
-  identityType     String?   @map(name: "identity_type")
   email            String?   @map(name: "email")
-  phoneNumber      String?   @map(name: "phone_number")
-  mobileNumber     String?   @map(name: "mobile_number")
-  gender           String?   @map(name: "gender")
-  address          String?   @map(name: "address")
-  subdistrict      String?   @map(name: "subdistrict")
-  district         String?   @map(name: "district")
   motherMaidenName String?   @map(name: "mother_maiden_name")
   referralCode     String?   @map(name: "referral_code")
-  dati2Code        String?   @map(name: "dati2_code")
-  identityPhotoUrl String?   @map(name: "identity_photo_url")
-  selfiePhotoUrl   String?   @map(name: "selfie_photo_url")
   birthPlace       String?   @map(name: "birth_place")
   birthDate        DateTime? @map(name: "birth_date") @db.Date
-  status           Int?      @map(name: "status")
   lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
+  createdAt        DateTime? @default(now()) @map(name: "created_at")
+  updatedAt        DateTime? @updatedAt @map(name: "updated_at")
+  deletedAt        DateTime? @map(name: "deleted_at") @db.Timestamp()
+  createdBy        String?   @map(name: "created_by")
+  updatedBy        String?   @map(name: "updated_by")
+  deletedBy        String?   @map(name: "deleted_by")
 
-  createdAt DateTime? @default(now()) @map(name: "created_at")
-  updatedAt DateTime? @updatedAt @map(name: "updated_at")
-  deletedAt DateTime? @map(name: "deleted_at") @db.Timestamp()
+  user            users[]   @relation("userId")
+  saving          savings[] @relation("savingId")
+  customerCreated users?    @relation("customerCreatedBy", fields: [createdBy], references: [id])
+  customerUpdated users?    @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
+  customerDeleted users?    @relation("customerDeletedBy", fields: [deletedBy], references: [id])
 
-  user   users[]   @relation("userId")
-  saving savings[] @relation("savingId")
-
-  createdBy   users?  @relation("customerCreatedBy", fields: [createdById], references: [id])
-  createdById String? @map(name: "created_by_id")
-  updatedBy   users?  @relation("customerUpdatedBy", fields: [updatedById], references: [id])
-  updatedById String? @map(name: "updated_by_id")
-  deletedBy   users?  @relation("customerDeletedBy", fields: [deletedById], references: [id])
-  deletedById String? @map(name: "deleted_by_id")
+  // identityNumber   String?   @map(name: "identity_number")
+  // identityType     String?   @map(name: "identity_type")
+  // phoneNumber      String?   @map(name: "phone_number")
+  // mobileNumber     String?   @map(name: "mobile_number")
+  // gender           String?   @map(name: "gender")
+  // address          String?   @map(name: "address")
+  // subdistrict      String?   @map(name: "subdistrict")
+  // district         String?   @map(name: "district")
+  // identityPhotoUrl String?   @map(name: "identity_photo_url")
+  // selfiePhotoUrl   String?   @map(name: "selfie_photo_url")
 }
 
 model images {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   fileName     String?  @map(name: "file_name")
   isOnCarousel Boolean? @map(name: "is_on_carousel")
 }

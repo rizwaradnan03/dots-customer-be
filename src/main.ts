@@ -21,9 +21,9 @@ async function bootstrap() {
     .addTag('cats')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(process.env.PORT, '192.168.18.93', () => {
+  await app.listen(process.env.PORT, '192.168.18.253', () => {
     console.log('connected on PORT ' + process.env.PORT);
   });
 }

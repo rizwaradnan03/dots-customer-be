@@ -8,27 +8,39 @@ CREATE TABLE "reservations" (
     "attend_at_end" TIMESTAMP(3),
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "delete_at" TIMESTAMP,
-    "is_active" BOOLEAN DEFAULT false,
+    "is_active" INTEGER DEFAULT 1,
     "created_by_id" TEXT,
 
     CONSTRAINT "reservations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
+CREATE TABLE "transactions" (
+    "id" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "saving_id" TEXT,
+    "transaction_type" INTEGER,
+    "status" INTEGER,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_by" TEXT,
+    "tenant_id" INTEGER,
+
+    CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "savings" (
     "id" TEXT NOT NULL,
     "externalId" TEXT,
-    "currentBalance" INTEGER,
+    "currentBalance" INTEGER DEFAULT 0,
     "availableBalance" INTEGER,
-    "status" INTEGER,
-    "productType" TEXT,
     "last_synced_at" TIMESTAMP,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
     "deleted_at" TIMESTAMP,
-    "created_by_id" TEXT,
-    "updated_by_id" TEXT,
-    "deleted_by_id" TEXT,
+    "created_by" TEXT,
+    "updated_by" TEXT,
+    "deleted_by" TEXT,
     "customer_id" TEXT,
 
     CONSTRAINT "savings_pkey" PRIMARY KEY ("id")
@@ -51,19 +63,14 @@ CREATE TABLE "tenants" (
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
-    "is_active" BOOLEAN,
     "email" TEXT,
-    "email_confirmed_at" TIMESTAMP,
     "username" TEXT,
     "password" TEXT,
-    "last_name" TEXT,
-    "first_name" TEXT,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "delete_at" TIMESTAMP(3),
-    "account_officer_id" TEXT DEFAULT 'CORPORATE',
-    "client_type" TEXT,
+    "client_type" TEXT DEFAULT 'CORPORATE',
+    "is_active" INTEGER DEFAULT 0,
     "tenant_id" INTEGER,
-    "branch_id" TEXT,
     "customer_id" TEXT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
@@ -74,66 +81,69 @@ CREATE TABLE "customers" (
     "id" TEXT NOT NULL,
     "external_id" TEXT,
     "full_name" TEXT,
-    "identity_number" TEXT,
-    "identity_type" TEXT,
     "email" TEXT,
-    "phone_number" TEXT,
-    "mobile_number" TEXT,
-    "gender" TEXT,
-    "address" TEXT,
-    "subdistrict" TEXT,
-    "district" TEXT,
     "mother_maiden_name" TEXT,
     "referral_code" TEXT,
-    "dati2_code" TEXT,
-    "identity_photo_url" TEXT,
-    "selfie_photo_url" TEXT,
     "birth_place" TEXT,
     "birth_date" DATE,
-    "status" INTEGER,
     "last_synced_at" TIMESTAMP,
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3),
     "deleted_at" TIMESTAMP,
-    "created_by_id" TEXT,
-    "updated_by_id" TEXT,
-    "deleted_by_id" TEXT,
+    "created_by" TEXT,
+    "updated_by" TEXT,
+    "deleted_by" TEXT,
 
     CONSTRAINT "customers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "images" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "file_name" TEXT,
     "is_on_carousel" BOOLEAN,
 
     CONSTRAINT "images_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
+
 -- AddForeignKey
 ALTER TABLE "reservations" ADD CONSTRAINT "reservations_created_by_id_fkey" FOREIGN KEY ("created_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "savings" ADD CONSTRAINT "savings_created_by_id_fkey" FOREIGN KEY ("created_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_saving_id_fkey" FOREIGN KEY ("saving_id") REFERENCES "savings"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "savings" ADD CONSTRAINT "savings_updated_by_id_fkey" FOREIGN KEY ("updated_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "savings" ADD CONSTRAINT "savings_deleted_by_id_fkey" FOREIGN KEY ("deleted_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "savings" ADD CONSTRAINT "savings_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "savings" ADD CONSTRAINT "savings_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "savings" ADD CONSTRAINT "savings_deleted_by_fkey" FOREIGN KEY ("deleted_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "savings" ADD CONSTRAINT "savings_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "customers" ADD CONSTRAINT "customers_created_by_id_fkey" FOREIGN KEY ("created_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "customers" ADD CONSTRAINT "customers_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "customers" ADD CONSTRAINT "customers_updated_by_id_fkey" FOREIGN KEY ("updated_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "customers" ADD CONSTRAINT "customers_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "customers" ADD CONSTRAINT "customers_deleted_by_id_fkey" FOREIGN KEY ("deleted_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "customers" ADD CONSTRAINT "customers_deleted_by_fkey" FOREIGN KEY ("deleted_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
