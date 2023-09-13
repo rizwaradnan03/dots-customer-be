@@ -5,14 +5,14 @@ export class SavingEntity implements SavingModel {
     externalId: string;
     currentBalance: number;
     availableBalance: number;
-    status: number;
-    productType: string;
     lastSyncedAt: Date;
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
-    updatedById: string;
-    createdById: string;
     customerId: string;
-    deletedById: string;
+    createdBy: string;
+    updatedBy: string;
+    deletedBy: string;
+    // productType: string;
+    // status: number;
 }

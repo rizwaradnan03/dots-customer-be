@@ -28,7 +28,7 @@ export class ReservationsService {
   async findAllIsActive() {
     return await this.prisma.reservations.findMany({
       where: {
-        isActive: true
+        isActive: 0
       }
     });
   }
@@ -36,7 +36,7 @@ export class ReservationsService {
   async findAllNotActive() {
     return await this.prisma.reservations.findMany({
       where: {
-        isActive: false
+        isActive: 1
       }
     });
   }
@@ -62,7 +62,7 @@ export class ReservationsService {
     return await this.prisma.reservations.update({
       where: { id },
       data: {
-        isActive: false
+        isActive: 1
       }
     });
   }

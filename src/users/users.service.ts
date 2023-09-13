@@ -14,7 +14,7 @@ export class UsersService {
   async findAllIsActive() {
     return await this.prisma.users.findMany({
       where: {
-        isActive: true
+        isActive: 1
       }
     });
   }
@@ -22,7 +22,7 @@ export class UsersService {
   async findAllNotActive() {
     return await this.prisma.users.findMany({
       where: {
-        isActive: false
+        isActive: 1
       }
     });
   }
@@ -39,7 +39,7 @@ export class UsersService {
     return await this.prisma.users.update({
       where: { id },
       data: {
-        isActive: false
+        isActive: 1
       }
 
     })

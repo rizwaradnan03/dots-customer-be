@@ -9,6 +9,6 @@ export class ReservationEntity implements ReservationModel {
     attendAtStart: Date;
     createdAt: Date;
     deletedAt: Date;
-    isActive: boolean;
+    isActive: number;
     createdById: string;
 }
