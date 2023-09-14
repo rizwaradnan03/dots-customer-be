@@ -11,10 +11,13 @@ import { CustomersModule } from './customers/customers.module';
 import { SavingsModule } from './savings/savings.module';
 import { TenantsModule } from './tenants/tenants.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { LoansModule } from './loans/loans.module';
+import { DepositsModule } from './deposits/deposits.module';
+import { LoansTransactionsModule } from './loans-transactions/loans-transactions.module';
 
 
 @Module({
-  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule, SavingsModule, TenantsModule, TransactionsModule],
+  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule, SavingsModule, TenantsModule, TransactionsModule, LoansModule, DepositsModule, LoansTransactionsModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

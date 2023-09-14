@@ -146,3 +146,30 @@ model images {
   fileName     String?  @map(name: "file_name")
   isOnCarousel Boolean? @map(name: "is_on_carousel")
 }
+
+model deposits {
+  id String @id @default(uuid())
+  balance Int @default(0)
+  transactionId String?
+  customerId String
+
+}
+
+model loans {
+  id String @id @default(uuid())
+  customerId String
+  saving Int 
+  norek String
+  loan Int
+}
+
+model loan_transactions{
+  id String @id @default(uuid())
+  transactionsId String
+  principalPaid Int
+  interestPaid Int
+  penaltyPaid Int
+  tenantId Int
+  createdBy String
+}
+
