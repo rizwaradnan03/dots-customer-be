@@ -32,12 +32,10 @@ model transactions {
   createdBy       String?  @map(name: "created_by")
   tenantId        Int?     @map(name: "tenant_id")
 
-  savings            savings? @relation("transactionId", fields: [savingId], references: [id])
-  tenants            tenants? @relation("transactionId", fields: [tenantId], references: [id])
-  transactionCreated users?   @relation("transactionCreatedBy", fields: [createdBy], references: [id])
-
-  // saving savings? @relation("transactionId", fields: [savingId?], references: [id])
-  // savingId String? @map(name: "saving_id")
+  loansTransaction   loan_transactions[] @relation("loanTransactionId")
+  savings            savings?            @relation("transactionId", fields: [savingId], references: [id])
+  tenants            tenants?            @relation("transactionId", fields: [tenantId], references: [id])
+  transactionCreated users?              @relation("transactionCreatedBy", fields: [createdBy], references: [id])
 }
 
 model savings {
@@ -55,6 +53,7 @@ model savings {
   customerId       String?   @map(name: "customer_id")
 
   transaction   transactions[] @relation("transactionId")
+  loan          loans[]        @relation("loanId")
   savingCreated users?         @relation("savingCreatedBy", fields: [createdBy], references: [id])
   savingUpdated users?         @relation("savingUpdatedBy", fields: [updatedBy], references: [id])
   savingDeleted users?         @relation("savingDeletedBy", fields: [deletedBy], references: [id])
@@ -73,8 +72,9 @@ model tenants {
   core_database_dsn    String?
   logo_url_base64      String?
 
-  user        users[]        @relation("userId")
-  transaction transactions[] @relation("transactionId")
+  user            users[]             @relation("userId")
+  loanTransaction loan_transactions[] @relation("loanTransactionId")
+  transaction     transactions[]      @relation("transactionId")
 }
 
 model users {
@@ -89,14 +89,15 @@ model users {
   tenantId   Int?      @map(name: "tenant_id")
   customerId String?   @map(name: "customer_id")
 
-  savingsUpdated     savings[]      @relation("savingUpdatedBy")
-  savingsCreated     savings[]      @relation("savingCreatedBy")
-  savingsDeleted     savings[]      @relation("savingDeletedBy")
-  customerCreated    customers[]    @relation("customerCreatedBy")
-  customerUpdated    customers[]    @relation("customerUpdatedBy")
-  customerDeleted    customers[]    @relation("customerDeletedBy")
-  reservationCreated reservations[] @relation("reservationCreatedBy")
-  transactionCreated transactions[] @relation("transactionCreatedBy")
+  savingsUpdated         savings[]           @relation("savingUpdatedBy")
+  savingsCreated         savings[]           @relation("savingCreatedBy")
+  savingsDeleted         savings[]           @relation("savingDeletedBy")
+  customerCreated        customers[]         @relation("customerCreatedBy")
+  customerUpdated        customers[]         @relation("customerUpdatedBy")
+  customerDeleted        customers[]         @relation("customerDeletedBy")
+  reservationCreated     reservations[]      @relation("reservationCreatedBy")
+  transactionCreated     transactions[]      @relation("transactionCreatedBy")
+  loanTransactionCreated loan_transactions[] @relation("loanTransactionCreatedBy")
 
   tenant   tenants?   @relation("userId", fields: [tenantId], references: [id])
   customer customers? @relation("userId", fields: [customerId], references: [id])
@@ -125,6 +126,7 @@ model customers {
 
   user            users[]   @relation("userId")
   saving          savings[] @relation("savingId")
+  loan            loans[]   @relation("loanId")
   customerCreated users?    @relation("customerCreatedBy", fields: [createdBy], references: [id])
   customerUpdated users?    @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
   customerDeleted users?    @relation("customerDeletedBy", fields: [deletedBy], references: [id])
@@ -148,28 +150,33 @@ model images {
 }
 
 model deposits {
-  id String @id @default(uuid())
-  balance Int @default(0)
+  id            String  @id @default(uuid())
+  balance       Int     @default(0)
   transactionId String?
-  customerId String
-
+  customerId    String
 }
 
 model loans {
-  id String @id @default(uuid())
-  customerId String
-  saving Int 
-  norek String
-  loan Int
+  id         String  @id @default(uuid())
+  loan       Int?    @default(0)
+  noRek      String? @map(name: "no_rek")
+  customerId String? @map(name: "customer_id")
+  savingId   String? @map(name: "saving_id")
+
+  customer customers? @relation("loanId", fields: [customerId], references: [id])
+  savings  savings?   @relation("loanId", fields: [savingId], references: [id])
 }
 
-model loan_transactions{
-  id String @id @default(uuid())
-  transactionsId String
-  principalPaid Int
-  interestPaid Int
-  penaltyPaid Int
-  tenantId Int
-  createdBy String
-}
+model loan_transactions {
+  id            String  @id @default(uuid())
+  principalPaid Int?    @default(0)
+  interestPaid  Int?    @default(0)
+  penaltyPaid   Int?    @default(0)
+  tenantsId     Int?
+  createdBy     String?
+  transactionId String?
 
+  transaction transactions? @relation("loanTransactionId", fields: [transactionId], references: [id])
+  user        users?        @relation("loanTransactionCreatedBy", fields: [createdBy], references: [id])
+  tenants     tenants?      @relation("loanTransactionId", fields: [tenantsId], references: [id])
+}
