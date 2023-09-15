@@ -63,14 +63,7 @@ export class AuthService {
                 }
             })
 
-            const savingCustomerId = await this.prisma.savings.create({
-                data: {
-                    createdBy: user.id,
-                    customerId: customer.id
-                }
-            });
-
-            return { user, customerCreatedBy, savingCustomerId }
+            return { user, customerCreatedBy }
 
         } catch (error) {
             console.error("Terjadi kesalahan saat membuat user atau customer:", error);

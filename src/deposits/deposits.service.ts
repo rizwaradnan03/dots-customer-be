@@ -1,19 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDepositDto } from './dto/create-deposit.dto';
 import { UpdateDepositDto } from './dto/update-deposit.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class DepositsService {
-  create(createDepositDto: CreateDepositDto) {
-    return 'This action adds a new deposit';
+  constructor(private readonly prisma: PrismaService){}
+
+  async create(createDepositDto: CreateDepositDto) {
+    
   }
 
-  findAll() {
-    return `This action returns all deposits`;
+  async findAll() {
+    return await this.prisma.deposits.findMany({
+        include:{
+          tenant:{
+            select:{
+              name:true
+            }
+          }
+        }
+    })
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} deposit`;
+  async findOne(id: string) {
+    return await this.prisma.deposits.findFirst({
+      where: {id},
+      include: {
+        tenant: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
   }
 
   update(id: number, updateDepositDto: UpdateDepositDto) {

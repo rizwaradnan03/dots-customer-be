@@ -7,14 +7,19 @@ import { UpdateSavingDto } from './dto/update-saving.dto';
 export class SavingsController {
   constructor(private readonly savingsService: SavingsService) {}
 
+  @Post()
+  async create(createSavingDto: CreateSavingDto) {
+    return await this.savingsService.create(createSavingDto)
+  }
+
   @Get()
   async findAll() {
     return await this.savingsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') customerId: string) {
-    return this.savingsService.findOne(customerId);
+  findOne(@Param('id') id: string) {
+    return this.savingsService.findOne(id);
   }
 
   @Patch(':id')

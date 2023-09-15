@@ -14,12 +14,21 @@ export class TenantsService {
   }
 
   async findAll() {
-    return await this.prisma.tenants.findMany();
+    return await this.prisma.tenants.findMany({
+      select: {
+        id: true,
+        name: true
+      }
+    });
   }
 
   async findOne(id: number) {
     return await this.prisma.tenants.findUnique({
-      where: { id }
+      where: { id },
+      select: {
+        id: true, 
+        name: true
+      }
     });
   }
 

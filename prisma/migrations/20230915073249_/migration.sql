@@ -31,7 +31,7 @@ CREATE TABLE "transactions" (
 -- CreateTable
 CREATE TABLE "savings" (
     "id" TEXT NOT NULL,
-    "externalId" TEXT,
+    "account_number" TEXT,
     "currentBalance" INTEGER DEFAULT 0,
     "availableBalance" INTEGER,
     "last_synced_at" TIMESTAMP,
@@ -42,6 +42,7 @@ CREATE TABLE "savings" (
     "updated_by" TEXT,
     "deleted_by" TEXT,
     "customer_id" TEXT,
+    "tenant_id" INTEGER,
 
     CONSTRAINT "savings_pkey" PRIMARY KEY ("id")
 );
@@ -109,9 +110,11 @@ CREATE TABLE "images" (
 -- CreateTable
 CREATE TABLE "deposits" (
     "id" TEXT NOT NULL,
+    "account_number" TEXT NOT NULL,
     "balance" INTEGER NOT NULL DEFAULT 0,
-    "transactionId" TEXT,
-    "customerId" TEXT,
+    "transaction_id" TEXT,
+    "customer_id" TEXT,
+    "tenant_id" INTEGER,
 
     CONSTRAINT "deposits_pkey" PRIMARY KEY ("id")
 );
@@ -119,10 +122,10 @@ CREATE TABLE "deposits" (
 -- CreateTable
 CREATE TABLE "loans" (
     "id" TEXT NOT NULL,
+    "account_number" TEXT NOT NULL,
     "loan" INTEGER DEFAULT 0,
-    "no_rek" TEXT,
     "customer_id" TEXT,
-    "saving_id" TEXT,
+    "tenant_id" INTEGER NOT NULL,
 
     CONSTRAINT "loans_pkey" PRIMARY KEY ("id")
 );
@@ -130,18 +133,27 @@ CREATE TABLE "loans" (
 -- CreateTable
 CREATE TABLE "loan_transactions" (
     "id" TEXT NOT NULL,
-    "principalPaid" INTEGER DEFAULT 0,
-    "interestPaid" INTEGER DEFAULT 0,
-    "penaltyPaid" INTEGER DEFAULT 0,
-    "tenantsId" INTEGER,
-    "createdBy" TEXT,
-    "transactionId" TEXT,
+    "principal_paid" INTEGER DEFAULT 0,
+    "interest_paid" INTEGER DEFAULT 0,
+    "penalty_paid" INTEGER DEFAULT 0,
+    "tenant_id" INTEGER,
+    "created_by" TEXT,
+    "transaction_id" TEXT,
 
     CONSTRAINT "loan_transactions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "savings_account_number_key" ON "savings"("account_number");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "deposits_account_number_key" ON "deposits"("account_number");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "loans_account_number_key" ON "loans"("account_number");
 
 -- AddForeignKey
 ALTER TABLE "reservations" ADD CONSTRAINT "reservations_created_by_id_fkey" FOREIGN KEY ("created_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -168,6 +180,9 @@ ALTER TABLE "savings" ADD CONSTRAINT "savings_deleted_by_fkey" FOREIGN KEY ("del
 ALTER TABLE "savings" ADD CONSTRAINT "savings_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "savings" ADD CONSTRAINT "savings_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -183,16 +198,19 @@ ALTER TABLE "customers" ADD CONSTRAINT "customers_updated_by_fkey" FOREIGN KEY (
 ALTER TABLE "customers" ADD CONSTRAINT "customers_deleted_by_fkey" FOREIGN KEY ("deleted_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "deposits" ADD CONSTRAINT "deposits_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "loans" ADD CONSTRAINT "loans_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "loans" ADD CONSTRAINT "loans_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "loans" ADD CONSTRAINT "loans_saving_id_fkey" FOREIGN KEY ("saving_id") REFERENCES "savings"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_transaction_id_fkey" FOREIGN KEY ("transaction_id") REFERENCES "transactions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_transactionId_fkey" FOREIGN KEY ("transactionId") REFERENCES "transactions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_tenantsId_fkey" FOREIGN KEY ("tenantsId") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;

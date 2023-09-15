@@ -13,13 +13,13 @@ export class LoansController {
   }
 
   @Get()
-  findAll() {
-    return this.loansService.findAll();
+  async findAll() {
+    return await this.loansService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.loansService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.loansService.findOne(id);
   }
 
   @Patch(':id')

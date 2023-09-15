@@ -26,6 +26,7 @@ model transactions {
   id              String   @id @default(uuid())
   amount          Int
   savingId        String?  @map(name: "saving_id")
+  depositId       String?  @map(name: "deposit_id")
   transactionType Int?     @map(name: "transaction_type")
   status          Int?
   createdAt       DateTime @default(now()) @map(name: "created_at")
@@ -34,13 +35,14 @@ model transactions {
 
   loansTransaction   loan_transactions[] @relation("loanTransactionId")
   savings            savings?            @relation("transactionId", fields: [savingId], references: [id])
+  deposits           deposits?           @relation("transactionId", fields: [depositId], references: [id])
   tenants            tenants?            @relation("transactionId", fields: [tenantId], references: [id])
   transactionCreated users?              @relation("transactionCreatedBy", fields: [createdBy], references: [id])
 }
 
 model savings {
   id               String    @id @default(uuid())
-  externalId       String?   @map(name: "externalId")
+  accountNumber    String?   @unique @map(name: "account_number")
   currentBalance   Int?      @default(0) @map(name: "currentBalance")
   availableBalance Int?      @map(name: "availableBalance")
   lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
@@ -51,13 +53,14 @@ model savings {
   updatedBy        String?   @map(name: "updated_by")
   deletedBy        String?   @map(name: "deleted_by")
   customerId       String?   @map(name: "customer_id")
+  tenantId         Int?      @map(name: "tenant_id")
 
   transaction   transactions[] @relation("transactionId")
-  loan          loans[]        @relation("loanId")
   savingCreated users?         @relation("savingCreatedBy", fields: [createdBy], references: [id])
   savingUpdated users?         @relation("savingUpdatedBy", fields: [updatedBy], references: [id])
   savingDeleted users?         @relation("savingDeletedBy", fields: [deletedBy], references: [id])
   customer      customers?     @relation("savingId", fields: [customerId], references: [id])
+  tenants       tenants?       @relation("savingId", fields: [tenantId], references: [id])
   // status           Int?      @map(name: "status")
   // productType      String?   @map(name: "productType")
 }
@@ -75,6 +78,9 @@ model tenants {
   user            users[]             @relation("userId")
   loanTransaction loan_transactions[] @relation("loanTransactionId")
   transaction     transactions[]      @relation("transactionId")
+  savings         savings[]           @relation("savingId")
+  loans           loans[]             @relation("loanId")
+  deposit         deposits[]          @relation("depositId")
 }
 
 model users {
@@ -151,30 +157,35 @@ model images {
 
 model deposits {
   id            String  @id @default(uuid())
+  accountNumber String  @unique @map(name: "account_number")
   balance       Int     @default(0)
-  transactionId String?
-  customerId    String?
+  transactionId String? @map(name: "transaction_id")
+  customerId    String? @map(name: "customer_id")
+  tenantId      Int?    @map(name: "tenant_id")
+
+  transaction transactions[] @relation("transactionId")
+  tenant      tenants?       @relation("depositId", fields: [tenantId], references: [id])
 }
 
 model loans {
-  id         String  @id @default(uuid())
-  loan       Int?    @default(0)
-  noRek      String? @map(name: "no_rek")
-  customerId String? @map(name: "customer_id")
-  savingId   String? @map(name: "saving_id")
+  id            String  @id @default(uuid())
+  accountNumber String  @unique @map(name: "account_number")
+  loan          Int?    @default(0)
+  customerId    String? @map(name: "customer_id")
+  tenantId      Int     @map(name: "tenant_id")
 
+  tenant   tenants?   @relation("loanId", fields: [tenantId], references: [id])
   customer customers? @relation("loanId", fields: [customerId], references: [id])
-  savings  savings?   @relation("loanId", fields: [savingId], references: [id])
 }
 
 model loan_transactions {
   id            String  @id @default(uuid())
-  principalPaid Int?    @default(0)
-  interestPaid  Int?    @default(0)
-  penaltyPaid   Int?    @default(0)
-  tenantsId     Int?
-  createdBy     String?
-  transactionId String?
+  principalPaid Int?    @default(0) @map(name: "principal_paid")
+  interestPaid  Int?    @default(0) @map(name: "interest_paid")
+  penaltyPaid   Int?    @default(0) @map(name: "penalty_paid")
+  tenantsId     Int?    @map(name: "tenant_id")
+  createdBy     String? @map(name: "created_by")
+  transactionId String? @map(name: "transaction_id")
 
   transaction transactions? @relation("loanTransactionId", fields: [transactionId], references: [id])
   user        users?        @relation("loanTransactionCreatedBy", fields: [createdBy], references: [id])

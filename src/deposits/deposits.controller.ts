@@ -18,8 +18,8 @@ export class DepositsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.depositsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.depositsService.findOne(id);
   }
 
   @Patch(':id')

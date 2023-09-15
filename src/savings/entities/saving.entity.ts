@@ -1,18 +1,17 @@
 import { savings as SavingModel} from "@prisma/client";
 
 export class SavingEntity implements SavingModel {
-    id: string;
-    externalId: string;
-    currentBalance: number;
+    accountNumber: string;
     availableBalance: number;
-    lastSyncedAt: Date;
     createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
-    customerId: string;
     createdBy: string;
-    updatedBy: string;
+    currentBalance: number;
+    customerId: string;
+    deletedAt: Date;
     deletedBy: string;
-    // productType: string;
-    // status: number;
+    id: string;
+    lastSyncedAt: Date;
+    tenantId: number;
+    updatedAt: Date;
+    updatedBy: string;
 }
