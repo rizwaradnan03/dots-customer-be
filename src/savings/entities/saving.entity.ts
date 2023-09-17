@@ -13,5 +13,6 @@ export class SavingEntity implements SavingModel {
     lastSyncedAt: Date;
     tenantId: number;
     updatedAt: Date;
-    updatedBy: string;
+    updatedBy: string
+    isActive: number;
 }

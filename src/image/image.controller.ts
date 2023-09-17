@@ -10,21 +10,6 @@ import { ApiTags } from '@nestjs/swagger';
 export class ImageController {
 
   constructor(private readonly imageService: ImageService) {}
-
-  @Get(':filename')
-  async getImage(@Param('filename') filename: string, @Res() res: Response) {
-    await this.imageService.getImage(filename);
-    const imagePath = join(__dirname, '..', '..', 'src', 'image', 'img', filename);
-
-    if (!existsSync(imagePath)) {
-      throw new NotFoundException('File not found');
-    }
-
-    const muhaha = res.sendFile(imagePath);
-
-    return muhaha
-  }
-
   @Get()
   async getUrlImage() {
     return await this.imageService.getUrlImage()

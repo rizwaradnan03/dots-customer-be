@@ -7,51 +7,38 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class ReservationsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createReservationDto: CreateReservationDto, id: string) {
-
-    const user = await this.prisma.users.findUnique({
-      where: { id }
-    })
-
+  async create(createReservationDto: CreateReservationDto) {
     return await this.prisma.reservations.create({
-      data: {
-        ...createReservationDto,
-        createdById: user.id
-      }
+      data: createReservationDto
     });
   }
 
   async findAll() {
-    return await this.prisma.reservations.findMany();
-  }
-
-  async findAllIsActive() {
     return await this.prisma.reservations.findMany({
-      where: {
-        isActive: 0
-      }
-    });
-  }
-
-  async findAllNotActive() {
-    return await this.prisma.reservations.findMany({
-      where: {
-        isActive: 1
+      include: {
+        tenants: {
+          select: {
+            name: true
+          }
+        }
       }
     });
   }
 
   async findOne(id: string) {
     return await this.prisma.reservations.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        tenants: {
+          select: {
+            name: true
+          }
+        }
+      }
     });
   }
 
   async update(id: string, updateReservationDto: UpdateReservationDto) {
-    const user = await this.prisma.users.findUnique({
-      where: { id }
-    })
-
     return await this.prisma.reservations.update({
       where: { id },
       data: updateReservationDto
@@ -62,7 +49,7 @@ export class ReservationsService {
     return await this.prisma.reservations.update({
       where: { id },
       data: {
-        isActive: 1
+        isActive: 0
       }
     });
   }

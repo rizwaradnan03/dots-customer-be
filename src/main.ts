@@ -15,15 +15,15 @@ async function bootstrap() {
   app.use('/image', express.static(join(__dirname, 'img')));
 
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('DOTS Customer BE')
+    .setDescription('list of api')
     .setVersion('1.0')
-    .addTag('cats')
+    .addTag('api')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(process.env.PORT, '192.168.1.8', () => {
+  await app.listen(process.env.PORT, '192.168.1.5', () => {
     console.log('connected on PORT ' + process.env.PORT);
   });
 }

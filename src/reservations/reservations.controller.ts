@@ -9,9 +9,9 @@ import { ApiTags } from '@nestjs/swagger';
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) { }
 
-  @Post(':id')
-  create(@Body() createReservationDto: CreateReservationDto,@Param('id') id: string) {
-    return this.reservationsService.create(createReservationDto, id);
+  @Post()
+  create(@Body() createReservationDto: CreateReservationDto) {
+    return this.reservationsService.create(createReservationDto);
   }
 
   @Get()
@@ -19,27 +19,17 @@ export class ReservationsController {
     return this.reservationsService.findAll();
   }
 
-  @Get('active')
-  findAllIsActive() {
-    return this.reservationsService.findAllIsActive();
-  }
-
-  @Get('not-active')
-  findAllNotActive() {
-    return this.reservationsService.findAllNotActive();
-  }
-
-  @Get(':id')
+  @Get('find/:id')
   findOne(@Param('id') id: string) {
     return this.reservationsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
     return this.reservationsService.update(id, updateReservationDto);
   }
 
-  @Patch(':id')
+  @Patch('delete/:id')
   remove(@Param('id') id: string) {
     return this.reservationsService.remove(id);
   }

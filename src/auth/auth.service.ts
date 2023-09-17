@@ -34,6 +34,13 @@ export class AuthService {
         const hashPassword = await bcrypt.hash(data.password, 10)
 
         try {
+            const user = await this.prisma.users.create({
+                data: {
+                    username: data.username,
+                    password: hashPassword,
+                }
+            })
+
             const customer = await this.prisma.customers.create({
                 data: {
                     fullName: data.fullName,
@@ -43,27 +50,12 @@ export class AuthService {
                     motherMaidenName: data.motherMaidenName,
                     email: data.email,
                     referralCode: data.referralCode,
-                }
-            })
-
-            const user = await this.prisma.users.create({
-                data: {
-                    username: data.username,
-                    password: hashPassword,
-                    customerId: customer.id
-                }
-            })
-
-            const customerCreatedBy = await this.prisma.customers.update({
-                where: {
-                    id: customer.id
-                },
-                data: {
+                    userId: user.id,
                     createdBy: user.id
                 }
             })
 
-            return { user, customerCreatedBy }
+            return { user, customer }
 
         } catch (error) {
             console.error("Terjadi kesalahan saat membuat user atau customer:", error);

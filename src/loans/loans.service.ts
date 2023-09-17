@@ -5,10 +5,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LoansService {
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
 
-  create(createLoanDto: CreateLoanDto) {
-    return 'This action adds a new loan';
+  async create(createLoanDto: CreateLoanDto) {
+    return await this.prisma.loans.create({
+      data: createLoanDto
+    })
   }
 
   async findAll() {
@@ -25,7 +27,7 @@ export class LoansService {
 
   async findOne(id: string) {
     return await this.prisma.loans.findFirst({
-      where: {id},
+      where: { id },
       include: {
         tenant: {
           select: {
