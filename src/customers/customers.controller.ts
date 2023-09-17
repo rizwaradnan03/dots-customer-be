@@ -3,7 +3,9 @@ import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('customers')
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) { }

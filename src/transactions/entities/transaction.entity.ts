@@ -9,4 +9,5 @@ export class Transaction implements TransactionModel {
     status: number;
     tenantId: number; 
     transactionType: number;
+    depositId: string;
 }

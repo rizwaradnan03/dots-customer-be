@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { LoansService } from './loans.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('loans')
 @Controller('loans')
 export class LoansController {
   constructor(private readonly loansService: LoansService) {}

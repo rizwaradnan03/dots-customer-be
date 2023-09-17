@@ -3,8 +3,10 @@ import { Response } from 'express';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { ImageService } from './image.service';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('image')
+@ApiTags('images')
+@Controller('images')
 export class ImageController {
 
   constructor(private readonly imageService: ImageService) {}
