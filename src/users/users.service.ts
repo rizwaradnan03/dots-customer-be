@@ -11,22 +11,6 @@ export class UsersService {
     return await this.prisma.users.findMany();
   }
 
-  async findAllIsActive() {
-    return await this.prisma.users.findMany({
-      where: {
-        isActive: 1
-      }
-    });
-  }
-
-  async findAllNotActive() {
-    return await this.prisma.users.findMany({
-      where: {
-        isActive: 1
-      }
-    });
-  }
-
   findOne(id: number) {
     return `This action returns a #${id} user`;
   }

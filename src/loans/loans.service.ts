@@ -13,6 +13,17 @@ export class LoansService {
     })
   }
 
+  async topupLoan(loanId: string, amount: number) {
+   return await this.prisma.loans.update({
+    where: {id: loanId},
+    data: {
+      
+    }
+   })
+
+
+  }
+
   async findAll() {
     return await this.prisma.loans.findMany({
       include: {

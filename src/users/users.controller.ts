@@ -16,22 +16,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('active')
-  findAllIsActive() {
-    return this.usersService.findAllIsActive();
-  }
-
-  @Get('not-active')
-  findAllNotActive() {
-    return this.usersService.findAllNotActive();
-  }
-
-  @Get(':id')
+  @Get('find/:id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }

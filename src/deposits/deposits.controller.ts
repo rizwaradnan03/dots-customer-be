@@ -26,11 +26,11 @@ export class DepositsController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDepositDto: UpdateDepositDto) {
-    return this.depositsService.update(+id, updateDepositDto);
+    return this.depositsService.update(id, updateDepositDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.depositsService.remove(+id);
+    return this.depositsService.remove(id);
   }
 }

@@ -46,12 +46,14 @@ export class TransactionsService {
     return transaction
   }
 
-  findAll() {
-    return `This action returns all transactions`;
+  async findAll() {
+    return await this.prisma.transactions.findMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async findOne(id: string) {
+    return await this.prisma.transactions.findFirst({
+      where: { id }
+    })
   }
 
   update(id: number, updateTransactionDto: UpdateTransactionDto) {

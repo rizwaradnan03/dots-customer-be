@@ -5,27 +5,16 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class DepositsService {
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createDepositDto: CreateDepositDto) {
-    
+    return await this.prisma.deposits.create({
+      data: createDepositDto
+    })
   }
 
   async findAll() {
     return await this.prisma.deposits.findMany({
-        include:{
-          tenant:{
-            select:{
-              name:true
-            }
-          }
-        }
-    })
-  }
-
-  async findOne(id: string) {
-    return await this.prisma.deposits.findFirst({
-      where: {id},
       include: {
         tenant: {
           select: {
@@ -36,11 +25,30 @@ export class DepositsService {
     })
   }
 
-  update(id: number, updateDepositDto: UpdateDepositDto) {
-    return `This action updates a #${id} deposit`;
+  async findOne(id: string) {
+    return await this.prisma.deposits.findFirst({
+      where: { id },
+      include: {
+        tenant: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} deposit`;
+  async update(id: string, updateDepositDto: UpdateDepositDto) {
+    return await this.prisma.deposits.update({
+      where: { id },
+      data: updateDepositDto
+    });
+  }
+
+  async remove(id: string) {
+    return await this.prisma.deposits.update({
+      where: { id },
+      data: { isActive: 0 }
+    });
   }
 }

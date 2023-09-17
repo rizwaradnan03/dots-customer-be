@@ -1,7 +1,4 @@
-import { Controller, Get, Param, Res, NotFoundException } from '@nestjs/common';
-import { Response } from 'express';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { Controller, Get } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { ApiTags } from '@nestjs/swagger';
 

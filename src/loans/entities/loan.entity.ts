@@ -6,4 +6,5 @@ export class LoanEntity implements loansModel {
     id: string;
     loan: number;
     tenantId: number;
+    isActive: number;
 }

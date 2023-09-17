@@ -7,4 +7,5 @@ export class DepositEntity implements DepositModel{
    id: string;
    tenantId: number;
    transactionId: string;
+   isActive: number;
 }
