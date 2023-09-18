@@ -4,13 +4,15 @@ import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionsService } from 'src/transactions/transactions.service';
+import { LoanOpeningApplicationService } from 'src/loan-opening-application/loan-opening-application.service';
 
 @ApiTags('loans')
 @Controller('loans')
 export class LoansController {
   constructor(
     private readonly loansService: LoansService,
-    private readonly transactionService: TransactionsService
+    private readonly transactionService: TransactionsService,
+    private readonly loanOpeningService: LoanOpeningApplicationService
   ) { }
 
   @Post()
@@ -19,15 +21,12 @@ export class LoansController {
   }
 
   @Post('deposit/:id')
-  async deposit(
-    @Param('id') loanId: string,
-    @Body('amount') amount: number,
-  ) {
-    const updatedLoan = await this.loansService.topupLoan(loanId, amount);
+  async deposit(@Param('id') loanId: string, @Body() data: { amount: number,tenor: number,reason: string}) {
+    const updatedLoan = await this.loanOpeningService.topupLoan(loanId, data);
 
     const transaction = await this.transactionService.recordTopupLoan(
       loanId,
-      amount
+      data.amount
     );
 
     return { loan: updatedLoan, transaction };

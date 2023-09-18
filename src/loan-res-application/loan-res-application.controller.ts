@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { LoanResApplicationService } from './loan-res-application.service';
 import { CreateLoanResApplicationDto } from './dto/create-loan-res-application.dto';
 import { UpdateLoanResApplicationDto } from './dto/update-loan-res-application.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('res')
 @Controller('res')
 export class LoanResApplicationController {
   constructor(private readonly loanResApplicationService: LoanResApplicationService) {}
@@ -17,18 +19,14 @@ export class LoanResApplicationController {
     return this.loanResApplicationService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.loanResApplicationService.findOne(id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.loanResApplicationService.findOne(id);
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLoanResApplicationDto: UpdateLoanResApplicationDto) {
-    return this.loanResApplicationService.update(id, updateLoanResApplicationDto);
-  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.loanResApplicationService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.loanResApplicationService.remove(+id);
+  // }
 }

@@ -1,9 +1,9 @@
 import { OmitType } from "@nestjs/mapped-types";
-import { LoanOpeningApplication } from "../entities/loan-opening-application.entity";
+import {LoanOpeningEntity } from "../entities/loan-opening-application.entity";
 
-export class CreateLoanOpeningApplicationDto  extends OmitType(LoanOpeningApplication,[]) {
+export class CreateLoanOpeningDto  extends OmitType(LoanOpeningEntity,[]) {
     amount : number;
     tenor : number;
     reason : string;
-    customerId : string
+    loanId: string
 }

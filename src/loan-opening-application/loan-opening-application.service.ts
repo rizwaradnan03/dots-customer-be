@@ -1,16 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLoanOpeningApplicationDto } from './dto/create-loan-opening-application.dto';
-import { UpdateLoanOpeningApplicationDto } from './dto/update-loan-opening-application.dto';
 import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class LoanOpeningApplicationService {
-  constructor (private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
 
-  async create(createLoanOpeningApplicationDto: CreateLoanOpeningApplicationDto) {
-    return await this.prisma.loan_opening_application.create({
-        data: createLoanOpeningApplicationDto
+  async topupLoan(loanId: string, 
+  data: {
+    amount: number,
+    tenor: number,
+    reason: string
+  }) {
+    const loan = await this.prisma.loans.findUnique({
+      where: { id: loanId }
     })
+    console.log(loan)
+    const loanOpening = await this.prisma.loan_opening_application.create({
+      data: {
+        amount: data.amount,
+        tenor: data.tenor,
+        reason: data.reason,
+        loanId: loan.id
+      }
+    })
+
+    const updatedLoan = await this.prisma.loans.update({
+      where: { id: loanId },
+      data: {
+        loan: loan.loan + loanOpening.amount
+      }
+    })
+
+    return (updatedLoan)
   }
 
   async findAll() {
@@ -21,9 +42,9 @@ export class LoanOpeningApplicationService {
     return `This action returns a #${id} loanOpeningApplication`;
   }
 
-  update(id: number, updateLoanOpeningApplicationDto: UpdateLoanOpeningApplicationDto) {
-    return `This action updates a #${id} loanOpeningApplication`;
-  }
+  // update(id: number, updateLoanOpeningApplicationDto: UpdateLoanOpeningApplicationDto) {
+  //   return `This action updates a #${id} loanOpeningApplication`;
+  // }
 
   remove(id: number) {
     return `This action removes a #${id} loanOpeningApplication`;

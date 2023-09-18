@@ -25,14 +25,12 @@ model customers {
   deletedBy        String?   @map(name: "deleted_by")
   userId           String?   @map(name: "user_id")
 
-  saving          savings[]                  @relation("savingId")
-  loan            loans[]                    @relation("loanId")
-  loanOpening     loan_opening_application[] @relation("loanOpeningId")
-  loanres         loan_res_application[]     @relation("loanResId")
-  notifications   notifications[]            @relation("notificationId")
-  customerCreated users?                     @relation("customerCreatedBy", fields: [createdBy], references: [id])
-  customerUpdated users?                     @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
-  customerDeleted users?                     @relation("customerDeletedBy", fields: [deletedBy], references: [id])
+  saving          savings[]       @relation("savingId")
+  loan            loans[]         @relation("loanId")
+  notifications   notifications[] @relation("notificationId")
+  customerCreated users?          @relation("customerCreatedBy", fields: [createdBy], references: [id])
+  customerUpdated users?          @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
+  customerDeleted users?          @relation("customerDeletedBy", fields: [deletedBy], references: [id])
 
   users users? @relation("customerId", fields: [userId], references: [id])
   // externalId       String?   @map(name: "external_id")
@@ -115,11 +113,11 @@ model reservations {
 }
 
 model transactions {
-  id              String   @id @default(uuid())
-  amount          Int
-  title           String?
-  savingId        String?  @map(name: "saving_id")
-  depositId       String?  @map(name: "deposit_id")
+  id        String  @id @default(uuid())
+  amount    Int     @default(0)
+  title     String?
+  savingId  String? @map(name: "saving_id")
+  depositId String? @map(name: "deposit_id")
 
   //loans
   transactionType Int?     @map(name: "transaction_type")
@@ -128,9 +126,9 @@ model transactions {
   createdAt       DateTime @default(now()) @map(name: "created_at") @db.Date
   createdBy       String?  @map(name: "created_by")
   tenantId        Int?     @map(name: "tenant_id")
-  principalPaid Int? @default(0) @map(name: "principal_paid")
-  interestPaid  Int? @default(0) @map(name: "interest_paid")
-  penaltyPaid   Int? @default(0) @map(name: "penalty_paid")
+  principalPaid   Int?     @default(0) @map(name: "principal_paid")
+  interestPaid    Int?     @default(0) @map(name: "interest_paid")
+  penaltyPaid     Int?     @default(0) @map(name: "penalty_paid")
 
   savings            savings?  @relation("transactionId", fields: [savingId], references: [id])
   deposits           deposits? @relation("transactionId", fields: [depositId], references: [id])
@@ -185,31 +183,30 @@ model loans {
   tenantId      Int?    @map(name: "tenant_id")
   isActive      Int?    @default(1) @map(name: "is_active")
 
-  transaction transactions[]         @relation("transactionId")
-  loanRes     loan_res_application[] @relation("loanResId")
-  tenant      tenants?               @relation("loanId", fields: [tenantId], references: [id])
-  customer    customers?             @relation("loanId", fields: [customerId], references: [id])
+  transaction transactions[]             @relation("transactionId")
+  loanRes     loan_res_application[]     @relation("loanResId")
+  loanOpening loan_opening_application[] @relation("loanOpeningId")
+  tenant      tenants?                   @relation("loanId", fields: [tenantId], references: [id])
+  customer    customers?                 @relation("loanId", fields: [customerId], references: [id])
 }
 
 model loan_opening_application {
-  id         String  @id @default(uuid())
-  amount     Int?    @default(0)
-  tenor      Int?
-  reason     String?
-  customerId String? @map(name: "customer_id")
+  id     String  @id @default(uuid())
+  amount Int?    @default(0)
+  tenor  Int?
+  reason String?
+  loanId String  @map(name: "loan_id")
 
-  customer customers? @relation("loanOpeningId", fields: [customerId], references: [id])
+  loan loans? @relation("loanOpeningId", fields: [loanId], references: [id])
 }
 
 model loan_res_application {
   id          String  @id @default(uuid())
   type        String?
   description String?
-  loanId     String? @map(name: "loan_id")
-  customerId String? @map(name: "customerId")
+  loanId      String? @map(name: "loan_id")
 
-  loan     loans?     @relation("loanResId", fields: [loanId], references: [id])
-  customer customers? @relation("loanResId", fields: [customerId], references: [id])
+  loan loans? @relation("loanResId", fields: [loanId], references: [id])
 }
 
 model notifications {

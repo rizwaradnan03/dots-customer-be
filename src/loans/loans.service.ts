@@ -13,20 +13,7 @@ export class LoansService {
     })
   }
 
-  async topupLoan(loanId: string, amount: number) {
-    const loan = await this.prisma.loans.findUnique({
-      where: { id: loanId }
-    })
-
-    const updatedLoan = await this.prisma.loans.update({
-      where: { id: loanId },
-      data: {
-        loan: loan.loan + amount
-      }
-    })
-
-    return (updatedLoan)
-  }
+ 
   async findAll() {
     return await this.prisma.loans.findMany({
       include: {
