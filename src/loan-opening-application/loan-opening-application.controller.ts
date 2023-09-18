@@ -3,7 +3,7 @@ import { LoanOpeningApplicationService } from './loan-opening-application.servic
 import { CreateLoanOpeningApplicationDto } from './dto/create-loan-opening-application.dto';
 import { UpdateLoanOpeningApplicationDto } from './dto/update-loan-opening-application.dto';
 
-@Controller('loan-opening-application')
+@Controller('opening')
 export class LoanOpeningApplicationController {
   constructor(private readonly loanOpeningApplicationService: LoanOpeningApplicationService) {}
 

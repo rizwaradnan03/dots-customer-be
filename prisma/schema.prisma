@@ -120,14 +120,14 @@ model transactions {
   title           String?
   savingId        String?  @map(name: "saving_id")
   depositId       String?  @map(name: "deposit_id")
-  loanId          String?  @map(name: "loan_id")
+
+  //loans
   transactionType Int?     @map(name: "transaction_type")
+  loanId          String?  @map(name: "loan_id")
   status          Int?
   createdAt       DateTime @default(now()) @map(name: "created_at") @db.Date
   createdBy       String?  @map(name: "created_by")
   tenantId        Int?     @map(name: "tenant_id")
-
-  //loans
   principalPaid Int? @default(0) @map(name: "principal_paid")
   interestPaid  Int? @default(0) @map(name: "interest_paid")
   penaltyPaid   Int? @default(0) @map(name: "penalty_paid")

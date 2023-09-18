@@ -1,11 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLoanOpeningApplicationDto } from './dto/create-loan-opening-application.dto';
 import { UpdateLoanOpeningApplicationDto } from './dto/update-loan-opening-application.dto';
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class LoanOpeningApplicationService {
-  create(createLoanOpeningApplicationDto: CreateLoanOpeningApplicationDto) {
-    return 'This action adds a new loanOpeningApplication';
+  constructor (private readonly prisma: PrismaService){}
+
+  async create(createLoanOpeningApplicationDto: CreateLoanOpeningApplicationDto) {
+    return await this.prisma.loan_opening_application.create({
+        data: createLoanOpeningApplicationDto
+    })
   }
 
   findAll() {
