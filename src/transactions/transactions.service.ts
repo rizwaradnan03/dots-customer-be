@@ -43,6 +43,42 @@ export class TransactionsService {
     return transaction
   }
 
+  async recordTopupLoan(
+    loanId: string,
+    amount: number,
+  ) {
+    const findLoan = await this.prisma.loans.findFirst({
+      where: { id: loanId }
+    })
+
+    const findUser = await this.prisma.customers.findFirst({
+      where: { id: findLoan.customerId },
+    })
+
+    const findTenant = await this.prisma.tenants.findFirst({
+      where: { id: findLoan.tenantId }
+    })
+
+    const transaction = await this.prisma.transactions.create({
+      data: {
+        loanId,
+        amount,
+        transactionType: 1,
+        status: 1,
+        createdBy: findUser.userId,
+        tenantId: findTenant.id
+      }
+    })
+
+    // switch(transaction.transactionType) {
+    //   case 1:
+    //     return await this.prisma.transactions.update({where: {id: transaction.id}, data: {title: "jfsdjfkjsdfjdls"}})
+    // }
+
+    return transaction
+  }
+
+
   async findAll() {
     const transaction = await this.prisma.transactions.findMany()
 

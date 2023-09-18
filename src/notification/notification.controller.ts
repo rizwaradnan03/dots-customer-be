@@ -23,7 +23,7 @@ export class NotificationController {
     return this.notificationService.create(createNotificationDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.notificationService.findAll();

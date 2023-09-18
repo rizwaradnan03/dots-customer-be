@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LoanResApplicationService {
-  constructor (private readonly prisma : PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createLoanResApplicationDto: CreateLoanResApplicationDto) {
     return await this.prisma.loan_res_application.create({
@@ -13,16 +13,21 @@ export class LoanResApplicationService {
     })
   }
 
-  findAll() {
-    return `This action returns all loanResApplication`;
+  async findAll() {
+    return await this.prisma.loan_res_application.findMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} loanResApplication`;
+  async findOne(id: string) {
+    return await this.prisma.loan_res_application.findUnique({
+      where: { id }
+    })
   }
 
-  update(id: number, updateLoanResApplicationDto: UpdateLoanResApplicationDto) {
-    return `This action updates a #${id} loanResApplication`;
+  async update(id: string, createLoanResApplicationDto: CreateLoanResApplicationDto) {
+    return await this.prisma.loan_res_application.update({
+      where: { id },
+      data: createLoanResApplicationDto
+    })
   }
 
   remove(id: number) {
