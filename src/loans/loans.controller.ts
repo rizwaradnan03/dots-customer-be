@@ -30,6 +30,7 @@ export class LoansController {
     );
 
     return { loan: updatedLoan, transaction };
+    
   }
 
   @Get()

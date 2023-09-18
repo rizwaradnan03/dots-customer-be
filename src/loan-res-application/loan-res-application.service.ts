@@ -7,9 +7,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class LoanResApplicationService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createLoanResApplicationDto: CreateLoanResApplicationDto) {
+  async create(createLoanResApplicationDto: CreateLoanResApplicationDto, loanId: string) {
     return await this.prisma.loan_res_application.create({
-      data: createLoanResApplicationDto
+      data: {
+        ...createLoanResApplicationDto,
+        loanId: loanId
+      }
     })
   }
 
