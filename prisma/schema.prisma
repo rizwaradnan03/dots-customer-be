@@ -7,6 +7,98 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model customers {
+  id               String    @id @default(uuid()) @map(name: "id")
+  identityNumber   String?   @map(name: "identity_number")
+  fullName         String?   @map(name: "full_name")
+  email            String?   @map(name: "email")
+  motherMaidenName String?   @map(name: "mother_maiden_name")
+  referralCode     String?   @map(name: "referral_code")
+  birthPlace       String?   @map(name: "birth_place")
+  birthDate        DateTime? @map(name: "birth_date") @db.Date
+  lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
+  createdAt        DateTime? @default(now()) @map(name: "created_at")
+  updatedAt        DateTime? @updatedAt @map(name: "updated_at")
+  deletedAt        DateTime? @map(name: "deleted_at") @db.Timestamp()
+  createdBy        String?   @map(name: "created_by")
+  updatedBy        String?   @map(name: "updated_by")
+  deletedBy        String?   @map(name: "deleted_by")
+  userId           String?   @map(name: "user_id")
+
+  saving          savings[]                  @relation("savingId")
+  loan            loans[]                    @relation("loanId")
+  loanOpening     loan_opening_application[] @relation("loanOpeningId")
+  loanres         loan_res_application[]     @relation("loanResId")
+  notifications   notifications[]            @relation("notificationId")
+  customerCreated users?                     @relation("customerCreatedBy", fields: [createdBy], references: [id])
+  customerUpdated users?                     @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
+  customerDeleted users?                     @relation("customerDeletedBy", fields: [deletedBy], references: [id])
+
+  users users? @relation("customerId", fields: [userId], references: [id])
+  // externalId       String?   @map(name: "external_id")
+  // identityType     String?   @map(name: "identity_type")
+  // phoneNumber      String?   @map(name: "phone_number")
+  // mobileNumber     String?   @map(name: "mobile_number")
+  // gender           String?   @map(name: "gender")
+  // address          String?   @map(name: "address")
+  // subdistrict      String?   @map(name: "subdistrict")
+  // district         String?   @map(name: "district")
+  // identityPhotoUrl String?   @map(name: "identity_photo_url")
+  // selfiePhotoUrl   String?   @map(name: "selfie_photo_url")
+}
+
+model users {
+  id         String    @id @default(uuid()) @map(name: "id")
+  email      String?   @map(name: "email")
+  username   String?   @unique @map(name: "username")
+  password   String?   @map(name: "password")
+  createdAt  DateTime? @default(now()) @map(name: "created_at")
+  deleteAt   DateTime? @updatedAt @map(name: "delete_at")
+  clientType String?   @default("CORPORATE") @map(name: "client_type")
+  isActive   Int?      @default(1) @map(name: "is_active")
+  tenantId   Int?      @map(name: "tenant_id")
+
+  savingsUpdated     savings[]      @relation("savingUpdatedBy")
+  savingsCreated     savings[]      @relation("savingCreatedBy")
+  savingsDeleted     savings[]      @relation("savingDeletedBy")
+  customerCreated    customers[]    @relation("customerCreatedBy")
+  customerUpdated    customers[]    @relation("customerUpdatedBy")
+  customerDeleted    customers[]    @relation("customerDeletedBy")
+  reservationCreated reservations[] @relation("reservationCreatedBy")
+  transactionCreated transactions[] @relation("transactionCreatedBy")
+  customers          customers[]    @relation("customerId")
+
+  tenant tenants? @relation("userId", fields: [tenantId], references: [id])
+
+  // emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
+  // accountOfficerId String?   @map(name: "account_officer_id")
+  // branchId         String?   @map(name: "branch_id")
+}
+
+model tenants {
+  id                   Int     @id @default(autoincrement())
+  public_id            String?
+  name                 String?
+  database_schema_name String?
+  core_type            String?
+  core_database_type   String?
+  core_database_dsn    String?
+  logo_url_base64      String?
+
+  user        users[]        @relation("userId")
+  transaction transactions[] @relation("transactionId")
+  savings     savings[]      @relation("savingId")
+  loans       loans[]        @relation("loanId")
+  deposit     deposits[]     @relation("depositId")
+  reservation reservations[] @relation("reservationId")
+}
+
+model images {
+  id           String   @id @default(uuid())
+  urlBase64    String?  @map(name: "url_base_64")
+  isOnCarousel Boolean? @map(name: "is_on_carousel")
+}
+
 model reservations {
   id                String    @id @default(uuid()) @map(name: "id")
   officeDestination Int?      @map(name: "destination_service")
@@ -28,17 +120,36 @@ model transactions {
   title           String?
   savingId        String?  @map(name: "saving_id")
   depositId       String?  @map(name: "deposit_id")
+  loanId          String?  @map(name: "loan_id")
   transactionType Int?     @map(name: "transaction_type")
   status          Int?
   createdAt       DateTime @default(now()) @map(name: "created_at") @db.Date
   createdBy       String?  @map(name: "created_by")
   tenantId        Int?     @map(name: "tenant_id")
 
-  loansTransaction   loan_transactions[] @relation("loanTransactionId")
-  savings            savings?            @relation("transactionId", fields: [savingId], references: [id])
-  deposits           deposits?           @relation("transactionId", fields: [depositId], references: [id])
-  tenants            tenants?            @relation("transactionId", fields: [tenantId], references: [id])
-  transactionCreated users?              @relation("transactionCreatedBy", fields: [createdBy], references: [id])
+  //loans
+  principalPaid Int? @default(0) @map(name: "principal_paid")
+  interestPaid  Int? @default(0) @map(name: "interest_paid")
+  penaltyPaid   Int? @default(0) @map(name: "penalty_paid")
+
+  savings            savings?  @relation("transactionId", fields: [savingId], references: [id])
+  deposits           deposits? @relation("transactionId", fields: [depositId], references: [id])
+  loans              loans?    @relation("transactionId", fields: [loanId], references: [id])
+  tenants            tenants?  @relation("transactionId", fields: [tenantId], references: [id])
+  transactionCreated users?    @relation("transactionCreatedBy", fields: [createdBy], references: [id])
+}
+
+model deposits {
+  id            String  @id @default(uuid())
+  accountNumber String  @unique @map(name: "account_number")
+  balance       Int     @default(0)
+  transactionId String? @map(name: "transaction_id")
+  customerId    String? @map(name: "customer_id")
+  tenantId      Int?    @map(name: "tenant_id")
+  isActive      Int?    @default(1) @map(name: "is_active")
+
+  transaction transactions[] @relation("transactionId")
+  tenant      tenants?       @relation("depositId", fields: [tenantId], references: [id])
 }
 
 model savings {
@@ -67,111 +178,6 @@ model savings {
   // productType      String?   @map(name: "productType")
 }
 
-model tenants {
-  id                   Int     @id @default(autoincrement())
-  public_id            String?
-  name                 String?
-  database_schema_name String?
-  core_type            String?
-  core_database_type   String?
-  core_database_dsn    String?
-  logo_url_base64      String?
-
-  user            users[]             @relation("userId")
-  loanTransaction loan_transactions[] @relation("loanTransactionId")
-  transaction     transactions[]      @relation("transactionId")
-  savings         savings[]           @relation("savingId")
-  loans           loans[]             @relation("loanId")
-  deposit         deposits[]          @relation("depositId")
-  reservation     reservations[]      @relation("reservationId")
-}
-
-model users {
-  id         String    @id @default(uuid()) @map(name: "id")
-  email      String?   @map(name: "email")
-  username   String?   @unique @map(name: "username")
-  password   String?   @map(name: "password")
-  createdAt  DateTime? @default(now()) @map(name: "created_at")
-  deleteAt   DateTime? @updatedAt @map(name: "delete_at")
-  clientType String?   @default("CORPORATE") @map(name: "client_type")
-  isActive   Int?      @default(1) @map(name: "is_active")
-  tenantId   Int?      @map(name: "tenant_id")
-
-  savingsUpdated         savings[]           @relation("savingUpdatedBy")
-  savingsCreated         savings[]           @relation("savingCreatedBy")
-  savingsDeleted         savings[]           @relation("savingDeletedBy")
-  customerCreated        customers[]         @relation("customerCreatedBy")
-  customerUpdated        customers[]         @relation("customerUpdatedBy")
-  customerDeleted        customers[]         @relation("customerDeletedBy")
-  reservationCreated     reservations[]      @relation("reservationCreatedBy")
-  transactionCreated     transactions[]      @relation("transactionCreatedBy")
-  loanTransactionCreated loan_transactions[] @relation("loanTransactionCreatedBy")
-  customers              customers[]         @relation("customerId")
-
-  tenant tenants? @relation("userId", fields: [tenantId], references: [id])
-
-  // emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
-  // accountOfficerId String?   @map(name: "account_officer_id")
-  // branchId         String?   @map(name: "branch_id")
-}
-
-model customers {
-  id               String    @id @default(uuid()) @map(name: "id")
-  identityNumber   String?   @map(name: "identity_number")
-  fullName         String?   @map(name: "full_name")
-  email            String?   @map(name: "email")
-  motherMaidenName String?   @map(name: "mother_maiden_name")
-  referralCode     String?   @map(name: "referral_code")
-  birthPlace       String?   @map(name: "birth_place")
-  birthDate        DateTime? @map(name: "birth_date") @db.Date
-  lastSyncedAt     DateTime? @map(name: "last_synced_at") @db.Timestamp()
-  createdAt        DateTime? @default(now()) @map(name: "created_at")
-  updatedAt        DateTime? @updatedAt @map(name: "updated_at")
-  deletedAt        DateTime? @map(name: "deleted_at") @db.Timestamp()
-  createdBy        String?   @map(name: "created_by")
-  updatedBy        String?   @map(name: "updated_by")
-  deletedBy        String?   @map(name: "deleted_by")
-  userId           String?   @map(name: "user_id")
-
-  saving          savings[]       @relation("savingId")
-  loan            loans[]         @relation("loanId")
-  notifications   notifications[] @relation("notificationId")
-  customerCreated users?          @relation("customerCreatedBy", fields: [createdBy], references: [id])
-  customerUpdated users?          @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
-  customerDeleted users?          @relation("customerDeletedBy", fields: [deletedBy], references: [id])
-
-  users users? @relation("customerId", fields: [userId], references: [id])
-  // externalId       String?   @map(name: "external_id")
-  // identityType     String?   @map(name: "identity_type")
-  // phoneNumber      String?   @map(name: "phone_number")
-  // mobileNumber     String?   @map(name: "mobile_number")
-  // gender           String?   @map(name: "gender")
-  // address          String?   @map(name: "address")
-  // subdistrict      String?   @map(name: "subdistrict")
-  // district         String?   @map(name: "district")
-  // identityPhotoUrl String?   @map(name: "identity_photo_url")
-  // selfiePhotoUrl   String?   @map(name: "selfie_photo_url")
-}
-
-model images {
-  id           String   @id @default(uuid())
-  urlBase64    String?  @map(name: "url_base_64")
-  isOnCarousel Boolean? @map(name: "is_on_carousel")
-}
-
-model deposits {
-  id            String  @id @default(uuid())
-  accountNumber String  @unique @map(name: "account_number")
-  balance       Int     @default(0)
-  transactionId String? @map(name: "transaction_id")
-  customerId    String? @map(name: "customer_id")
-  tenantId      Int?    @map(name: "tenant_id")
-  isActive      Int?    @default(1) @map(name: "is_active")
-
-  transaction transactions[] @relation("transactionId")
-  tenant      tenants?       @relation("depositId", fields: [tenantId], references: [id])
-}
-
 model loans {
   id            String  @id @default(uuid())
   accountNumber String  @unique @map(name: "account_number")
@@ -180,22 +186,32 @@ model loans {
   tenantId      Int?    @map(name: "tenant_id")
   isActive      Int?    @default(1) @map(name: "is_active")
 
-  tenant   tenants?   @relation("loanId", fields: [tenantId], references: [id])
-  customer customers? @relation("loanId", fields: [customerId], references: [id])
+  transaction transactions[]         @relation("transactionId")
+  loanRes     loan_res_application[] @relation("loanResId")
+  tenant      tenants?               @relation("loanId", fields: [tenantId], references: [id])
+  customer    customers?             @relation("loanId", fields: [customerId], references: [id])
 }
 
-model loan_transactions {
-  id            String  @id @default(uuid())
-  principalPaid Int?    @default(0) @map(name: "principal_paid")
-  interestPaid  Int?    @default(0) @map(name: "interest_paid")
-  penaltyPaid   Int?    @default(0) @map(name: "penalty_paid")
-  tenantsId     Int?    @map(name: "tenant_id")
-  createdBy     String? @map(name: "created_by")
-  transactionId String? @map(name: "transaction_id")
+model loan_opening_application {
+  id         String  @id @default(uuid())
+  amount     Int?    @default(0)
+  tenor      Int?
+  reason     String?
+  customerId String? @map(name: "customer_id")
 
-  transaction transactions? @relation("loanTransactionId", fields: [transactionId], references: [id])
-  user        users?        @relation("loanTransactionCreatedBy", fields: [createdBy], references: [id])
-  tenants     tenants?      @relation("loanTransactionId", fields: [tenantsId], references: [id])
+  customer customers? @relation("loanOpeningId", fields: [customerId], references: [id])
+}
+
+model loan_res_application {
+  id          String  @id @default(uuid())
+  type        String?
+  description String?
+
+  loanId     String? @map(name: "loan_id")
+  customerId String? @map(name: "customerId")
+
+  loan     loans?     @relation("loanResId", fields: [loanId], references: [id])
+  customer customers? @relation("loanResId", fields: [customerId], references: [id])
 }
 
 model notifications {
