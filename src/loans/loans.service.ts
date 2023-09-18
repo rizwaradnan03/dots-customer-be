@@ -7,6 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class LoansService {
   constructor(private readonly prisma: PrismaService) { }
 
+  
   async create(createLoanDto: CreateLoanDto) {
     return await this.prisma.loans.create({
       data: createLoanDto
@@ -14,10 +15,11 @@ export class LoansService {
   }
 
   async topupLoan(loanId: string, amount: number) {
+  const saving = this.prisma.savings.update
    return await this.prisma.loans.update({
     where: {id: loanId},
     data: {
-      
+      loan : saving.
     }
    })
 
