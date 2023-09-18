@@ -12,13 +12,14 @@ model reservations {
   officeDestination Int?      @map(name: "destination_service")
   reason            String?   @map(name: "reason")
   attendAtStart     DateTime? @map(name: "attend_at_start")
+  time              String?   @map(name: "time")
   createdAt         DateTime? @default(now()) @map(name: "created_at") @db.Timestamp()
   deletedAt         DateTime? @map(name: "delete_at") @db.Timestamp()
   isActive          Int?      @default(1) @map(name: "is_active")
-  createdById       String?   @map(name: "created_by_id")
+  createdBy         String?   @map(name: "created_by_id")
 
-  tenants   tenants? @relation("reservationId", fields: [officeDestination], references: [id])
-  createdBy users?   @relation("reservationCreatedBy", fields: [createdById], references: [id])
+  tenants tenants? @relation("reservationId", fields: [officeDestination], references: [id])
+  user    users?   @relation("reservationCreatedBy", fields: [createdBy], references: [id])
 }
 
 model transactions {

@@ -7,12 +7,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('transactions')
 @Controller('transactions')
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
-
-  @Post(':id')
-  async create(@Body() createTransactionDto: CreateTransactionDto,@Param('id') id: string) {
-    return await this.transactionsService.create(createTransactionDto, id);
-  }
+  constructor(private readonly transactionsService: TransactionsService) { }
 
   @Get()
   findAll() {

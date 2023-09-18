@@ -8,17 +8,9 @@ import { CreateSavingDto } from './dto/create-saving.dto';
 export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(data: {
-    accountNumber: string,
-    customerId: string,
-    tenantId: number
-  }) {
+  async create(createSavingDto: CreateSavingDto) {
     const saving = await this.prisma.savings.create({
-      data: {
-        accountNumber: data.accountNumber,
-        customerId: data.customerId,
-        tenantId: data.tenantId
-      }
+      data: createSavingDto
     })
 
     const findUser = await this.prisma.customers.findFirst({
@@ -41,17 +33,9 @@ export class SavingsService {
       where: { id: savingId }
     })
 
-    if (!saving) {
-      throw new Error(`Saving with ID ${savingId} not found`);
-    }
-
     const customer = await this.prisma.customers.findFirst({
       where: { id: saving.customerId },
     })
-
-    if (!customer) {
-      throw new Error(`Customer with ID ${saving.customerId} not found`);
-    }
 
     const updatedSaving = await this.prisma.savings.update({
       where: { id: savingId },

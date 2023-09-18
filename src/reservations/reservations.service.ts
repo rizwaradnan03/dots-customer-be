@@ -8,7 +8,7 @@ export class ReservationsService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createReservationDto: CreateReservationDto) {
-    return await this.prisma.reservations.create({
+    const reservation = await this.prisma.reservations.create({
       data: createReservationDto
     });
   }

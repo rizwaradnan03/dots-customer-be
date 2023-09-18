@@ -5,4 +5,5 @@ export class CreateReservationDto extends OmitType(ReservationEntity,[]) {
     destinationService: number;
     reason: string;
     attendAtStart: Date;
+    time: string
 }

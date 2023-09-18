@@ -8,5 +8,6 @@ export class ReservationEntity implements ReservationModel {
     createdAt: Date;
     deletedAt: Date;
     isActive: number;
-    createdById: string;
+    createdBy: string;
+    time: string;
 }
