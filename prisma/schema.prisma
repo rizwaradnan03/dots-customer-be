@@ -25,6 +25,7 @@ model reservations {
 model transactions {
   id              String   @id @default(uuid())
   amount          Int
+  title           String?
   savingId        String?  @map(name: "saving_id")
   depositId       String?  @map(name: "deposit_id")
   transactionType Int?     @map(name: "transaction_type")

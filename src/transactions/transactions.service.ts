@@ -34,6 +34,10 @@ export class TransactionsService {
         tenantId: findTenant.id
       }
     })
+
+    if(transaction.transactionType == 1) {
+      
+    }
     return transaction
   }
 
