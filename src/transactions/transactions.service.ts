@@ -35,9 +35,11 @@ export class TransactionsService {
       }
     })
 
-    if(transaction.transactionType == 1) {
-      
+    switch(transaction.transactionType) {
+      case 1:
+        return await this.prisma.transactions.update({where: {id: transaction.id}, data: {title: "jfsdjfkjsdfjdls"}})
     }
+
     return transaction
   }
 
