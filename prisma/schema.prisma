@@ -29,6 +29,7 @@ model transactions {
   depositId       String?  @map(name: "deposit_id")
   transactionType Int?     @map(name: "transaction_type")
   status          Int?
+  
   createdAt       DateTime @default(now()) @map(name: "created_at")
   createdBy       String?  @map(name: "created_by")
   tenantId        Int?     @map(name: "tenant_id")
