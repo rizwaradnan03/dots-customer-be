@@ -4,6 +4,7 @@ CREATE TABLE "reservations" (
     "destination_service" INTEGER,
     "reason" TEXT,
     "attend_at_start" TIMESTAMP(3),
+    "time" TEXT,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "delete_at" TIMESTAMP,
     "is_active" INTEGER DEFAULT 1,
@@ -145,6 +146,17 @@ CREATE TABLE "loan_transactions" (
     CONSTRAINT "loan_transactions_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "notifications" (
+    "id" TEXT NOT NULL,
+    "customersId" TEXT,
+    "status" INTEGER,
+    "message" TEXT,
+    "isOpened" INTEGER DEFAULT 0,
+
+    CONSTRAINT "notifications_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "savings_account_number_key" ON "savings"("account_number");
 
@@ -222,3 +234,6 @@ ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_created_by_fke
 
 -- AddForeignKey
 ALTER TABLE "loan_transactions" ADD CONSTRAINT "loan_transactions_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_customersId_fkey" FOREIGN KEY ("customersId") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;

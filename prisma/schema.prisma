@@ -132,11 +132,12 @@ model customers {
   deletedBy        String?   @map(name: "deleted_by")
   userId           String?   @map(name: "user_id")
 
-  saving          savings[] @relation("savingId")
-  loan            loans[]   @relation("loanId")
-  customerCreated users?    @relation("customerCreatedBy", fields: [createdBy], references: [id])
-  customerUpdated users?    @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
-  customerDeleted users?    @relation("customerDeletedBy", fields: [deletedBy], references: [id])
+  saving          savings[]       @relation("savingId")
+  loan            loans[]         @relation("loanId")
+  notifications   notifications[] @relation("notificationId")
+  customerCreated users?          @relation("customerCreatedBy", fields: [createdBy], references: [id])
+  customerUpdated users?          @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
+  customerDeleted users?          @relation("customerDeletedBy", fields: [deletedBy], references: [id])
 
   users users? @relation("customerId", fields: [userId], references: [id])
   // externalId       String?   @map(name: "external_id")
@@ -194,4 +195,13 @@ model loan_transactions {
   transaction transactions? @relation("loanTransactionId", fields: [transactionId], references: [id])
   user        users?        @relation("loanTransactionCreatedBy", fields: [createdBy], references: [id])
   tenants     tenants?      @relation("loanTransactionId", fields: [tenantsId], references: [id])
+}
+
+model notifications {
+  id          String     @id @default(uuid())
+  customers   customers? @relation("notificationId", fields: [customersId], references: [id])
+  customersId String?
+  status      Int?
+  message     String?
+  isOpened    Int?       @default(0)
 }
