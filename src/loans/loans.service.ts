@@ -14,12 +14,19 @@ export class LoansService {
     })
   }
 
-  async topupLoan(loanId: string, amount: number) {
-  const saving = this.prisma.savings.update
-   return await this.prisma.loans.update({
+  async topupLoan(
+    loanId: string,
+    amount: number) {
+      
+    const loan = await this.prisma.loans.findFirst({
+      where: {id: loanId}
+    })
+
+
+    await this.prisma.loans.update({
     where: {id: loanId},
     data: {
-      loan : saving.
+      loan : loan.loan + amount
     }
    })
 

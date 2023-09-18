@@ -14,6 +14,15 @@ export class LoansController {
     return this.loansService.create(createLoanDto);
   }
 
+  @Post('loanstopup/:id')
+  async topuploan(
+    @Param('id') loanId: string,
+    @Body('amount') amount: number,
+  ){
+    const updateLoan = await this.loansService.topupLoan(loanId, amount);
+    return { loan : updateLoan}
+   }
+
   @Get()
   async findAll() {
     return await this.loansService.findAll();
