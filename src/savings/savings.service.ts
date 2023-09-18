@@ -45,7 +45,7 @@ export class SavingsService {
       }
     })
 
-    console.log(updatedSaving)
+    return (updatedSaving)
   }
 
   async findAll() {

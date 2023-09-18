@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { format } from 'date-fns'
 
 @Injectable()
 export class TransactionsService {
@@ -37,7 +38,19 @@ export class TransactionsService {
   }
 
   async findAll() {
-    return await this.prisma.transactions.findMany()
+    const transaction = await this.prisma.transactions.findMany()
+
+    return transaction.map(transaction => ({
+      id: transaction.id,
+      amount: transaction.amount,
+      createdAt: transaction.createdAt,
+      createdBy: transaction.createdBy,
+      createdDate: format(transaction.createdAt, "EE"),
+      tenantId: transaction.tenantId,
+      transactionType: transaction.transactionType,
+      status: transaction.status,
+      savingId: transaction.savingId,
+    }))
   }
 
   async findOne(id: string) {
