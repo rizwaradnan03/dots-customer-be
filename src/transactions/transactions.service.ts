@@ -7,20 +7,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TransactionsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createTransactionDto: CreateTransactionDto, id: string) {
-    const user = await this.prisma.users.findFirst({
-      where: { id }
-    })
-
-    const trans = await this.prisma.transactions.create({
-      data: createTransactionDto
-
-    })
-
-    return { user, trans }
-
-  }
-
   async recordDeposit(
     savingId: string,
     amount: number,
@@ -30,8 +16,11 @@ export class TransactionsService {
     })
 
     const findUser = await this.prisma.customers.findFirst({
-      where: { id: findSaving.id },
-      select: { userId: true }
+      where: { id: findSaving.customerId },
+    })
+
+    const findTenant = await this.prisma.tenants.findFirst({
+      where: { id: findSaving.tenantId }
     })
 
     const transaction = await this.prisma.transactions.create({
@@ -40,7 +29,8 @@ export class TransactionsService {
         amount,
         transactionType: 1,
         status: 1,
-        createdBy: findUser.userId
+        createdBy: findUser.userId,
+        tenantId: findTenant.id
       }
     })
     return transaction

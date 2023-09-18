@@ -8,4 +8,5 @@ export class CreateTransactionDto extends OmitType(Transaction,[
     savingId: string;
     transactionType : number
     status : number
+    createdBy: string;
 }

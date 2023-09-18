@@ -1,6 +1,7 @@
 import { savings as SavingModel} from "@prisma/client";
 
 export class SavingEntity implements SavingModel {
+    id: string;
     accountNumber: string;
     availableBalance: number;
     createdAt: Date;
@@ -9,7 +10,6 @@ export class SavingEntity implements SavingModel {
     customerId: string;
     deletedAt: Date;
     deletedBy: string;
-    id: string;
     lastSyncedAt: Date;
     tenantId: number;
     updatedAt: Date;

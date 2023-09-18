@@ -4,6 +4,7 @@ import { SavingsService } from './savings.service';
 import { UpdateSavingDto } from './dto/update-saving.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionsService } from 'src/transactions/transactions.service';
+import { CreateSavingDto } from './dto/create-saving.dto';
 
 @ApiTags('savings')
 @Controller('savings')
@@ -14,13 +15,11 @@ export class SavingsController {
   ) { }
 
   @Post()
-  async create(
-    data: {
-      accountNumber: string,
-      customerId: string,
-      tenantId: number
-    }
-  ) {
+  async create(@Body() data: {
+    accountNumber: string,
+    customerId: string,
+    tenantId: number
+  }) {
     return await this.savingService.create(data)
   }
 

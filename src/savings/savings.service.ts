@@ -2,23 +2,22 @@ import { Injectable } from '@nestjs/common';
 // import { CreateSavingDto } from './dto/create-saving.dto';
 import { UpdateSavingDto } from './dto/update-saving.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateSavingDto } from './dto/create-saving.dto';
 
 @Injectable()
 export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(
-    data: {
-      accountNumber: string,
-      customerId: string,
-      tenantId: number
-    }
-  ) {
+  async create(data: {
+    accountNumber: string,
+    customerId: string,
+    tenantId: number
+  }) {
     const saving = await this.prisma.savings.create({
       data: {
         accountNumber: data.accountNumber,
         customerId: data.customerId,
-        tenantId: data.tenantId,
+        tenantId: data.tenantId
       }
     })
 
@@ -33,6 +32,7 @@ export class SavingsService {
         createdBy: findUser.userId
       }
     })
+
     return createdBy
   }
 
@@ -41,22 +41,27 @@ export class SavingsService {
       where: { id: savingId }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
+    if (!saving) {
+      throw new Error(`Saving with ID ${savingId} not found`);
+    }
+
+    const customer = await this.prisma.customers.findFirst({
       where: { id: saving.customerId },
-      select: { userId: true }
     })
 
-    const newBalance = saving.currentBalance + amount
+    if (!customer) {
+      throw new Error(`Customer with ID ${saving.customerId} not found`);
+    }
 
     const updatedSaving = await this.prisma.savings.update({
       where: { id: savingId },
       data: {
-        currentBalance: newBalance,
-        updatedBy: findUser.userId
+        currentBalance: saving.currentBalance + amount,
+        updatedBy: customer.userId
       }
     })
 
-    return updatedSaving
+    console.log(updatedSaving)
   }
 
   async findAll() {

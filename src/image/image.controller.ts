@@ -6,9 +6,14 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('images')
 export class ImageController {
 
-  constructor(private readonly imageService: ImageService) {}
+  constructor(private readonly imageService: ImageService) { }
   @Get()
   async getUrlImage() {
     return await this.imageService.getUrlImage()
+  }
+
+  @Get(':id')
+  async getUrl(id: string) {
+    return await this.imageService.getUrl(id)
   }
 }

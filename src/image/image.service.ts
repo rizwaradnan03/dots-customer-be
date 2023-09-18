@@ -7,4 +7,10 @@ export class ImageService {
     async getUrlImage() {
         return await this.prisma.images.findMany()
     }
+
+    async getUrl(id: string) {
+        return await this.prisma.images.findFirst({
+            where: { id }
+        })
+    }
 }
