@@ -143,7 +143,6 @@ model deposits {
   id            String  @id @default(uuid())
   accountNumber String  @unique @map(name: "account_number")
   balance       Int     @default(0)
-  transactionId String? @map(name: "transaction_id")
   customerId    String? @map(name: "customer_id")
   tenantId      Int?    @map(name: "tenant_id")
   isActive      Int?    @default(1) @map(name: "is_active")
@@ -206,7 +205,6 @@ model loan_res_application {
   id          String  @id @default(uuid())
   type        String?
   description String?
-
   loanId     String? @map(name: "loan_id")
   customerId String? @map(name: "customerId")
 

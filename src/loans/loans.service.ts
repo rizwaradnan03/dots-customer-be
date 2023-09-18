@@ -7,32 +7,26 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class LoansService {
   constructor(private readonly prisma: PrismaService) { }
 
-  
   async create(createLoanDto: CreateLoanDto) {
     return await this.prisma.loans.create({
       data: createLoanDto
     })
   }
 
-  async topupLoan(
-    loanId: string,
-    amount: number) {
-      
-    const loan = await this.prisma.loans.findFirst({
-      where: {id: loanId}
+  async topupLoan(loanId: string, amount: number) {
+    const loan = await this.prisma.loans.findUnique({
+      where: { id: loanId }
     })
 
+    const updatedLoan = await this.prisma.loans.update({
+      where: { id: loanId },
+      data: {
+        loan: loan.loan + amount
+      }
+    })
 
-    await this.prisma.loans.update({
-    where: {id: loanId},
-    data: {
-      loan : loan.loan + amount
-    }
-   })
-
-
+    return (updatedLoan)
   }
-
   async findAll() {
     return await this.prisma.loans.findMany({
       include: {
