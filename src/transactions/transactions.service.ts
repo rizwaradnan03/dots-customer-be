@@ -3,6 +3,7 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { format } from 'date-fns'
+import { id, tr } from 'date-fns/locale';
 
 @Injectable()
 export class TransactionsService {
@@ -60,9 +61,9 @@ export class TransactionsService {
 
     const transaction = await this.prisma.transactions.create({
       data: {
-        loanId,
+        loanId: findLoan.id,
         amount,
-        transactionType: 1,
+        transactionType: 3,
         status: 1,
         createdBy: findUser.userId,
         tenantId: findTenant.id
@@ -91,7 +92,47 @@ export class TransactionsService {
       transactionType: transaction.transactionType,
       status: transaction.status,
       savingId: transaction.savingId,
+      loanId: transaction.loanId,
     }))
+  }
+
+  async findOneTopUp(){
+    const topUp = await this.prisma.transactions.findMany({
+      where:{ transactionType : 3},
+      select:{
+        loanId: true,
+        status : true,
+        tenantId : true,
+        principalPaid : true,
+        interestPaid : true,
+        penaltyPaid : true
+      }
+    })
+  }
+
+  async findLoanById(loanId: string){
+    const loanByid = await this.prisma.transactions.findMany({
+      where :{ id: loanId },
+      select:{
+        status : true,
+        tenantId : true,
+        principalPaid: true,
+        interestPaid : true,
+        penaltyPaid : true,
+      }
+    })
+  }
+
+  async findDeposit(){
+    const deposit = await this.prisma.transactions.findMany({
+      where:{ transactionType : 1},
+      select:{
+        amount : true,
+        title : true,
+        savingId : true,
+        depositId : true
+      }
+    })
   }
 
   async findOne(id: string) {

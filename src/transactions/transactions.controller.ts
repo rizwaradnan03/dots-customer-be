@@ -3,6 +3,8 @@ import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { get } from 'http';
+import { retry } from 'rxjs';
 
 @ApiTags('transactions')
 @Controller('transactions')
@@ -19,6 +21,22 @@ export class TransactionsController {
     return this.transactionsService.findOne(id);
   }
 
+  @Get('/loans')
+  findTopUp(){
+    return this.transactionsService.findOneTopUp();
+  }
+
+  @Get('/deposit')
+  findDepo(){
+    return this.transactionsService.findDeposit();
+  }
+
+  @Get('/loans/:id')
+  findLoanId(@Param('id') loanId : string){
+    return this.transactionsService.findLoanById(loanId)
+  }
+
+   
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
     return this.transactionsService.update(+id, updateTransactionDto);

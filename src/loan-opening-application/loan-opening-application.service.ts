@@ -30,7 +30,6 @@ export class LoanOpeningApplicationService {
       }     
     })
   
-
     const updatedLoan = await this.prisma.loans.update({
       where: { id: loanId },
       data: {
@@ -38,7 +37,7 @@ export class LoanOpeningApplicationService {
       }
     })
 
-    return await this.prisma.notifications.create({
+   await this.prisma.notifications.create({
       data: {
         customersId: findUser.id,
         status: 1,

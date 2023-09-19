@@ -94,7 +94,7 @@ export class AuthService {
             where: { username: loginDto.username }
         })
 
-        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email };
+        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email, id : isUserValid.id };
 
         return { token: this.jwt.sign(payload) }
     }
