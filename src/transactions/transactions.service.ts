@@ -37,7 +37,9 @@ export class TransactionsService {
 
     switch(transaction.transactionType) {
       case 1:
-        return await this.prisma.transactions.update({where: {id: transaction.id}, data: {title: "jfsdjfkjsdfjdls"}})
+        return await this.prisma.transactions.update({where: {id: transaction.id}, data: {title: "setoran dan tabungan"}})
+      case 2:
+        return await this.prisma.transactions.update({where : {id: transaction.id}, data:{title: "deposit"}})
     }
 
     return transaction

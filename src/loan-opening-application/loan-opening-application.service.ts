@@ -21,8 +21,9 @@ export class LoanOpeningApplicationService {
         tenor: data.tenor,
         reason: data.reason,
         loanId: loan.id
-      }
+      }     
     })
+    console.log(loanOpening)
 
     const updatedLoan = await this.prisma.loans.update({
       where: { id: loanId },
