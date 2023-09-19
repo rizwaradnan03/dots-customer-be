@@ -76,12 +76,12 @@ CREATE TABLE "reservations" (
 -- CreateTable
 CREATE TABLE "transactions" (
     "id" TEXT NOT NULL,
-    "amount" INTEGER NOT NULL,
+    "amount" INTEGER NOT NULL DEFAULT 0,
     "title" TEXT,
     "saving_id" TEXT,
     "deposit_id" TEXT,
-    "loan_id" TEXT,
     "transaction_type" INTEGER,
+    "loan_id" TEXT,
     "status" INTEGER,
     "created_at" DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_by" TEXT,
@@ -98,7 +98,6 @@ CREATE TABLE "deposits" (
     "id" TEXT NOT NULL,
     "account_number" TEXT NOT NULL,
     "balance" INTEGER NOT NULL DEFAULT 0,
-    "transaction_id" TEXT,
     "customer_id" TEXT,
     "tenant_id" INTEGER,
     "is_active" INTEGER DEFAULT 1,
@@ -144,7 +143,8 @@ CREATE TABLE "loan_opening_application" (
     "amount" INTEGER DEFAULT 0,
     "tenor" INTEGER,
     "reason" TEXT,
-    "customer_id" TEXT,
+    "loan_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "loan_opening_application_pkey" PRIMARY KEY ("id")
 );
@@ -155,18 +155,30 @@ CREATE TABLE "loan_res_application" (
     "type" TEXT,
     "description" TEXT,
     "loan_id" TEXT,
-    "customerId" TEXT,
 
     CONSTRAINT "loan_res_application_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
+CREATE TABLE "loan_installment" (
+    "id" SERIAL NOT NULL,
+    "amount" INTEGER NOT NULL DEFAULT 0,
+    "payment_date" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "loan_opening_id" TEXT NOT NULL,
+
+    CONSTRAINT "loan_installment_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "notifications" (
     "id" TEXT NOT NULL,
-    "customersId" TEXT,
     "status" INTEGER,
     "message" TEXT,
-    "isOpened" INTEGER DEFAULT 0,
+    "is_opened" INTEGER DEFAULT 0,
+    "customer_id" TEXT,
+    "loan_id" TEXT NOT NULL,
+    "reservation_id" TEXT NOT NULL,
 
     CONSTRAINT "notifications_pkey" PRIMARY KEY ("id")
 );
@@ -244,13 +256,19 @@ ALTER TABLE "loans" ADD CONSTRAINT "loans_tenant_id_fkey" FOREIGN KEY ("tenant_i
 ALTER TABLE "loans" ADD CONSTRAINT "loans_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "loan_opening_application" ADD CONSTRAINT "loan_opening_application_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "loan_opening_application" ADD CONSTRAINT "loan_opening_application_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "loans"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "loan_res_application" ADD CONSTRAINT "loan_res_application_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "loans"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "loan_res_application" ADD CONSTRAINT "loan_res_application_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "loan_installment" ADD CONSTRAINT "loan_installment_loan_opening_id_fkey" FOREIGN KEY ("loan_opening_id") REFERENCES "loan_opening_application"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "notifications" ADD CONSTRAINT "notifications_customersId_fkey" FOREIGN KEY ("customersId") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "reservations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "loans"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;

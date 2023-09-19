@@ -14,12 +14,9 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { LoansModule } from './loans/loans.module';
 import { DepositsModule } from './deposits/deposits.module';
 import { NotificationModule } from './notification/notification.module';
-import { LoanOpeningApplicationModule } from './loan-opening-application/loan-opening-application.module';
-import { LoanResApplicationModule } from './loan-res-application/loan-res-application.module';
-
 
 @Module({
-  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule, SavingsModule, TenantsModule, TransactionsModule, LoansModule, DepositsModule, NotificationModule, LoanOpeningApplicationModule, LoanResApplicationModule],
+  imports: [PrismaModule, AuthModule, ImageModule, UsersModule, ReservationsModule, CustomersModule, SavingsModule, TenantsModule, TransactionsModule, LoansModule, DepositsModule, NotificationModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
