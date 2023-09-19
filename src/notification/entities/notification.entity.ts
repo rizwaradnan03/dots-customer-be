@@ -6,4 +6,6 @@ export class NotificationEntity implements notificationsModel{
     status: number;
     message: string;
     isOpened: number;
+    loanId: string;
+    reservationId: string;
 }

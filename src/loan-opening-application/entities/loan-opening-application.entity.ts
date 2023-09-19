@@ -5,5 +5,6 @@ export class LoanOpeningEntity implements loansModel {
     amount: number;
     reason: string;
     tenor: number;
+    createdAt: Date;
     loanId: string;
 }

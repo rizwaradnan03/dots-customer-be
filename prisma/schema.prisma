@@ -220,8 +220,8 @@ model notifications {
   isOpened Int?    @default(0) @map(name: "is_opened")
 
   customersId   String? @map(name: "customer_id")
-  loanId        String  @map(name: "loan_id")
-  reservationId String  @map(name: "reservation_id")
+  loanId        String? @map(name: "loan_id")
+  reservationId String? @map(name: "reservation_id")
 
   reservation reservations? @relation("notificationId", fields: [reservationId], references: [id])
   loan        loans?        @relation("notificationId", fields: [loanId], references: [id])

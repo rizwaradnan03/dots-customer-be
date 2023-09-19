@@ -47,7 +47,7 @@ export class SavingsService {
 
     return await this.prisma.notifications.create({
       data: {
-        customersId: findUser.id,
+      customersId: findUser.id,
         status: 1,
         message: "Customer a.n " + (findUser).fullName + "Berhasil Melakukan Setor Tabungan!"
       }
