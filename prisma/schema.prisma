@@ -108,6 +108,8 @@ model reservations {
   isActive          Int?      @default(1) @map(name: "is_active")
   createdBy         String?   @map(name: "created_by_id")
 
+  notification notifications[] @relation("notificationId")
+
   tenants tenants? @relation("reservationId", fields: [officeDestination], references: [id])
   user    users?   @relation("reservationCreatedBy", fields: [createdBy], references: [id])
 }
@@ -183,19 +185,21 @@ model loans {
   tenantId      Int?    @map(name: "tenant_id")
   isActive      Int?    @default(1) @map(name: "is_active")
 
-  transaction transactions[]             @relation("transactionId")
-  loanRes     loan_res_application[]     @relation("loanResId")
-  loanOpening loan_opening_application[] @relation("loanOpeningId")
-  tenant      tenants?                   @relation("loanId", fields: [tenantId], references: [id])
-  customer    customers?                 @relation("loanId", fields: [customerId], references: [id])
+  transaction  transactions[]             @relation("transactionId")
+  loanRes      loan_res_application[]     @relation("loanResId")
+  loanOpening  loan_opening_application[] @relation("loanOpeningId")
+  notification notifications[]            @relation("notificationId")
+  tenant       tenants?                   @relation("loanId", fields: [tenantId], references: [id])
+  customer     customers?                 @relation("loanId", fields: [customerId], references: [id])
 }
 
 model loan_opening_application {
-  id     String  @id @default(uuid())
-  amount Int?    @default(0)
-  tenor  Int?
-  reason String?
-  loanId String  @map(name: "loan_id")
+  id        String   @id @default(uuid())
+  amount    Int?     @default(0)
+  tenor     Int?
+  reason    String?
+  loanId    String   @map(name: "loan_id")
+  createdAt DateTime @default(now()) @map(name: "created_at")
 
   loan loans? @relation("loanOpeningId", fields: [loanId], references: [id])
 }
@@ -210,10 +214,16 @@ model loan_res_application {
 }
 
 model notifications {
-  id          String     @id @default(uuid())
-  customers   customers? @relation("notificationId", fields: [customersId], references: [id])
-  customersId String?
-  status      Int?
-  message     String?
-  isOpened    Int?       @default(0)
+  id       String  @id @default(uuid())
+  status   Int?
+  message  String?
+  isOpened Int?    @default(0) @map(name: "is_opened")
+
+  customersId   String? @map(name: "customer_id")
+  loanId        String  @map(name: "loan_id")
+  reservationId String  @map(name: "reservation_id")
+
+  reservation reservations? @relation("notificationId", fields: [reservationId], references: [id])
+  loan        loans?        @relation("notificationId", fields: [loanId], references: [id])
+  customers   customers?    @relation("notificationId", fields: [customersId], references: [id])
 }
