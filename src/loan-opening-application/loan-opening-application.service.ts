@@ -30,7 +30,6 @@ export class LoanOpeningApplicationService {
       }     
     })
   
-
     const updatedLoan = await this.prisma.loans.update({
       where: { id: loanId },
       data: {
