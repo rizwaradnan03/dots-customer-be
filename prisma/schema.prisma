@@ -185,12 +185,13 @@ model loans {
   tenantId      Int?    @map(name: "tenant_id")
   isActive      Int?    @default(1) @map(name: "is_active")
 
-  transaction  transactions[]             @relation("transactionId")
-  loanRes      loan_res_application[]     @relation("loanResId")
-  loanOpening  loan_opening_application[] @relation("loanOpeningId")
-  notification notifications[]            @relation("notificationId")
-  tenant       tenants?                   @relation("loanId", fields: [tenantId], references: [id])
-  customer     customers?                 @relation("loanId", fields: [customerId], references: [id])
+  transaction     transactions[]             @relation("transactionId")
+  loanRes         loan_res_application[]     @relation("loanResId")
+  loanOpening     loan_opening_application[] @relation("loanOpeningId")
+  notification    notifications[]            @relation("notificationId")
+  loanInstallment loan_installment[]         @relation("loanInstallmentId")
+  tenant          tenants?                   @relation("loanId", fields: [tenantId], references: [id])
+  customer        customers?                 @relation("loanId", fields: [customerId], references: [id])
 }
 
 model loan_opening_application {
@@ -201,7 +202,8 @@ model loan_opening_application {
   loanId    String   @map(name: "loan_id")
   createdAt DateTime @default(now()) @map(name: "created_at")
 
-  loan loans? @relation("loanOpeningId", fields: [loanId], references: [id])
+  loanInstallment loan_installment[] @relation("loanInstallmentId")
+  loan            loans?             @relation("loanOpeningId", fields: [loanId], references: [id])
 }
 
 model loan_res_application {
@@ -211,6 +213,21 @@ model loan_res_application {
   loanId      String? @map(name: "loan_id")
 
   loan loans? @relation("loanResId", fields: [loanId], references: [id])
+}
+
+model loan_installment {
+  id            String    @id @default(uuid())
+  totalAmount   Int?      @default(0) @map(name: "total_amount")
+  amount        Int?      @default(0)
+  interest      Int?      @default(0)
+  penalty       Int?      @default(0)
+  paymentDate   DateTime? @map(name: "payment_date")
+  createdAt     DateTime? @default(now()) @map(name: "created_at")
+  loanOpeningId String?   @map(name: "loan_opening_id")
+  loanId        String    @map(name: "loan_id")
+
+  loan        loans?                    @relation("loanInstallmentId", fields: [loanId], references: [id])
+  loanOpening loan_opening_application? @relation("loanInstallmentId", fields: [loanOpeningId], references: [id])
 }
 
 model notifications {

@@ -25,7 +25,7 @@ export class ReservationsService {
 
     return await this.prisma.notifications.create({
       data: {
-        customersId: id,
+        customersId: findUser.id,
         status: 1,
         message: "Customer a.n " + (await findUser).fullName + " Berhasil Melakukan Reservasi , jangan lupa untuk datang pukul"+ (await clock).time 
       }

@@ -22,7 +22,7 @@ export class AuthService {
         username: string,
         password: string,
     }) {
-        console.log(data)
+        
         if (data.password.length == null) {
             return new UnauthorizedException("bruhk")
         }
@@ -32,6 +32,14 @@ export class AuthService {
         }
 
         const hashPassword = await bcrypt.hash(data.password, 10)
+
+        const isUserValid = await this.prisma.users.findUnique({
+            where: { username: data.username }
+        })
+
+        if (isUserValid) {
+            return new UnauthorizedException("Username Sudah Ada")
+        }
 
         const user = await this.prisma.users.create({
             data: {
@@ -53,14 +61,16 @@ export class AuthService {
                 createdBy: user.id
             }
         })
-        
-        return await this.prisma.notifications.create({
+
+        const notifications = await this.prisma.notifications.create({
             data: {
                 customersId: customer.id,
                 status: 1,
-                message: "Selamat Datang " + (customer).fullName + "!"
+                message: "Selamat Datang " + customer.fullName + "!"
             }
         })
+
+        return notifications.message
     }
 
     async validateUser(loginDto: LoginDto) {
@@ -94,7 +104,7 @@ export class AuthService {
             where: { username: loginDto.username }
         })
 
-        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email, id : isUserValid.id };
+        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email, id: isUserValid.id };
 
         return { token: this.jwt.sign(payload) }
     }
