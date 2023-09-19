@@ -5,7 +5,7 @@ import { UpdateLoanResApplicationDto } from './dto/update-loan-res-application.d
 import { ApiTags } from '@nestjs/swagger';
 import { LoansService } from 'src/loans/loans.service';
 
-@ApiTags('res')
+@ApiTags('loan-res')
 @Controller('res')
 export class LoanResApplicationController {
   constructor(

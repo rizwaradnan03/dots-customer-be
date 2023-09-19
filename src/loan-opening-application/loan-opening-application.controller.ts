@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { LoanOpeningApplicationService } from './loan-opening-application.service';
 import { loanOpeningDto } from './dto/update-loan-opening-application.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('loan-opening')
 @Controller('opening')
 export class LoanOpeningApplicationController {
   constructor(private readonly loanOpeningApplicationService: LoanOpeningApplicationService) {}
