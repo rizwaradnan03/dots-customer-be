@@ -89,12 +89,16 @@ model tenants {
   loans       loans[]        @relation("loanId")
   deposit     deposits[]     @relation("depositId")
   reservation reservations[] @relation("reservationId")
+  image       images[]       @relation("imageId")
 }
 
 model images {
   id           String   @id @default(uuid())
   urlBase64    String?  @map(name: "url_base_64")
   isOnCarousel Boolean? @map(name: "is_on_carousel")
+  tenantId     Int?     @map(name: "tenant_id")
+
+  tenant tenants? @relation("imageId", fields: [tenantId], references: [id])
 }
 
 model reservations {

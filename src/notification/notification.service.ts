@@ -5,10 +5,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class NotificationService {
-  constructor(private prisma: PrismaService){}
+  constructor(private prisma: PrismaService) { }
 
   create(createNotificationDto: CreateNotificationDto) {
-    return this.prisma.notifications.create({data: createNotificationDto});
+    return this.prisma.notifications.create({ data: createNotificationDto });
   }
 
   findAll() {
@@ -34,29 +34,29 @@ export class NotificationService {
           }
         }
       },
-      where: {id}
-    });;
+      where: { id }
+    })
   }
 
   update(id: string, updateNotificationDto: UpdateNotificationDto) {
     return this.prisma.notifications.update({
       data: updateNotificationDto,
-      where: {id}
+      where: { id }
     })
   }
 
-updateIsOpened(id: string){
-  return this.prisma.notifications.update({
-    where: {id},
-    data: {
-      isOpened: 1
-    }
-  })
-}
+  updateIsOpened(id: string) {
+    return this.prisma.notifications.update({
+      where: { id },
+      data: {
+        isOpened: 1
+      }
+    })
+  }
 
   remove(id: string) {
     return this.prisma.notifications.delete({
-      where: {id}
+      where: { id }
     });
   }
 }

@@ -22,10 +22,6 @@ export class AuthService {
         username: string,
         password: string,
     }) {
-        
-        if (data.password.length == null) {
-            return new UnauthorizedException("bruhk")
-        }
 
         if (data.password.length < 6) {
             return new UnauthorizedException('Password less than 6 characters')

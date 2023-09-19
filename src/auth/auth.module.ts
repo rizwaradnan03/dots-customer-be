@@ -6,9 +6,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { LocalAuthGuard } from './guard/local-auth.guard';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategy/local.Strategy';
-// import { SessionSerialized } from './session.serialized';
-import * as session from 'express-session';
-import * as passport from 'passport'
 import { JwtStrategy } from './strategy/jwt.Strategy';
 
 @Module({

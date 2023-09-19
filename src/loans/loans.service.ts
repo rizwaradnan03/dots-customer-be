@@ -7,22 +7,17 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class LoansService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async topupLoan(loanId: string,
-    data: {
-      amount: number,
-      tenor: number,
-      reason: string
-    }) {
+  async topupLoan(loanId: string, data: { amount: number, tenor: number, reason: string }) {
 
     const loan = await this.prisma.loans.findUnique({
       where: { id: loanId }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
+    const customer = await this.prisma.customers.findFirst({
       where: { id: loan.customerId }
     })
 
-    const createLoanOpening = await this.prisma.loan_opening_application.create({
+    const loanOpening = await this.prisma.loan_opening_application.create({
       data: {
         amount: data.amount,
         tenor: data.tenor,
@@ -34,28 +29,21 @@ export class LoansService {
     const updatedLoan = await this.prisma.loans.update({
       where: { id: loanId },
       data: {
-        loan: loan.loan + createLoanOpening.amount
-      }
-    })
-
-    await this.prisma.notifications.create({
-      data: {
-        customersId: findUser.id,
-        status: 1,
-        message: "Customer a.n " + (findUser).fullName + "Berhasil Melakukan Top-Up Kredit!"
+        loan: loan.loan + loanOpening.amount
       }
     })
 
     const interestPerMonth = updatedLoan.loan * 0.03
-    const monthlyInstallment = (updatedLoan.loan + interestPerMonth) / createLoanOpening.tenor
+    const monthlyInstallment = (updatedLoan.loan + interestPerMonth) / loanOpening.tenor
     const currentDate = new Date()
-
     const paymentSchedule = []
-    for (let i = 0; i < createLoanOpening.tenor; i++) {
+
+    for (let i = 0; i < loanOpening.tenor; i++) {
       const paymentDate = new Date(currentDate);
       paymentDate.setMonth(currentDate.getMonth() + i);
       paymentSchedule.push({
         loanId: updatedLoan.id,
+        loanOpeningId: loanOpening.id,
         paymentDate,
         totalAmount: updatedLoan.loan + interestPerMonth,
         amount: monthlyInstallment,
@@ -68,12 +56,23 @@ export class LoansService {
       data: paymentSchedule
     })
 
-    return (updatedLoan)
+    const notifications = await this.prisma.notifications.create({
+      data: {
+        customersId: customer.id,
+        status: 1,
+        message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit!"
+      }
+    })
+
+    return (notifications)
   }
-  
-  async create(createLoanDto: CreateLoanDto) {
+
+  async create(createLoanDto: CreateLoanDto, customerId) {
     return await this.prisma.loans.create({
-      data: createLoanDto
+      data: {
+        ...createLoanDto,
+        customerId
+      }
     })
   }
 

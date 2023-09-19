@@ -15,28 +15,24 @@ export class SavingsController {
     private readonly transactionService: TransactionsService
   ) { }
 
-  @Post()
-  async create(@Body() data: {
-    accountNumber: string,
-    customerId: string,
-    tenantId: number
-  }) {
-    return await this.savingService.create(data)
+  @Post(':id')
+  async create(@Param('id') customerId: string, @Body() data: { accountNumber: string, tenantId: number, }) {
+    return await this.savingService.create(data, customerId)
   }
 
   @Post('deposit/:id')
   async deposit(
     @Param('id') savingId: string,
-    @Body('amount') amount: number,
+    @Body() data: { amount: number },
   ) {
-    const updatedSaving = await this.savingService.depositSaving(savingId, amount);
+    const depositSaving = await this.savingService.depositSaving(savingId, data);
 
     const transaction = await this.transactionService.recordDeposit(
       savingId,
-      amount
+      data.amount
     );
 
-    return { saving: updatedSaving, transaction };
+    return { saving: depositSaving, transaction };
   }
 
   // @UseGuards(JwtAuthGuard)

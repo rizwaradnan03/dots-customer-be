@@ -13,22 +13,21 @@ export class LoansController {
     private readonly transactionService: TransactionsService,
   ) { }
 
-  @Post()
-  create(@Body() createLoanDto: CreateLoanDto) {
-    return this.loansService.create(createLoanDto);
-  }
-
   @Post('topup/:id')
   async topup(@Param('id') loanId: string, @Body() data: { amount: number, tenor: number, reason: string }) {
-    const updatedLoan = await this.loansService.topupLoan(loanId, data);
+    const topupLoan = await this.loansService.topupLoan(loanId, data);
 
     const transaction = await this.transactionService.recordTopupLoan(
       loanId,
       data.amount
     );
 
-    return { loan: updatedLoan, transaction };
+    return { loan: topupLoan, transaction };
+  }
 
+  @Post(':id')
+  create(@Param('id') customerId: string, @Body() createLoanDto: CreateLoanDto) {
+    return this.loansService.create(createLoanDto, customerId);
   }
 
   @Get()

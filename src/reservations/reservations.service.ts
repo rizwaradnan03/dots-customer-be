@@ -2,32 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { UpdateReservationDto } from './dto/update-reservation.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { time } from 'console';
 
 @Injectable()
 export class ReservationsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createReservationDto: CreateReservationDto, id: string, time : string) {
-    const findUser = await this.prisma.customers.findUnique({
-      where: { id }
+  async create(createReservationDto: CreateReservationDto, customerId: string) {
+
+    const customer = await this.prisma.customers.findUnique({
+      where: { id: customerId }
     })
 
-    const clock = this.prisma.reservations.findFirst({
-      where :{
-        time
-      }
-    })
-
-    await this.prisma.reservations.create({
+    const reservation = await this.prisma.reservations.create({
       data: createReservationDto
     });
 
     return await this.prisma.notifications.create({
       data: {
-        customersId: findUser.id,
+        customersId: customer.id,
         status: 1,
-        message: "Customer a.n " + (await findUser).fullName + " Berhasil Melakukan Reservasi , jangan lupa untuk datang pukul"+ (await clock).time 
+        message: "Customer " + customer.fullName + " Berhasil Melakukan Reservasi , jangan lupa untuk datang pukul " + reservation.time
       }
     })
 

@@ -8,12 +8,15 @@ import { CreateSavingDto } from './dto/create-saving.dto';
 export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createSavingDto: CreateSavingDto) {
+  async create(createSavingDto: CreateSavingDto, customerId: string) {
     const saving = await this.prisma.savings.create({
-      data: createSavingDto
+      data: {
+        ...createSavingDto,
+        customerId
+      }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
+    const customer = await this.prisma.customers.findFirst({
       where: { id: saving.customerId },
       select: { userId: true }
     })
@@ -21,14 +24,14 @@ export class SavingsService {
     const createdBy = await this.prisma.savings.update({
       where: { id: saving.id },
       data: {
-        createdBy: findUser.userId
+        createdBy: customer.userId
       }
     })
 
     return createdBy
   }
 
-  async depositSaving(savingId: string, amount: number) {
+  async depositSaving(savingId: string, data: { amount: number }) {
     const saving = await this.prisma.savings.findUnique({
       where: { id: savingId }
     })
@@ -40,14 +43,14 @@ export class SavingsService {
     const updatedSaving = await this.prisma.savings.update({
       where: { id: savingId },
       data: {
-        currentBalance: saving.currentBalance + amount,
+        currentBalance: saving.currentBalance + data.amount,
         updatedBy: findUser.userId
       }
     })
 
     return await this.prisma.notifications.create({
       data: {
-      customersId: findUser.id,
+        customersId: findUser.id,
         status: 1,
         message: "Customer a.n " + (findUser).fullName + "Berhasil Melakukan Setor Tabungan!"
       }

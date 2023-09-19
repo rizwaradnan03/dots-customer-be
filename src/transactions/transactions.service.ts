@@ -9,20 +9,17 @@ import { id, tr } from 'date-fns/locale';
 export class TransactionsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async recordDeposit(
-    savingId: string,
-    amount: number,
-  ) {
-    const findSaving = await this.prisma.savings.findFirst({
+  async recordDeposit(savingId: string, amount: number) {
+    const saving = await this.prisma.savings.findFirst({
       where: { id: savingId }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
-      where: { id: findSaving.customerId },
+    const customer = await this.prisma.customers.findFirst({
+      where: { id: saving.customerId },
     })
 
-    const findTenant = await this.prisma.tenants.findFirst({
-      where: { id: findSaving.tenantId }
+    const tenant = await this.prisma.tenants.findFirst({
+      where: { id: saving.tenantId }
     })
 
     const transaction = await this.prisma.transactions.create({
@@ -31,42 +28,42 @@ export class TransactionsService {
         amount,
         transactionType: 1,
         status: 1,
-        createdBy: findUser.userId,
-        tenantId: findTenant.id
+        createdBy: customer.userId,
+        tenantId: tenant.id
       }
     })
 
     switch (transaction.transactionType) {
       case 1:
-        return await this.prisma.transactions.update({where: {id: transaction.id}, data: {title: "setoran dan tabungan"}})
+        return await this.prisma.transactions.update({ where: { id: transaction.id }, data: { title: "setoran dan tabungan" } })
       case 2:
-        return await this.prisma.transactions.update({where : {id: transaction.id}, data:{title: "deposit"}})
+        return await this.prisma.transactions.update({ where: { id: transaction.id }, data: { title: "deposit" } })
     }
 
     return transaction
   }
 
   async recordTopupLoan(loanId: string, amount: number) {
-    const findLoan = await this.prisma.loans.findFirst({
+    const loan = await this.prisma.loans.findFirst({
       where: { id: loanId }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
-      where: { id: findLoan.customerId },
+    const customer = await this.prisma.customers.findFirst({
+      where: { id: loan.customerId },
     })
 
-    const findTenant = await this.prisma.tenants.findFirst({
-      where: { id: findLoan.tenantId }
+    const tenant = await this.prisma.tenants.findFirst({
+      where: { id: loan.tenantId }
     })
 
     const transaction = await this.prisma.transactions.create({
       data: {
-        loanId: findLoan.id,
+        loanId: loan.id,
         amount,
         transactionType: 3,
         status: 1,
-        createdBy: findUser.userId,
-        tenantId: findTenant.id
+        createdBy: customer.userId,
+        tenantId: tenant.id
       }
     })
 
@@ -92,45 +89,34 @@ export class TransactionsService {
       transactionType: transaction.transactionType,
       status: transaction.status,
       savingId: transaction.savingId,
-      loanId: transaction.loanId,
+      loanId: transaction.loanId
     }))
   }
 
-  async findOneTopUp(){
-    const topUp = await this.prisma.transactions.findMany({
-      where:{ transactionType : 3},
-      select:{
+  async findTopUp() {
+    const transaction = await this.prisma.transactions.findMany({
+      where: { transactionType: 3 },
+      select: {
         loanId: true,
-        status : true,
-        tenantId : true,
-        principalPaid : true,
-        interestPaid : true,
-        penaltyPaid : true
-      }
-    })
-  }
-
-  async findLoanById(loanId: string){
-    const loanByid = await this.prisma.transactions.findMany({
-      where :{ id: loanId },
-      select:{
-        status : true,
-        tenantId : true,
+        status: true,
+        tenantId: true,
         principalPaid: true,
-        interestPaid : true,
-        penaltyPaid : true,
+        interestPaid: true,
+        penaltyPaid: true
       }
     })
+
+    return transaction
   }
 
-  async findDeposit(){
+  async findDeposit() {
     const deposit = await this.prisma.transactions.findMany({
-      where:{ transactionType : 1},
-      select:{
-        amount : true,
-        title : true,
-        savingId : true,
-        depositId : true
+      where: { transactionType: 1 },
+      select: {
+        amount: true,
+        title: true,
+        savingId: true,
+        depositId: true
       }
     })
   }

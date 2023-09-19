@@ -12,8 +12,8 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService, private readonly notificationsService: NotificationService) { }
 
   @Post(':id')
-  async create(@Param('id') id: string, time : string,@Body() createReservationDto: CreateReservationDto) {
-    return await this.reservationsService.create(createReservationDto, id, time);
+  async create(@Param('id') customerId: string, @Body() createReservationDto: CreateReservationDto) {
+    return await this.reservationsService.create(createReservationDto, customerId);
   }
 
   @Get()

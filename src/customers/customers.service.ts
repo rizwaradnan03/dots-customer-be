@@ -5,25 +5,34 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CustomersService {
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
 
-  create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
+  async create(createCustomerDto: CreateCustomerDto) {
+    return await this.prisma.customers.create({
+      data: createCustomerDto
+    });
   }
 
   async findAll() {
     return await this.prisma.customers.findMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async findOne(id: string) {
+    return await this.prisma.customers.findUnique({
+      where: { id }
+    })
   }
 
-  // update(id: number, updateCustomerDto: UpdateCustomerDto, req: Request) {
-  //   const userId = req.user.id;
-  // }
+  async update(id: string, updateCustomerDto: UpdateCustomerDto) {
+    return await this.prisma.customers.update({
+      where: { id },
+      data: updateCustomerDto
+    })
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(id: string) {
+    return await this.prisma.customers.delete({
+      where: { id }
+    });
   }
 }

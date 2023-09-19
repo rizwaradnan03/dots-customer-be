@@ -23,19 +23,13 @@ export class TransactionsController {
 
   @Get('/loans')
   findTopUp(){
-    return this.transactionsService.findOneTopUp();
+    return this.transactionsService.findTopUp();
   }
 
   @Get('/deposit')
-  findDepo(){
+  findDeposit(){
     return this.transactionsService.findDeposit();
   }
-
-  @Get('/loans/:id')
-  findLoanId(@Param('id') loanId : string){
-    return this.transactionsService.findLoanById(loanId)
-  }
-
    
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
