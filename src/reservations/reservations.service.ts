@@ -9,7 +9,7 @@ export class ReservationsService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createReservationDto: CreateReservationDto, id: string, time : string) {
-    const findUser = this.prisma.customers.findUnique({
+    const findUser = await this.prisma.customers.findUnique({
       where: { id }
     })
 

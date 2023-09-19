@@ -161,11 +161,15 @@ CREATE TABLE "loan_res_application" (
 
 -- CreateTable
 CREATE TABLE "loan_installment" (
-    "id" SERIAL NOT NULL,
-    "amount" INTEGER NOT NULL DEFAULT 0,
-    "payment_date" TIMESTAMP(3) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "loan_opening_id" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
+    "total_amount" INTEGER DEFAULT 0,
+    "amount" INTEGER DEFAULT 0,
+    "interest" INTEGER DEFAULT 0,
+    "penalty" INTEGER DEFAULT 0,
+    "payment_date" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "loan_opening_id" TEXT,
+    "loan_id" TEXT NOT NULL,
 
     CONSTRAINT "loan_installment_pkey" PRIMARY KEY ("id")
 );
@@ -177,8 +181,8 @@ CREATE TABLE "notifications" (
     "message" TEXT,
     "is_opened" INTEGER DEFAULT 0,
     "customer_id" TEXT,
-    "loan_id" TEXT NOT NULL,
-    "reservation_id" TEXT NOT NULL,
+    "loan_id" TEXT,
+    "reservation_id" TEXT,
 
     CONSTRAINT "notifications_pkey" PRIMARY KEY ("id")
 );
@@ -262,13 +266,16 @@ ALTER TABLE "loan_opening_application" ADD CONSTRAINT "loan_opening_application_
 ALTER TABLE "loan_res_application" ADD CONSTRAINT "loan_res_application_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "loans"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "loan_installment" ADD CONSTRAINT "loan_installment_loan_opening_id_fkey" FOREIGN KEY ("loan_opening_id") REFERENCES "loan_opening_application"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "loan_installment" ADD CONSTRAINT "loan_installment_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "loans"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "notifications" ADD CONSTRAINT "notifications_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "reservations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "loan_installment" ADD CONSTRAINT "loan_installment_loan_opening_id_fkey" FOREIGN KEY ("loan_opening_id") REFERENCES "loan_opening_application"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "notifications" ADD CONSTRAINT "notifications_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "loans"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_reservation_id_fkey" FOREIGN KEY ("reservation_id") REFERENCES "reservations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_loan_id_fkey" FOREIGN KEY ("loan_id") REFERENCES "loans"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;

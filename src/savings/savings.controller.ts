@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { SavingsService } from './savings.service';
 // import { CreateSavingDto } from './dto/create-saving.dto';
 import { UpdateSavingDto } from './dto/update-saving.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionsService } from 'src/transactions/transactions.service';
 import { CreateSavingDto } from './dto/create-saving.dto';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
 @ApiTags('savings')
 @Controller('savings')
@@ -38,6 +39,7 @@ export class SavingsController {
     return { saving: updatedSaving, transaction };
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return await this.savingService.findAll();
