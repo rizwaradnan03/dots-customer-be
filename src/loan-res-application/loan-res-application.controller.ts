@@ -23,19 +23,19 @@ export class LoanResApplicationController {
     return this.loanResApplicationService.create(CreateLoanResApplicationDto, loanId);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.loanResApplicationService.findAll();
-  // }
+  @Get()
+  findAll() {
+    return this.loanResApplicationService.findAll();
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.loanResApplicationService.findOne(id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.loanResApplicationService.findOne(id);
+  }
 
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.loanResApplicationService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.loanResApplicationService.remove(id);
+  }
 }

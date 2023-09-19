@@ -13,7 +13,6 @@ export class LoansService {
     })
   }
 
- 
   async findAll() {
     return await this.prisma.loans.findMany({
       include: {

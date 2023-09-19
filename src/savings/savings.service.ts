@@ -33,7 +33,7 @@ export class SavingsService {
       where: { id: savingId }
     })
 
-    const customer = await this.prisma.customers.findFirst({
+    const findUser = await this.prisma.customers.findFirst({
       where: { id: saving.customerId },
     })
 
@@ -41,11 +41,18 @@ export class SavingsService {
       where: { id: savingId },
       data: {
         currentBalance: saving.currentBalance + amount,
-        updatedBy: customer.userId
+        updatedBy: findUser.userId
       }
     })
 
-    return (updatedSaving)
+    return await this.prisma.notifications.create({
+      data: {
+        customersId: findUser.id,
+        status: 1,
+        message: "Customer a.n " + (findUser).fullName + "Berhasil Melakukan Setor Tabungan!"
+      }
+    })
+
   }
 
   async findAll() {

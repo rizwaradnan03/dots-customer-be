@@ -33,34 +33,34 @@ export class AuthService {
 
         const hashPassword = await bcrypt.hash(data.password, 10)
 
-        try {
-            const user = await this.prisma.users.create({
-                data: {
-                    username: data.username,
-                    password: hashPassword,
-                }
-            })
+        const user = await this.prisma.users.create({
+            data: {
+                username: data.username,
+                password: hashPassword,
+            }
+        })
 
-            const customer = await this.prisma.customers.create({
-                data: {
-                    fullName: data.fullName,
-                    identityNumber: data.identityNumber,
-                    birthDate: data.birthDate,
-                    birthPlace: data.birthPlace,
-                    motherMaidenName: data.motherMaidenName,
-                    email: data.email,
-                    referralCode: data.referralCode,
-                    userId: user.id,
-                    createdBy: user.id
-                }
-            })
-
-            return { user, customer }
-
-        } catch (error) {
-            console.error("Terjadi kesalahan saat membuat user atau customer:", error);
-            throw error;
-        }
+        const customer = await this.prisma.customers.create({
+            data: {
+                fullName: data.fullName,
+                identityNumber: data.identityNumber,
+                birthDate: data.birthDate,
+                birthPlace: data.birthPlace,
+                motherMaidenName: data.motherMaidenName,
+                email: data.email,
+                referralCode: data.referralCode,
+                userId: user.id,
+                createdBy: user.id
+            }
+        })
+        
+        return await this.prisma.notifications.create({
+            data: {
+                customersId: customer.id,
+                status: 1,
+                message: "Selamat Datang " + (customer).fullName + "!"
+            }
+        })
     }
 
     async validateUser(loginDto: LoginDto) {
@@ -88,8 +88,6 @@ export class AuthService {
 
         return { token: this.jwt.sign(payload) }
     }
-
-
 
     async login(loginDto: LoginDto) {
         const isUserValid = await this.prisma.users.findFirst({
