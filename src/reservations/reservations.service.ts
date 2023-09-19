@@ -20,7 +20,7 @@ export class ReservationsService {
       data: {
         customersId: id,
         status: 1,
-        message: "Customer a.n " + (await findUser).fullName + "Berhasil Melakukan Reservasi!"
+        message: "Customer a.n " + (await findUser).fullName + " Berhasil Melakukan Reservasi!"
       }
     })
 
