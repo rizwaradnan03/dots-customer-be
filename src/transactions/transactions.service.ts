@@ -35,18 +35,15 @@ export class TransactionsService {
       }
     })
 
-    switch(transaction.transactionType) {
+    switch (transaction.transactionType) {
       case 1:
-        return await this.prisma.transactions.update({where: {id: transaction.id}, data: {title: "jfsdjfkjsdfjdls"}})
+        return await this.prisma.transactions.update({ where: { id: transaction.id }, data: { title: "jfsdjfkjsdfjdls" } })
     }
 
     return transaction
   }
 
-  async recordTopupLoan(
-    loanId: string,
-    amount: number,
-  ) {
+  async recordTopupLoan(loanId: string, amount: number) {
     const findLoan = await this.prisma.loans.findFirst({
       where: { id: loanId }
     })

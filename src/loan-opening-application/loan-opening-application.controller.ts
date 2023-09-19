@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { LoanOpeningApplicationService } from './loan-opening-application.service';
+import { loanOpeningDto } from './dto/update-loan-opening-application.dto';
 
 @Controller('opening')
 export class LoanOpeningApplicationController {
@@ -12,16 +13,16 @@ export class LoanOpeningApplicationController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.loanOpeningApplicationService.findOne(+id);
+    return this.loanOpeningApplicationService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateLoanOpeningApplicationDto: UpdateLoanOpeningApplicationDto) {
-  //   return this.loanOpeningApplicationService.update(+id, updateLoanOpeningApplicationDto);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateLoanOpeningDto: loanOpeningDto) {
+    return this.loanOpeningApplicationService.update(id, updateLoanOpeningDto);
+  }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.loanOpeningApplicationService.remove(+id);
+    return this.loanOpeningApplicationService.remove(id);
   }
 }

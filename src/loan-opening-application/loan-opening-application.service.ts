@@ -1,21 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from "src/prisma/prisma.service";
+import { loanOpeningDto } from './dto/update-loan-opening-application.dto';
 
 @Injectable()
 export class LoanOpeningApplicationService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async topupLoan(loanId: string, 
-  data: {
-    amount: number,
-    tenor: number,
-    reason: string
-  }) {
+  async topupLoan(loanId: string,
+    data: {
+      amount: number,
+      tenor: number,
+      reason: string
+    }) {
+
     const loan = await this.prisma.loans.findUnique({
       where: { id: loanId }
     })
-    console.log(loan)
-    const loanOpening = await this.prisma.loan_opening_application.create({
+
+    const findUser = await this.prisma.customers.findFirst({
+      where: { id: loan.customerId }
+    })
+
+    const createLoanOpening = await this.prisma.loan_opening_application.create({
       data: {
         amount: data.amount,
         tenor: data.tenor,
@@ -27,7 +33,15 @@ export class LoanOpeningApplicationService {
     const updatedLoan = await this.prisma.loans.update({
       where: { id: loanId },
       data: {
-        loan: loan.loan + loanOpening.amount
+        loan: loan.loan + createLoanOpening.amount
+      }
+    })
+
+    return await this.prisma.notifications.create({
+      data: {
+        customersId: findUser.id,
+        status: 1,
+        message: "Customer a.n " + (findUser).fullName + "Berhasil Melakukan Top-Up Kredit!"
       }
     })
 
@@ -38,15 +52,22 @@ export class LoanOpeningApplicationService {
     return await this.prisma.loan_opening_application.findMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} loanOpeningApplication`;
+  async findOne(id: string) {
+    return await this.prisma.loan_opening_application.findUnique({
+      where: { id }
+    })
   }
 
-  // update(id: number, updateLoanOpeningApplicationDto: UpdateLoanOpeningApplicationDto) {
-  //   return `This action updates a #${id} loanOpeningApplication`;
-  // }
+  async update(id: string, updateLoanOpeningDto: loanOpeningDto) {
+    return await this.prisma.loan_opening_application.update({
+      where: { id },
+      data: updateLoanOpeningDto
+    })
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} loanOpeningApplication`;
+  async remove(id: string) {
+    return await this.prisma.loan_opening_application.delete({
+      where: { id }
+    })
   }
 }

@@ -20,8 +20,8 @@ export class LoansController {
     return this.loansService.create(createLoanDto);
   }
 
-  @Post('deposit/:id')
-  async deposit(@Param('id') loanId: string, @Body() data: { amount: number,tenor: number,reason: string}) {
+  @Post('topup/:id')
+  async topup(@Param('id') loanId: string, @Body() data: { amount: number, tenor: number, reason: string }) {
     const updatedLoan = await this.loanOpeningService.topupLoan(loanId, data);
 
     const transaction = await this.transactionService.recordTopupLoan(
@@ -30,7 +30,7 @@ export class LoansController {
     );
 
     return { loan: updatedLoan, transaction };
-    
+
   }
 
   @Get()

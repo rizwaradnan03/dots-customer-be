@@ -33,7 +33,9 @@ export class LoanResApplicationService {
     })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} loanResApplication`;
+  async remove(id: string) {
+    return await this.prisma.loan_res_application.delete({
+      where: { id }
+    })
   }
 }

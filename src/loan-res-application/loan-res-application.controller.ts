@@ -34,8 +34,8 @@ export class LoanResApplicationController {
   // }
 
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.loanResApplicationService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.loanResApplicationService.remove(id);
+  }
 }
