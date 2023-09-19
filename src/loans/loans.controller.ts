@@ -32,16 +32,6 @@ export class LoansController {
   }
 
   @Get()
-  async findAllPaymentSchedule() {
-    return await this.loansService.findAllPaymentSchedule();
-  }
-
-  @Get()
-  async findAllPaymentScheduleByLoanId(loanId: string) {
-    return await this.loansService.findAllPaymentScheduleByLoanId(loanId);
-  }
-
-  @Get()
   async findAll() {
     return await this.loansService.findAll();
   }

@@ -217,7 +217,10 @@ model loan_res_application {
 
 model loan_installment {
   id            String    @id @default(uuid())
+  totalAmount   Int?      @default(0) @map(name: "total_amount")
   amount        Int?      @default(0)
+  interest      Int?      @default(0)
+  penalty       Int?      @default(0)
   paymentDate   DateTime? @map(name: "payment_date")
   createdAt     DateTime? @default(now()) @map(name: "created_at")
   loanOpeningId String?   @map(name: "loan_opening_id")

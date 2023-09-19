@@ -57,7 +57,10 @@ export class LoansService {
       paymentSchedule.push({
         loanId: updatedLoan.id,
         paymentDate,
+        totalAmount: updatedLoan.loan + interestPerMonth,
         amount: monthlyInstallment,
+        interest: interestPerMonth,
+        penalty: 0
       });
     }
 
@@ -67,38 +70,7 @@ export class LoansService {
 
     return (updatedLoan)
   }
-
-  async generatePaymentSchedule(loanId: string, totalLoanAmount: number, tenor: number) {
-    const bungaPerBulan = totalLoanAmount * 0.03;
-    const angsuranBulanan = (totalLoanAmount + bungaPerBulan) / tenor;
-    const currentDate = new Date();
-
-    const paymentSchedule = [];
-    for (let i = 0; i < tenor; i++) {
-      const paymentDate = new Date(currentDate);
-      paymentDate.setMonth(currentDate.getMonth() + i);
-      paymentSchedule.push({
-        loanId,
-        paymentDate,
-        amount: angsuranBulanan,
-      });
-    }
-
-    return this.prisma.loan_installment.createMany({
-      data: paymentSchedule,
-    });
-  }
-
-  async findAllPaymentSchedule() {
-    return await this.prisma.loan_installment.findMany()
-  }
-
-  async findAllPaymentScheduleByLoanId(loanId: string) {
-    return await this.prisma.loan_installment.findMany({
-      where: { loanId }
-    })
-  }
-
+  
   async create(createLoanDto: CreateLoanDto) {
     return await this.prisma.loans.create({
       data: createLoanDto
