@@ -35,12 +35,13 @@ export class SavingsController {
     return { saving: depositSaving, transaction };
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return await this.savingService.findAll();
   }
 
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.savingService.findOne(id);

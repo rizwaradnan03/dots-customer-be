@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -125,6 +125,32 @@ export class TransactionsService {
     return await this.prisma.transactions.findFirst({
       where: { id }
     })
+  }
+
+  async findOneSaving(savingId: string) {
+    const saving = await this.prisma.savings.findFirst({
+      where: {id: savingId}
+    })
+
+    const transaction = await this.prisma.transactions.findMany({
+      where: { savingId: saving.id },
+    });
+  
+    const transformedTransactions = transaction.map((transaction) => ({
+      id: transaction.id,
+      amount: transaction.amount,
+      createdAt: transaction.createdAt,
+      createdBy: transaction.createdBy,
+      createdDate: format(transaction.createdAt, "EE"),
+      tenantId: transaction.tenantId,
+      transactionType: transaction.transactionType,
+      status: transaction.status,
+      savingId: transaction.savingId,
+      loanId: transaction.loanId,
+      tenantid: transaction.tenantId
+    }));
+
+    return transformedTransactions;  
   }
 
   update(id: number, updateTransactionDto: UpdateTransactionDto) {

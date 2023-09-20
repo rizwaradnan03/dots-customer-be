@@ -90,7 +90,11 @@ export class AuthService {
             throw new UnauthorizedException('Wrong Password');
         }
 
-        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email };
+        const customer = await this.prisma.customers.findFirst({
+            where: {userId: isUserValid.id}
+        })
+
+        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email, customerId: customer.id };
 
         return { token: this.jwt.sign(payload) }
     }
@@ -99,8 +103,7 @@ export class AuthService {
         const isUserValid = await this.prisma.users.findFirst({
             where: { username: loginDto.username }
         })
-
-        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email, id: isUserValid.id };
+        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email };
 
         return { token: this.jwt.sign(payload) }
     }
