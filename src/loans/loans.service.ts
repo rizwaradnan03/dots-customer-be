@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -12,6 +12,10 @@ export class LoansService {
     const loan = await this.prisma.loans.findUnique({
       where: { id: loanId }
     })
+
+    if(!loan) {
+      return new UnauthorizedException( )
+    }
 
     const customer = await this.prisma.customers.findFirst({
       where: { id: loan.customerId }
@@ -60,11 +64,10 @@ export class LoansService {
       data: {
         customersId: customer.id,
         status: 1,
-        message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit!"
+        message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit sebesar Rp. " + loanOpening.amount + " jangan lupa bayar tepat waktu ya pak / Bu " + customer.fullName
       }
     })
-
-    return (notifications)
+    return (notifications) 
   }
 
   async create(createLoanDto: CreateLoanDto, customerId) {

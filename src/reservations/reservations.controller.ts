@@ -14,16 +14,16 @@ export class ReservationsController {
 
   @Post(':id')
   async create(@Param('id') customerId: string, @Body() createReservationDto: CreateReservationDto) {
-    return await this.reservationsService.create(createReservationDto, customerId);
+    return await this.reservationsService.create(createReservationDto     );
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.reservationsService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('find/:id')
   findOne(@Param('id') id: string) {
     return this.reservationsService.findOne(id);
