@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -10,27 +10,32 @@ import { ApiTags } from '@nestjs/swagger';
 export class CustomersController {
   constructor(private readonly customersService: CustomersService) { }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createCustomerDto: CreateCustomerDto, @Request() req) {
-    return await this.customersService.create(createCustomerDto), req.user;
+  async create(@Body() createCustomerDto: CreateCustomerDto) {
+    return await this.customersService.create(createCustomerDto);
   }
-  // @UseGuards(JwtAuthGuard)
+
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll() {
     return await this.customersService.findAll();
   }
 
-  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @Get('find/:id')
   async findOne(@Param('id') id: string) {
     return await this.customersService.findOne(id);
   }
 
-  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @Patch('update/:id')
   async update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
     return await this.customersService.update(id, updateCustomerDto);
   }
 
-  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
   async remove(@Param('id') id: string) {
     return await this.customersService.remove(id);
   }

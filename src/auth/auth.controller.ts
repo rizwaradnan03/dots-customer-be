@@ -33,7 +33,8 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Request() req, @Body() LoginDto: LoginDto) {
-    return { user: req.user, token: req.user.token };
+    await this.authService.validateUser(LoginDto)
+    return { token: req.user.token };
   }
 
 }

@@ -16,16 +16,19 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('find/:id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);

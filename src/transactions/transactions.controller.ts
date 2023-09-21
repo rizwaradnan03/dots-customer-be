@@ -14,42 +14,43 @@ export class TransactionsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.transactionsService.findAll();
+  async findAll() {
+    return await this.transactionsService.findAll();
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionsService.findOne(id);
-  }
-
-  // @UseGuards(JwtAuthGuard)
-  @Get('/savings/:id')
-  findOneSaving(@Param('id') savingId: string) {
-    return this.transactionsService.findOneSaving(savingId);
+  @Get('find/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.transactionsService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/loans')
-  findTopUp(){
-    return this.transactionsService.findTopUp();
+  @Get('savings')
+  async findOneSaving(@Param('id') savingId: string) {
+    return await this.transactionsService.findOneSaving(savingId);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/deposit')
-  findDeposit(){
-    return this.transactionsService.findDeposit();
+  @Get('loans')
+  async findTopUp(){
+    return await this.transactionsService.findTopUp();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('deposits')
+  async findDeposit(){
+    return await this.transactionsService.findDeposit();
   }
    
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
-    return this.transactionsService.update(+id, updateTransactionDto);
+  @UseGuards(JwtAuthGuard)
+  @Patch('update/:id')
+  async update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
+    return await this.transactionsService.update(+id, updateTransactionDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionsService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return await this.transactionsService.remove(+id);
   }
 }

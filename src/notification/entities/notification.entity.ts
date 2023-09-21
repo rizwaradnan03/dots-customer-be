@@ -8,4 +8,5 @@ export class NotificationEntity implements notificationsModel{
     isOpened: number;
     loanId: string;
     reservationId: string;
+    savingId: string;
 }

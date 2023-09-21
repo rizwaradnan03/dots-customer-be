@@ -12,7 +12,7 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService, private readonly notificationsService: NotificationService) { }
 
   @UseGuards(JwtAuthGuard)
-  @Post('')
+  @Post()
   async create(@Req() req, @Body() createReservationDto: CreateReservationDto) {
   const customerId = req.user.customerId; 
 
@@ -24,32 +24,26 @@ export class ReservationsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('find')
-  async findResCust(@Req()req) {
-    const customerId = req.user.customerId
-
-    return await this.reservationsService.findResCust(customerId)
-  }
-
-  // @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.reservationsService.findAll();
+  async findAll() {
+    return await this.reservationsService.findAll();
   }
 
-  // @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.reservationsService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('find/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.reservationsService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
-  update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
-    return this.reservationsService.update(id, updateReservationDto);
+  async update(@Param('id') id: string, @Body() updateReservationDto: UpdateReservationDto) {
+    return await this.reservationsService.update(id, updateReservationDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch('delete/:id')
-  remove(@Param('id') id: string) {
-    return this.reservationsService.remove(id);
+  async remove(@Param('id') id: string) {
+    return await this.reservationsService.remove(id);
   }
 }

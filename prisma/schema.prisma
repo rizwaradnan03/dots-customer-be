@@ -24,7 +24,6 @@ model customers {
   updatedBy        String?   @map(name: "updated_by")
   deletedBy        String?   @map(name: "deleted_by")
   userId           String?   @map(name: "user_id")
-  reservationId    String?   @map(name: "reservation_id")
 
   saving          savings[]       @relation("savingId")
   loan            loans[]         @relation("loanId")
@@ -32,21 +31,8 @@ model customers {
   customerCreated users?          @relation("customerCreatedBy", fields: [createdBy], references: [id])
   customerUpdated users?          @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
   customerDeleted users?          @relation("customerDeletedBy", fields: [deletedBy], references: [id])
-  reservation     reservations?   @relation("customerId", fields: [reservationId], references: [id])
 
-  users          users?        @relation("customerId", fields: [userId], references: [id])
-  // externalId       String?   @map(name: "external_id")
-  // identityType     String?   @map(name: "identity_type")
-  // phoneNumber      String?   @map(name: "phone_number")
-  // mobileNumber     String?   @map(name: "mobile_number")
-  // gender           String?   @map(name: "gender")
-  // address          String?   @map(name: "address")
-  // subdistrict      String?   @map(name: "subdistrict")
-  // district         String?   @map(name: "district")
-  // identityPhotoUrl String?   @map(name: "identity_photo_url")
-  // selfiePhotoUrl   String?   @map(name: "selfie_photo_url")
-  reservations   reservations? @relation(fields: [reservationsId], references: [id])
-  reservationsId String?
+  users users? @relation("customerId", fields: [userId], references: [id])
 }
 
 model users {
@@ -71,10 +57,6 @@ model users {
   customers          customers[]    @relation("customerId")
 
   tenant tenants? @relation("userId", fields: [tenantId], references: [id])
-
-  // emailConfirmedAt DateTime? @map(name: "email_confirmed_at") @db.Timestamp()
-  // accountOfficerId String?   @map(name: "account_officer_id")
-  // branchId         String?   @map(name: "branch_id")
 }
 
 model tenants {
@@ -118,11 +100,9 @@ model reservations {
   createdBy         String?   @map(name: "created_by_id")
 
   notification notifications[] @relation("notificationId")
-  customer     customers[]     @relation("customerId")
 
-  tenants   tenants?    @relation("reservationId", fields: [officeDestination], references: [id])
-  user      users?      @relation("reservationCreatedBy", fields: [createdBy], references: [id])
-  customers customers[]
+  tenants tenants? @relation("reservationId", fields: [officeDestination], references: [id])
+  user    users?   @relation("reservationCreatedBy", fields: [createdBy], references: [id])
 }
 
 model transactions {
@@ -178,14 +158,15 @@ model savings {
   tenantId         Int?      @map(name: "tenant_id")
   isActive         Int?      @default(1) @map(name: "is_active")
 
-  transaction   transactions[] @relation("transactionId")
-  savingCreated users?         @relation("savingCreatedBy", fields: [createdBy], references: [id])
-  savingUpdated users?         @relation("savingUpdatedBy", fields: [updatedBy], references: [id])
-  savingDeleted users?         @relation("savingDeletedBy", fields: [deletedBy], references: [id])
-  customer      customers?     @relation("savingId", fields: [customerId], references: [id])
-  tenants       tenants?       @relation("savingId", fields: [tenantId], references: [id])
+  transaction   transactions[]  @relation("transactionId")
+  savingCreated users?          @relation("savingCreatedBy", fields: [createdBy], references: [id])
+  savingUpdated users?          @relation("savingUpdatedBy", fields: [updatedBy], references: [id])
+  savingDeleted users?          @relation("savingDeletedBy", fields: [deletedBy], references: [id])
+  customer      customers?      @relation("savingId", fields: [customerId], references: [id])
+  tenants       tenants?        @relation("savingId", fields: [tenantId], references: [id])
   // status           Int?      @map(name: "status")
   // productType      String?   @map(name: "productType")
+  notifications notifications[] @relation("notificationId")
 }
 
 model loans {
@@ -242,16 +223,17 @@ model loan_installment {
 }
 
 model notifications {
-  id       String  @id @default(uuid())
-  status   Int?
-  message  String?
-  isOpened Int?    @default(0) @map(name: "is_opened")
-
+  id            String  @id @default(uuid())
+  status        Int?
+  message       String?
+  isOpened      Int?    @default(0) @map(name: "is_opened")
   customersId   String? @map(name: "customer_id")
   loanId        String? @map(name: "loan_id")
   reservationId String? @map(name: "reservation_id")
+  savingId      String? @map(name: "saving_id")
 
   reservation reservations? @relation("notificationId", fields: [reservationId], references: [id])
   loan        loans?        @relation("notificationId", fields: [loanId], references: [id])
   customers   customers?    @relation("notificationId", fields: [customersId], references: [id])
+  saving      savings?      @relation("notificationId", fields: [savingId], references: [id])
 }

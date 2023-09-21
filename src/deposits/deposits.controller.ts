@@ -4,6 +4,7 @@ import { CreateDepositDto } from './dto/create-deposit.dto';
 import { UpdateDepositDto } from './dto/update-deposit.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { id } from 'date-fns/locale';
 
 @ApiTags('deposits')
 @Controller('deposits')
@@ -12,29 +13,30 @@ export class DepositsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Req() req, @Body() createDepositDto: CreateDepositDto) {
+  async create(@Req() req, @Body() createDepositDto: CreateDepositDto) {
     const customerId = req.user.customerId
 
-    return this.depositsService.create(createDepositDto, customerId);
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+
+    return await this.depositsService.create(createDepositDto, customerId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.depositsService.findAll();
+  async findAll() {
+    return await this.depositsService.findAll();
   }
 
-  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @Get('find/:id')
   async findOne(@Param('id') id: string) {
     return await this.depositsService.findOne(id);
   }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateDepositDto: UpdateDepositDto) {
-  //   return this.depositsService.update(id, updateDepositDto);
-  // }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.depositsService.remove(id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return await this.depositsService.remove(id);
   }
 }

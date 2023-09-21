@@ -1,18 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { paymentScheduleService } from './payment.schedule.service';
 import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
 @ApiTags('payment-schedule')
 @Controller('payment-schedule')
 export class paymentScheduleController {
     constructor(private readonly paymentScheduleService: paymentScheduleService) { }
 
-    @Get('')
+    @UseGuards(JwtAuthGuard)
+    @Get()
     async findAllPaymentSchedule() {
         return await this.paymentScheduleService.findAllPaymentSchedule();
     }
 
-    @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    @Get('find/:id')
     async findAllPaymentScheduleByLoanId(loanId: string) {
         return await this.paymentScheduleService.findAllPaymentScheduleByLoanId(loanId);
     }

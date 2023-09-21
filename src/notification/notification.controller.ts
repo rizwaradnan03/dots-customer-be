@@ -12,40 +12,37 @@ export class NotificationController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createNotificationDto: CreateNotificationDto) {
-    return this.notificationService.create(createNotificationDto);
+  async create(@Body() createNotificationDto: CreateNotificationDto) {
+    return await this.notificationService.create(createNotificationDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.notificationService.findAll();
+  async findAll() {
+    return await this.notificationService.findAll();
   }
 
-  // @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificationService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('find/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.notificationService.findOne(id);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateNotificationDto: UpdateNotificationDto,
-  ) {
-    return this.notificationService.update(id, updateNotificationDto);
+  @UseGuards(JwtAuthGuard)
+  @Patch('update/:id')
+  async update(@Param('id') id: string, @Body() updateNotificationDto: UpdateNotificationDto) {
+    return await this.notificationService.update(id, updateNotificationDto);
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get('opened/:id')
-  updateIsOpened(@Param('id') id: string) {
-    return this.notificationService.updateIsOpened(id);
+  async updateIsOpened(@Param('id') id: string) {
+    return await this.notificationService.updateIsOpened(id);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificationService.remove(id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return await this.notificationService.remove(id);
   }
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-// import { CreateSavingDto } from './dto/create-saving.dto';
 import { UpdateSavingDto } from './dto/update-saving.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateSavingDto } from './dto/create-saving.dto';
@@ -9,6 +8,10 @@ export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createSavingDto: CreateSavingDto, customerId: string) {
+    const customer = await this.prisma.customers.findFirst({
+      where: { id: customerId }
+    })
+
     const crypto = require('crypto');
 
     function generateRandomInt() {
@@ -21,23 +24,21 @@ export class SavingsService {
       data: {
         ...createSavingDto,
         customerId,
+        createdBy: customer.userId,
         accountNumber: randomInt
       }
     })
 
-    const customer = await this.prisma.customers.findFirst({
-      where: { id: saving.customerId },
-      select: { userId: true }
-    })
-
-    const createdBy = await this.prisma.savings.update({
-      where: { id: saving.id },
+    await this.prisma.notifications.create({
       data: {
-        createdBy: customer.userId
+        customersId: customer.id,
+        status: 1,
+        message: "Customer " + customer.fullName + " Berhasil Membuat Akun Tabungan!",
+        savingId: saving.id
       }
     })
 
-    return createdBy
+    return saving
   }
 
   async depositSaving(savingId: string, data: { amount: number }) {
@@ -45,7 +46,7 @@ export class SavingsService {
       where: { id: savingId }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
+    const customer = await this.prisma.customers.findUnique({
       where: { id: saving.customerId },
     })
 
@@ -53,17 +54,20 @@ export class SavingsService {
       where: { id: savingId },
       data: {
         currentBalance: saving.currentBalance + data.amount,
-        updatedBy: findUser.userId
+        updatedBy: customer.userId
       }
     })
 
-    return await this.prisma.notifications.create({
+    await this.prisma.notifications.create({
       data: {
-        customersId: findUser.id,
+        customersId: customer.id,
         status: 1,
-        message: "Customer a.n " + (findUser).fullName + " Berhasil Melakukan Setor Tabungan!"
+        message: "Customer a.n " + customer.fullName + " Berhasil Melakukan Setor Tabungan Sebanyak " + data.amount,
+        savingId: saving.id,
       }
     })
+
+    return updatedSaving
 
   }
 
@@ -96,12 +100,12 @@ export class SavingsService {
   }
 
   async update(id: string, updateSavingDto: UpdateSavingDto) {
-    const findSaving = await this.prisma.savings.findFirst({
+    const saving = await this.prisma.savings.findFirst({
       where: { id }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
-      where: { id: findSaving.customerId },
+    const customer = await this.prisma.customers.findFirst({
+      where: { id: saving.customerId },
       select: { userId: true }
     })
 
@@ -109,25 +113,25 @@ export class SavingsService {
       where: { id },
       data: {
         ...updateSavingDto,
-        updatedBy: findUser.userId
+        updatedBy: customer.userId
       }
     });
   }
 
   async remove(id: string) {
-    const findSaving = await this.prisma.savings.findFirst({
+    const saving = await this.prisma.savings.findFirst({
       where: { id }
     })
 
-    const findUser = await this.prisma.customers.findFirst({
-      where: { id: findSaving.id },
+    const customer = await this.prisma.customers.findFirst({
+      where: { id: saving.id },
       select: { userId: true }
     })
 
     await this.prisma.savings.update({
       where: { id },
       data: {
-        deletedBy: findUser.userId,
+        deletedBy: customer.userId,
         isActive: 0
       }
     })

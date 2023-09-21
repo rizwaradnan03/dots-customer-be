@@ -14,6 +14,19 @@ export class LoansController {
     private readonly transactionService: TransactionsService,
   ) { }
 
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(@Req() req, @Body() createLoanDto: CreateLoanDto) {
+    const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+
+    return await this.loansService.create(createLoanDto, customerId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post('topup/:id')
   async topup(@Param('id') loanId: string, @Body() data: { amount: number, tenor: number, reason: string }) {
     const topupLoan = await this.loansService.topupLoan(loanId, data);
@@ -27,35 +40,39 @@ export class LoansController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
-  create(@Req() req, @Body() createLoanDto: CreateLoanDto) {
-    const customerId = req.user.customerId
-    return this.loansService.create(createLoanDto, customerId);
-  }
-
   @Get()
   async findAll() {
     return await this.loansService.findAll();
   }
 
-  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @Get('find/:id')
   async findOne(@Param('id') id: string) {
     return await this.loansService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
-    return this.loansService.update(+id, updateLoanDto);
+  @UseGuards(JwtAuthGuard)
+  @Patch('update/:id')
+  async update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
+    return await this.loansService.update(+id, updateLoanDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.loansService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return await this.loansService.remove(+id);
   }
 
   ///loan res
+  @UseGuards(JwtAuthGuard)
   @Post('res/:id')
-  async createLoanres(@Param('id') loanId: string, @Body() data: { type: string, description: string }) {
-    return await this.loansService.createLoanRes(loanId, data)
+  async createLoanres(@Req() req, @Param('id') loanId: string, @Body() data: { type: string, description: string }) {
+    const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+
+    return await this.loansService.createLoanRes(loanId, customerId, data)
   }
 }

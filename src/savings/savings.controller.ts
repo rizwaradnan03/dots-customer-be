@@ -4,7 +4,7 @@ import { UpdateSavingDto } from './dto/update-saving.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionsService } from 'src/transactions/transactions.service';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import {  } from "module";
+import { } from "module";
 import { error } from 'console';
 import { CreateSavingDto } from './dto/create-saving.dto';
 
@@ -18,17 +18,19 @@ export class SavingsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Req() req, @Body() createSavingDto:CreateSavingDto) {
+  async create(@Req() req, @Body() createSavingDto: CreateSavingDto) {
     const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
 
     return await this.savingService.create(createSavingDto, customerId)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('deposit/:id')
-  async deposit(
-    @Param('id') savingId: string,
-    @Body() data: { amount: number },
-  ) {
+  async deposit(@Param('id') savingId: string, @Body() data: { amount: number }) {
     const depositSaving = await this.savingService.depositSaving(savingId, data);
 
     const transaction = await this.transactionService.recordDeposit(
@@ -45,19 +47,21 @@ export class SavingsController {
     return await this.savingService.findAll();
   }
 
-  // @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.savingService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('find/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.savingService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSavingDto: UpdateSavingDto) {
-    return this.savingService.update(id, updateSavingDto);
+  @UseGuards(JwtAuthGuard)
+  @Patch('update/:id')
+  async update(@Param('id') id: string, @Body() updateSavingDto: UpdateSavingDto) {
+    return await this.savingService.update(id, updateSavingDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.savingService.remove(id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async remove(@Param('id') id: string) {
+    return await this.savingService.remove(id);
   }
 }

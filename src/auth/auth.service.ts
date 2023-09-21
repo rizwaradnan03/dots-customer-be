@@ -91,7 +91,7 @@ export class AuthService {
         }
 
         const customer = await this.prisma.customers.findFirst({
-            where: {userId: isUserValid.id}
+            where: { userId: isUserValid.id }
         })
 
         const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email, customerId: customer.id };
@@ -108,11 +108,9 @@ export class AuthService {
         return { token: this.jwt.sign(payload) }
     }
 
-    async findUserById (id: string){
+    async findUserById(id: string) {
         return this.prisma.users.findUnique({
-            where:{
-                id
-            }
+            where: { id }
         })
     }
 

@@ -8,6 +8,10 @@ export class DepositsService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createDepositDto: CreateDepositDto, customerId) {
+    const customer = await this.prisma.customers.findUnique({
+      where: { id: customerId }
+    })
+
     const crypto = require('crypto');
 
     function generateRandomInt() {
@@ -16,13 +20,23 @@ export class DepositsService {
 
     const randomInt = generateRandomInt().toString();
 
-    return await this.prisma.deposits.create({
+    const deposit =  await this.prisma.deposits.create({
       data: {
         ...createDepositDto,
         customerId,
         accountNumber: randomInt
       }
     })
+
+    await this.prisma.notifications.create({
+      data: {
+        customersId: customerId,
+        status: 1,
+        message: "Customer " + customer.fullName + " Berhasil Membuat Akun Deposit!",
+      }
+    })
+
+    return deposit
   }
 
   async findAll() {
@@ -49,13 +63,6 @@ export class DepositsService {
       }
     })
   }
-
-  // async update(id: string, updateDepositDto: UpdateDepositDto) {
-  //   return await this.prisma.deposits.update({
-  //     where: { id },
-  //     data: updateDepositDto
-  //   });
-  // }
 
   async remove(id: string) {
     return await this.prisma.deposits.update({

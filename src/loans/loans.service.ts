@@ -56,7 +56,7 @@ export class LoansService {
       });
     }
 
-    await this.prisma.loan_installment.createMany({
+    const loanInstallment = await this.prisma.loan_installment.createMany({
       data: paymentSchedule
     })
 
@@ -64,13 +64,18 @@ export class LoansService {
       data: {
         customersId: customer.id,
         status: 1,
-        message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit sebesar Rp. " + loanOpening.amount + " jangan lupa bayar tepat waktu ya pak / Bu " + customer.fullName
+        message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit sebesar Rp. " + loanOpening.amount + " jangan lupa bayar tepat waktu ya pak / Bu " + customer.fullName,
+        loanId
       }
     })
-    return (notifications)
+    return { loan: updatedLoan, loanInstallment: loanInstallment }
   }
 
   async create(createLoanDto: CreateLoanDto, customerId) {
+    const customer = await this.prisma.customers.findUnique({
+      where: { id: customerId }
+    })
+
     const crypto = require('crypto');
 
     function generateRandomInt() {
@@ -79,13 +84,23 @@ export class LoansService {
 
     const randomInt = generateRandomInt().toString();
 
-    return await this.prisma.loans.create({
+    const loan = await this.prisma.loans.create({
       data: {
         ...createLoanDto,
         customerId,
-        accountNumber: randomInt
+        accountNumber: randomInt,
       }
     })
+
+    await this.prisma.notifications.create({
+      data: {
+        customersId: customerId,
+        status: 1,
+        message: "Customer " + customer.fullName + " Berhasil Membuat Akun Kredit!",
+      }
+    })
+
+    return loan
   }
 
   async findAll() {
@@ -122,12 +137,27 @@ export class LoansService {
   }
 
   ///loan res
-  async createLoanRes(loanId: string, data: { type: string, description: string }) {
-    return await this.prisma.loan_res_application.create({
+  async createLoanRes(customerId: string, loanId: string, data: { type: string, description: string }) {
+    const customer = await this.prisma.customers.findUnique({
+      where: { id: customerId }
+    })
+
+    const loanRes = await this.prisma.loan_res_application.create({
       data: {
         type: data.type,
-        description: data.description
+        description: data.description,
+        loanId
       }
     })
+
+    await this.prisma.notifications.create({
+      data: {
+        customersId: customerId,
+        status: 1,
+        message: "Customer " + customer.fullName + " Berhasil Mengajukan Restruksurisasi!",
+        loanId
+      }
+    })
+    return loanRes
   }
 }
