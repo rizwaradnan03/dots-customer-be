@@ -7,9 +7,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class DepositsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createDepositDto: CreateDepositDto) {
+  async create(createDepositDto: CreateDepositDto, customerId) {
+    const crypto = require('crypto');
+
+    function generateRandomInt() {
+      return crypto.randomBytes(4).readUInt32LE(0);
+    }
+
+    const randomInt = generateRandomInt().toString();
+
     return await this.prisma.deposits.create({
-      data: createDepositDto
+      data: {
+        ...createDepositDto,
+        customerId,
+        accountNumber: randomInt
+      }
     })
   }
 
@@ -38,12 +50,12 @@ export class DepositsService {
     })
   }
 
-  async update(id: string, updateDepositDto: UpdateDepositDto) {
-    return await this.prisma.deposits.update({
-      where: { id },
-      data: updateDepositDto
-    });
-  }
+  // async update(id: string, updateDepositDto: UpdateDepositDto) {
+  //   return await this.prisma.deposits.update({
+  //     where: { id },
+  //     data: updateDepositDto
+  //   });
+  // }
 
   async remove(id: string) {
     return await this.prisma.deposits.update({

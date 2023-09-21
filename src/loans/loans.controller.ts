@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { LoansService } from './loans.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionsService } from 'src/transactions/transactions.service';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 
 @ApiTags('loans')
 @Controller('loans')
@@ -25,8 +26,10 @@ export class LoansController {
     return { loan: topupLoan, transaction };
   }
 
-  @Post(':id')
-  create(@Param('id') customerId: string, @Body() createLoanDto: CreateLoanDto) {
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  create(@Req() req, @Body() createLoanDto: CreateLoanDto) {
+    const customerId = req.user.customerId
     return this.loansService.create(createLoanDto, customerId);
   }
 
@@ -48,5 +51,11 @@ export class LoansController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.loansService.remove(+id);
+  }
+
+  ///loan res
+  @Post('res/:id')
+  async createLoanres(@Param('id') loanId: string, @Body() data: { type: string, description: string }) {
+    return await this.loansService.createLoanRes(loanId, data)
   }
 }

@@ -1,8 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import * as session from 'express-session';
-import * as passport from 'passport';
 import * as express from 'express';
 import { join } from 'path';
 
@@ -23,7 +21,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(process.env.PORT, '192.168.18.210', () => {
+  await app.listen(process.env.PORT, '192.168.18.253', () => {
     console.log('connected on PORT ' + process.env.PORT);
   });
 }

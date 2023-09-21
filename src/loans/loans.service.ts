@@ -13,8 +13,8 @@ export class LoansService {
       where: { id: loanId }
     })
 
-    if(!loan) {
-      return new UnauthorizedException( )
+    if (!loan) {
+      return new UnauthorizedException()
     }
 
     const customer = await this.prisma.customers.findFirst({
@@ -67,14 +67,23 @@ export class LoansService {
         message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit sebesar Rp. " + loanOpening.amount + " jangan lupa bayar tepat waktu ya pak / Bu " + customer.fullName
       }
     })
-    return (notifications) 
+    return (notifications)
   }
 
   async create(createLoanDto: CreateLoanDto, customerId) {
+    const crypto = require('crypto');
+
+    function generateRandomInt() {
+      return crypto.randomBytes(4).readUInt32LE(0);
+    }
+
+    const randomInt = generateRandomInt().toString();
+
     return await this.prisma.loans.create({
       data: {
         ...createLoanDto,
-        customerId
+        customerId,
+        accountNumber: randomInt
       }
     })
   }
@@ -110,5 +119,15 @@ export class LoansService {
 
   remove(id: number) {
     return `This action removes a #${id} loan`;
+  }
+
+  ///loan res
+  async createLoanRes(loanId: string, data: { type: string, description: string }) {
+    return await this.prisma.loan_res_application.create({
+      data: {
+        type: data.type,
+        description: data.description
+      }
+    })
   }
 }

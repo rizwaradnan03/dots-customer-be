@@ -9,10 +9,19 @@ export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createSavingDto: CreateSavingDto, customerId: string) {
+    const crypto = require('crypto');
+
+    function generateRandomInt() {
+      return crypto.randomBytes(4).readUInt32LE(0);
+    }
+
+    const randomInt = generateRandomInt().toString();
+
     const saving = await this.prisma.savings.create({
       data: {
         ...createSavingDto,
-        customerId
+        customerId,
+        accountNumber: randomInt
       }
     })
 
@@ -52,7 +61,7 @@ export class SavingsService {
       data: {
         customersId: findUser.id,
         status: 1,
-        message: "Customer a.n " + (findUser).fullName + "Berhasil Melakukan Setor Tabungan!"
+        message: "Customer a.n " + (findUser).fullName + " Berhasil Melakukan Setor Tabungan!"
       }
     })
 

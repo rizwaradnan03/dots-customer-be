@@ -10,4 +10,6 @@ export class ReservationEntity implements ReservationModel {
     isActive: number;
     createdBy: string;
     time: string;
+    customerId: string;
+    service: string;
 }

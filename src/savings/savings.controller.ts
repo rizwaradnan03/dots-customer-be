@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { SavingsService } from './savings.service';
-// import { CreateSavingDto } from './dto/create-saving.dto';
 import { UpdateSavingDto } from './dto/update-saving.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { TransactionsService } from 'src/transactions/transactions.service';
-import { CreateSavingDto } from './dto/create-saving.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import {  } from "module";
+import { error } from 'console';
+import { CreateSavingDto } from './dto/create-saving.dto';
 
 @ApiTags('savings')
 @Controller('savings')
@@ -15,9 +16,12 @@ export class SavingsController {
     private readonly transactionService: TransactionsService
   ) { }
 
-  @Post(':id')
-  async create(@Param('id') customerId: string, @Body() data: { accountNumber: string, tenantId: number, }) {
-    return await this.savingService.create(data, customerId)
+  @UseGuards(JwtAuthGuard)
+  @Post()
+  async create(@Req() req, @Body() createSavingDto:CreateSavingDto) {
+    const customerId = req.user.customerId
+
+    return await this.savingService.create(createSavingDto, customerId)
   }
 
   @Post('deposit/:id')

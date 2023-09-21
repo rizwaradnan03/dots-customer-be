@@ -24,6 +24,7 @@ model customers {
   updatedBy        String?   @map(name: "updated_by")
   deletedBy        String?   @map(name: "deleted_by")
   userId           String?   @map(name: "user_id")
+  reservationId    String?   @map(name: "reservation_id")
 
   saving          savings[]       @relation("savingId")
   loan            loans[]         @relation("loanId")
@@ -31,8 +32,9 @@ model customers {
   customerCreated users?          @relation("customerCreatedBy", fields: [createdBy], references: [id])
   customerUpdated users?          @relation("customerUpdatedBy", fields: [updatedBy], references: [id])
   customerDeleted users?          @relation("customerDeletedBy", fields: [deletedBy], references: [id])
+  reservation     reservations?   @relation("customerId", fields: [reservationId], references: [id])
 
-  users users? @relation("customerId", fields: [userId], references: [id])
+  users          users?        @relation("customerId", fields: [userId], references: [id])
   // externalId       String?   @map(name: "external_id")
   // identityType     String?   @map(name: "identity_type")
   // phoneNumber      String?   @map(name: "phone_number")
@@ -43,6 +45,8 @@ model customers {
   // district         String?   @map(name: "district")
   // identityPhotoUrl String?   @map(name: "identity_photo_url")
   // selfiePhotoUrl   String?   @map(name: "selfie_photo_url")
+  reservations   reservations? @relation(fields: [reservationsId], references: [id])
+  reservationsId String?
 }
 
 model users {
@@ -107,15 +111,18 @@ model reservations {
   reason            String?   @map(name: "reason")
   attendAtStart     DateTime? @map(name: "attend_at_start")
   time              String?   @map(name: "time")
+  service           String?   @map(name: "service")
   createdAt         DateTime? @default(now()) @map(name: "created_at") @db.Timestamp()
   deletedAt         DateTime? @map(name: "delete_at") @db.Timestamp()
   isActive          Int?      @default(1) @map(name: "is_active")
   createdBy         String?   @map(name: "created_by_id")
 
   notification notifications[] @relation("notificationId")
+  customer     customers[]     @relation("customerId")
 
-  tenants tenants? @relation("reservationId", fields: [officeDestination], references: [id])
-  user    users?   @relation("reservationCreatedBy", fields: [createdBy], references: [id])
+  tenants   tenants?    @relation("reservationId", fields: [officeDestination], references: [id])
+  user      users?      @relation("reservationCreatedBy", fields: [createdBy], references: [id])
+  customers customers[]
 }
 
 model transactions {
@@ -145,8 +152,8 @@ model transactions {
 
 model deposits {
   id            String  @id @default(uuid())
-  accountNumber String  @unique @map(name: "account_number")
-  balance       Int     @default(0)
+  accountNumber String? @unique @map(name: "account_number")
+  balance       Int?    @default(0)
   customerId    String? @map(name: "customer_id")
   tenantId      Int?    @map(name: "tenant_id")
   isActive      Int?    @default(1) @map(name: "is_active")
@@ -183,7 +190,7 @@ model savings {
 
 model loans {
   id            String  @id @default(uuid())
-  accountNumber String  @unique @map(name: "account_number")
+  accountNumber String? @unique @map(name: "account_number")
   loan          Int?    @default(0)
   customerId    String? @map(name: "customer_id")
   tenantId      Int?    @map(name: "tenant_id")
