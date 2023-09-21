@@ -24,10 +24,16 @@ export class AuthController {
     return await this.authService.register(data)
   }
 
+  // @UseGuards(LocalAuthGuard)
+  // @Post('login')
+  // async login(@Body() LoginDto: LoginDto) {
+  //   return await this.authService.validateUser(LoginDto);
+  // }
+
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() LoginDto: LoginDto) {
-    return await this.authService.validateUser(LoginDto);
+  async login(@Request() req, @Body() LoginDto: LoginDto) {
+    return { user: req.user, token: req.user.token };
   }
 
 }

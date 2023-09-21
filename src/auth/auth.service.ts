@@ -108,4 +108,12 @@ export class AuthService {
         return { token: this.jwt.sign(payload) }
     }
 
+    async findUserById (id: string){
+        return this.prisma.users.findUnique({
+            where:{
+                id
+            }
+        })
+    }
+
 }
