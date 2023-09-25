@@ -144,10 +144,6 @@ export class LoansService {
 
   ///loan res
   async updateLoanRes(customerId: string, loanId: string, data: { type: string, description: string }) {
-    const customer = await this.prisma.customers.findUnique({
-      where: { id: customerId }
-    })
-
     const loanRes = await this.prisma.loan_res_application.findFirst({
       where: { loanId }
     })
@@ -161,6 +157,10 @@ export class LoansService {
       }
     })
 
+    const customer = await this.prisma.customers.findFirst({
+      where: {id: customerId}
+    })
+
     await this.prisma.notifications.create({
       data: {
         customersId: customerId,
@@ -169,6 +169,7 @@ export class LoansService {
         loanId
       }
     })
-    return loanRes
+
+    return loanResUpdated
   }
 }

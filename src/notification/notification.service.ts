@@ -24,8 +24,8 @@ export class NotificationService {
     });
   }
 
-  findOne(id: string) {
-    return this.prisma.notifications.findUnique({
+  findOne(customerId: string) {
+    return this.prisma.notifications.findMany({
       include: {
         customers: {
           select: {
@@ -34,7 +34,7 @@ export class NotificationService {
           }
         }
       },
-      where: { id }
+      where: { customersId: customerId }
     })
   }
 

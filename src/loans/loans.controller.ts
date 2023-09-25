@@ -68,11 +68,11 @@ export class LoansController {
   @Patch('res/:id')
   async createLoanres(@Req() req, @Param('id') loanId: string, @Body() data: { type: string, description: string }) {
     const customerId = req.user.customerId
-
+    console.log(customerId)
     if (!customerId) {
       throw new Error('customerId tidak valid atau kosong');
     }
 
-    return await this.loansService.updateLoanRes(loanId, customerId, data)
+    return await this.loansService.updateLoanRes(customerId, loanId, data)
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
@@ -17,15 +17,15 @@ export class NotificationController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
-  async findAll() {
-    return await this.notificationService.findAll();
-  }
+  @Get('find')
+  async findOne(@Req() req) {
+    const customerId = req.user.customerId
+    console.log(customerId)
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('find/:id')
-  async findOne(@Param('id') id: string) {
-    return await this.notificationService.findOne(id);
+    return await this.notificationService.findOne(customerId);
   }
 
   @UseGuards(JwtAuthGuard)
