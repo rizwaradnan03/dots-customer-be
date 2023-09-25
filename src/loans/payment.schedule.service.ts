@@ -11,7 +11,7 @@ export class paymentScheduleService {
 
     async findAllPaymentScheduleByLoanId(loanId: string) {
         return await this.prisma.loan_installment.findMany({
-            where: { loanId }
+            where: { loanId: loanId }
         })
     }
 

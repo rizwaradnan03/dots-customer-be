@@ -217,6 +217,7 @@ model loan_installment {
   createdAt     DateTime? @default(now()) @map(name: "created_at")
   loanOpeningId String?   @map(name: "loan_opening_id")
   loanId        String    @map(name: "loan_id")
+  payment       Int?
 
   loan        loans?                    @relation("loanInstallmentId", fields: [loanId], references: [id])
   loanOpening loan_opening_application? @relation("loanInstallmentId", fields: [loanOpeningId], references: [id])
