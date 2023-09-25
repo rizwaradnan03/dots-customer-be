@@ -66,6 +66,7 @@ export class LoansController {
   ///loan res
   @UseGuards(JwtAuthGuard)
   @Patch('res/:id')
+  @Post('res')
   async createLoanres(@Req() req, @Param('id') loanId: string, @Body() data: { type: string, description: string }) {
     const customerId = req.user.customerId
     console.log(customerId)

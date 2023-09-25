@@ -9,7 +9,6 @@ async function bootstrap() {
 
   app.enableCors();
 
-  // Mengaktifkan penyediaan file statis dari direktori 'uploads'
   app.use('/image', express.static(join(__dirname, 'img')));
 
   const config = new DocumentBuilder()
