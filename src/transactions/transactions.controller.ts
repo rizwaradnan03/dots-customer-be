@@ -25,7 +25,7 @@ export class TransactionsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('savings')
+  @Get('savings/:id')
   async findOneSaving(@Param('id') savingId: string) {
     return await this.transactionsService.findOneSaving(savingId);
   }

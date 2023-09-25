@@ -21,7 +21,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);
 
+<<<<<<< HEAD
+  await app.listen(process.env.PORT, '192.168.18.210', () => {
+=======
   await app.listen(process.env.PORT, '192.168.18.105', () => {
+>>>>>>> 0f75463d7003b98a3184e4a017278fe64767c785
     console.log('connected on PORT ' + process.env.PORT);
   });
 }

@@ -8,30 +8,31 @@ export class ReservationsService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createReservationDto: CreateReservationDto, customerId: string) {
-    const customer = await this.prisma.customers.findUnique({
+
+    const reservation = await this.prisma.reservations.create({
+      data: createReservationDto
+    });
+
+    const customer = await this.prisma.customers.findFirst({
       where: { id: customerId }
     })
 
-    const reservation = await this.prisma.reservations.create({
-      data: {
-        ...createReservationDto,
-        createdBy: customer.userId
-      }
-    });
+    
 
-    await this.prisma.notifications.create({
+    const notification = await this.prisma.notifications.create({
       data: {
-        customersId: customer.id,
+        customersId: customerId,
         status: 1,
-        message: "Customer " + customer.fullName + " Berhasil Melakukan Reservasi , jangan lupa untuk datang pukul " + reservation.time,
-        reservationId: reservation.id,
+        message: "Customer " + customer.fullName +" Berhasil Melakukan Reservasi , jangan lupa untuk datang pukul " + reservation.time,
+        reservationId: reservation.id
       }
     })
 
+    
     return reservation
 
   }
-  
+
   async findAll() {
     return await this.prisma.reservations.findMany({
       include: {

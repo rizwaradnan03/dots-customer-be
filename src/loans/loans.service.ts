@@ -9,6 +9,7 @@ export class LoansService {
 
   async topupLoan(loanId: string, data: { amount: number, tenor: number, reason: string }) {
 
+    ///find loan
     const loan = await this.prisma.loans.findUnique({
       where: { id: loanId }
     })
@@ -17,16 +18,18 @@ export class LoansService {
       return new UnauthorizedException()
     }
 
+    ///find customer
     const customer = await this.prisma.customers.findFirst({
       where: { id: loan.customerId }
     })
 
+    ///create loan opening
     const loanOpening = await this.prisma.loan_opening_application.create({
       data: {
         amount: data.amount,
         tenor: data.tenor,
         reason: data.reason,
-        loanId: loan.id
+        loanId
       }
     })
 
@@ -52,7 +55,8 @@ export class LoansService {
         totalAmount: updatedLoan.loan + interestPerMonth,
         amount: monthlyInstallment,
         interest: interestPerMonth,
-        penalty: 0
+        penalty: 0,
+        payment: i
       });
     }
 
