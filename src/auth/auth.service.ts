@@ -66,7 +66,7 @@ export class AuthService {
             }
         })
 
-        return {customer: customer, user: user}
+        return { customer: customer, user: user }
     }
 
     async validateUser(loginDto: LoginDto) {
