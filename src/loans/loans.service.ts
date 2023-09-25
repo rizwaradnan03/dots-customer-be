@@ -113,7 +113,7 @@ export class LoansService {
     return loan
   }
 
-  async findAll() {
+  async findAll(customerId: string) {
     return await this.prisma.loans.findMany({
       include: {
         tenant: {
@@ -121,7 +121,8 @@ export class LoansService {
             name: true
           }
         }
-      }
+      },
+      where: { customerId }
     })
   }
 
@@ -162,7 +163,7 @@ export class LoansService {
     })
 
     const customer = await this.prisma.customers.findFirst({
-      where: {id: customerId}
+      where: { id: customerId }
     })
 
     await this.prisma.notifications.create({

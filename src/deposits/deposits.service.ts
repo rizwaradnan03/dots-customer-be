@@ -20,7 +20,7 @@ export class DepositsService {
 
     const randomInt = generateRandomInt().toString();
 
-    const deposit =  await this.prisma.deposits.create({
+    const deposit = await this.prisma.deposits.create({
       data: {
         ...createDepositDto,
         customerId,
@@ -39,7 +39,7 @@ export class DepositsService {
     return deposit
   }
 
-  async findAll() {
+  async findAll(customerId: string) {
     return await this.prisma.deposits.findMany({
       include: {
         tenant: {
@@ -47,7 +47,8 @@ export class DepositsService {
             name: true
           }
         }
-      }
+      },
+      where: { customerId }
     })
   }
 

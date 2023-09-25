@@ -25,8 +25,14 @@ export class DepositsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    return await this.depositsService.findAll();
+  async findAll(@Req() req) {
+    const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+
+    return await this.depositsService.findAll(customerId);
   }
 
   @UseGuards(JwtAuthGuard)

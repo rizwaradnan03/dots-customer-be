@@ -43,8 +43,13 @@ export class SavingsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    return await this.savingService.findAll();
+  async findAll(@Req() req) {
+    const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+    return await this.savingService.findAll(customerId);
   }
 
   @UseGuards(JwtAuthGuard)

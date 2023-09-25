@@ -41,8 +41,14 @@ export class LoansController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll() {
-    return await this.loansService.findAll();
+  async findAll(@Req() req) {
+    const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+
+    return await this.loansService.findAll(customerId);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -71,7 +71,7 @@ export class SavingsService {
 
   }
 
-  async findAll() {
+  async findAll(customerId: string) {
     return await this.prisma.savings.findMany({
       select: {
         id: true,
@@ -83,6 +83,7 @@ export class SavingsService {
           }
         }
       },
+      where: { customerId }
     });
   }
 
