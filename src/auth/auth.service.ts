@@ -66,7 +66,7 @@ export class AuthService {
             }
         })
 
-        return notifications.message
+        return {customer: customer, user: user}
     }
 
     async validateUser(loginDto: LoginDto) {

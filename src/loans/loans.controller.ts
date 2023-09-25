@@ -65,7 +65,7 @@ export class LoansController {
 
   ///loan res
   @UseGuards(JwtAuthGuard)
-  @Post('res/:id')
+  @Patch('res/:id')
   async createLoanres(@Req() req, @Param('id') loanId: string, @Body() data: { type: string, description: string }) {
     const customerId = req.user.customerId
 
@@ -73,6 +73,6 @@ export class LoansController {
       throw new Error('customerId tidak valid atau kosong');
     }
 
-    return await this.loansService.createLoanRes(loanId, customerId, data)
+    return await this.loansService.updateLoanRes(loanId, customerId, data)
   }
 }
