@@ -2,7 +2,7 @@ import {notifications as notificationsModel} from "@prisma/client";
 
 export class NotificationEntity implements notificationsModel{
     id: string;
-    customersId: string;
+    customerId: string;
     status: number;
     message: string;
     isOpened: number;

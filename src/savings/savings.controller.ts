@@ -17,15 +17,15 @@ export class SavingsController {
   ) { }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
-  async create(@Req() req, @Body() createSavingDto: CreateSavingDto) {
+  @Post(':id')
+  async create(@Req() req, @Body() createSavingDto: CreateSavingDto, @Param('id') tenantId: number) {
     const customerId = req.user.customerId
 
     if (!customerId) {
       throw new Error('customerId tidak valid atau kosong');
     }
 
-    return await this.savingService.create(createSavingDto, customerId)
+    return await this.savingService.create(createSavingDto, customerId, tenantId)
   }
 
   @UseGuards(JwtAuthGuard)
@@ -53,20 +53,32 @@ export class SavingsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findAllByTenant(@Req() req, @Param('id') tenantId: number) {
+    const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+
+    return await this.savingService.findAllByTenant(customerId, tenantId)
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('find/:id')
   async findOne(@Param('id') id: string) {
     return await this.savingService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Patch('update/:id')
-  async update(@Param('id') id: string, @Body() updateSavingDto: UpdateSavingDto) {
-    return await this.savingService.update(id, updateSavingDto);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Patch('update/:id')
+  // async update(@Param('id') id: string, @Body() updateSavingDto: UpdateSavingDto) {
+  //   return await this.savingService.update(id, updateSavingDto);
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete('delete/:id')
-  async remove(@Param('id') id: string) {
-    return await this.savingService.remove(id);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Delete('delete/:id')
+  // async remove(@Param('id') id: string) {
+  //   return await this.savingService.remove(id);
+  // }
 }

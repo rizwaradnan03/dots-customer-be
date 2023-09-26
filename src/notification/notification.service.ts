@@ -34,7 +34,7 @@ export class NotificationService {
           }
         }
       },
-      where: { customersId: customerId }
+      where: { customerId }
     })
   }
 

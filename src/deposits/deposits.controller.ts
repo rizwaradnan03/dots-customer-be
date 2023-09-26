@@ -36,13 +36,26 @@ export class DepositsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findAllByTenant(@Req() req, @Param('id') tenantId: number) {
+    const customerId = req.user.customerId
+
+    if (!customerId) {
+      throw new Error('customerId tidak valid atau kosong');
+    }
+
+    return await this.depositsService.findAllByTenant(customerId, tenantId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('find/:id')
   async findOne(@Param('id') id: string) {
     return await this.depositsService.findOne(id);
   }
-  @UseGuards(JwtAuthGuard)
-  @Delete('delete/:id')
-  async remove(@Param('id') id: string) {
-    return await this.depositsService.remove(id);
-  }
+  
+  // @UseGuards(JwtAuthGuard)
+  // @Delete('delete/:id')
+  // async remove(@Param('id') id: string) {
+  //   return await this.depositsService.remove(id);
+  // }
 }

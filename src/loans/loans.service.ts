@@ -45,9 +45,10 @@ export class LoansService {
     const currentDate = new Date()
     const paymentSchedule = []
 
-    for (let i = 0; i < loanOpening.tenor; i++) {
+    for (let i = 1; i <= loanOpening.tenor; i++) {
       const paymentDate = new Date(currentDate);
       paymentDate.setMonth(currentDate.getMonth() + i);
+      console.log(i)
       paymentSchedule.push({
         loanId: updatedLoan.id,
         loanOpeningId: loanOpening.id,
@@ -60,13 +61,15 @@ export class LoansService {
       });
     }
 
+    console.log(paymentSchedule)
+
     const loanInstallment = await this.prisma.loan_installment.createMany({
       data: paymentSchedule
     })
 
     const notifications = await this.prisma.notifications.create({
       data: {
-        customersId: customer.id,
+        customerId: customer.id,
         status: 1,
         message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit sebesar Rp. " + loanOpening.amount + " jangan lupa bayar tepat waktu ya pak / Bu " + customer.fullName,
         loanId
@@ -75,7 +78,7 @@ export class LoansService {
     return { loan: updatedLoan, loanInstallment: loanInstallment }
   }
 
-  async create(createLoanDto: CreateLoanDto, customerId) {
+  async create(createLoanDto: CreateLoanDto, customerId: string, tenantId: number) {
     const customer = await this.prisma.customers.findUnique({
       where: { id: customerId }
     })
@@ -93,6 +96,7 @@ export class LoansService {
         ...createLoanDto,
         customerId,
         accountNumber: randomInt,
+        tenantId
       }
     })
 
@@ -104,7 +108,7 @@ export class LoansService {
 
     await this.prisma.notifications.create({
       data: {
-        customersId: customerId,
+        customerId,
         status: 1,
         message: "Customer " + customer.fullName + " Berhasil Membuat Akun Kredit!",
       }
@@ -123,6 +127,28 @@ export class LoansService {
         }
       },
       where: { customerId }
+    })
+  }
+
+  async findAllByTenant(customerId: string, tenantId: number) {
+    return await this.prisma.loans.findMany({
+      include: {
+        tenant: {
+          select: {
+            name: true
+          }
+        }
+      },
+      where: {
+        AND: [
+          {
+            customerId: customerId
+          },
+          {
+            tenantId: tenantId
+          }
+        ]
+      }
     })
   }
 
@@ -150,8 +176,10 @@ export class LoansService {
   ///loan res
   async updateLoanRes(customerId: string, loanId: string, data: { type: string, description: string }) {
     const loanRes = await this.prisma.loan_res_application.findFirst({
-      where: { loanId }
+      where: { loanId: loanId }
     })
+    console.log(loanRes)
+    console.log(loanRes.id)
 
     const loanResUpdated = await this.prisma.loan_res_application.update({
       where: { id: loanRes.id },
@@ -168,7 +196,7 @@ export class LoansService {
 
     await this.prisma.notifications.create({
       data: {
-        customersId: customerId,
+        customerId,
         status: 1,
         message: "Customer " + customer.fullName + " Berhasil Mengajukan Restruksurisasi!",
         loanId

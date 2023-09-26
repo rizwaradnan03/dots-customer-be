@@ -81,7 +81,6 @@ model tenants {
 model images {
   id           String   @id @default(uuid())
   urlBase64    String?  @map(name: "url_base_64")
-  isOnCarousel Boolean? @map(name: "is_on_carousel")
   tenantId     Int?     @map(name: "tenant_id")
 
   tenant tenants? @relation("imageId", fields: [tenantId], references: [id])
@@ -228,13 +227,13 @@ model notifications {
   status        Int?
   message       String?
   isOpened      Int?    @default(0) @map(name: "is_opened")
-  customersId   String? @map(name: "customer_id")
+  customerId   String? @map(name: "customer_id")
   loanId        String? @map(name: "loan_id")
   reservationId String? @map(name: "reservation_id")
   savingId      String? @map(name: "saving_id")
 
   reservation reservations? @relation("notificationId", fields: [reservationId], references: [id])
   loan        loans?        @relation("notificationId", fields: [loanId], references: [id])
-  customers   customers?    @relation("notificationId", fields: [customersId], references: [id])
+  customers   customers?    @relation("notificationId", fields: [customerId], references: [id])
   saving      savings?      @relation("notificationId", fields: [savingId], references: [id])
 }

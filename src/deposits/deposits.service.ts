@@ -30,7 +30,7 @@ export class DepositsService {
 
     await this.prisma.notifications.create({
       data: {
-        customersId: customerId,
+        customerId,
         status: 1,
         message: "Customer " + customer.fullName + " Berhasil Membuat Akun Deposit!",
       }
@@ -49,6 +49,28 @@ export class DepositsService {
         }
       },
       where: { customerId }
+    })
+  }
+
+  async findAllByTenant(customerId: string, tenantId: number) {
+    return await this.prisma.deposits.findMany({
+      include: {
+        tenant: {
+          select: {
+            name: true
+          }
+        }
+      },
+      where: {
+        AND: [
+          {
+            customerId: customerId
+          },
+          {
+            tenantId: tenantId
+          }
+        ]
+      }
     })
   }
 

@@ -15,15 +15,15 @@ export class LoansController {
   ) { }
 
   @UseGuards(JwtAuthGuard)
-  @Post()
-  async create(@Req() req, @Body() createLoanDto: CreateLoanDto) {
+  @Post(':id')
+  async create(@Req() req, @Body() createLoanDto: CreateLoanDto, @Param('id') tenantId: number) {
     const customerId = req.user.customerId
 
     if (!customerId) {
       throw new Error('customerId tidak valid atau kosong');
     }
 
-    return await this.loansService.create(createLoanDto, customerId);
+    return await this.loansService.create(createLoanDto, customerId, tenantId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -52,22 +52,34 @@ export class LoansController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findAllByTenant(@Req() req, @Param('id') tenantId: number) {
+    const customerId = req.user.customerId
+
+    if(!customerId) {
+      throw new Error('customerId tidak valid atau kosong')
+    }
+
+    return await this.loansService.findAllByTenant(customerId, tenantId)
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('find/:id')
   async findOne(@Param('id') id: string) {
     return await this.loansService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Patch('update/:id')
-  async update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
-    return await this.loansService.update(+id, updateLoanDto);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Patch('update/:id')
+  // async update(@Param('id') id: string, @Body() updateLoanDto: UpdateLoanDto) {
+  //   return await this.loansService.update(+id, updateLoanDto);
+  // }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete('delete/:id')
-  async remove(@Param('id') id: string) {
-    return await this.loansService.remove(+id);
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Delete('delete/:id')
+  // async remove(@Param('id') id: string) {
+  //   return await this.loansService.remove(+id);
+  // }
 
   ///loan res
   @UseGuards(JwtAuthGuard)
@@ -76,6 +88,7 @@ export class LoansController {
   async createLoanres(@Req() req, @Param('id') loanId: string, @Body() data: { type: string, description: string }) {
     const customerId = req.user.customerId
     console.log(customerId)
+    console.log(loanId)
     if (!customerId) {
       throw new Error('customerId tidak valid atau kosong');
     }

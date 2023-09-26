@@ -54,6 +54,7 @@ CREATE TABLE "images" (
     "id" TEXT NOT NULL,
     "url_base_64" TEXT,
     "is_on_carousel" BOOLEAN,
+    "tenant_id" INTEGER,
 
     CONSTRAINT "images_pkey" PRIMARY KEY ("id")
 );
@@ -65,6 +66,7 @@ CREATE TABLE "reservations" (
     "reason" TEXT,
     "attend_at_start" TIMESTAMP(3),
     "time" TEXT,
+    "service" TEXT,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "delete_at" TIMESTAMP,
     "is_active" INTEGER DEFAULT 1,
@@ -96,8 +98,8 @@ CREATE TABLE "transactions" (
 -- CreateTable
 CREATE TABLE "deposits" (
     "id" TEXT NOT NULL,
-    "account_number" TEXT NOT NULL,
-    "balance" INTEGER NOT NULL DEFAULT 0,
+    "account_number" TEXT,
+    "balance" INTEGER DEFAULT 0,
     "customer_id" TEXT,
     "tenant_id" INTEGER,
     "is_active" INTEGER DEFAULT 1,
@@ -128,7 +130,7 @@ CREATE TABLE "savings" (
 -- CreateTable
 CREATE TABLE "loans" (
     "id" TEXT NOT NULL,
-    "account_number" TEXT NOT NULL,
+    "account_number" TEXT,
     "loan" INTEGER DEFAULT 0,
     "customer_id" TEXT,
     "tenant_id" INTEGER,
@@ -170,6 +172,7 @@ CREATE TABLE "loan_installment" (
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
     "loan_opening_id" TEXT,
     "loan_id" TEXT NOT NULL,
+    "payment" INTEGER,
 
     CONSTRAINT "loan_installment_pkey" PRIMARY KEY ("id")
 );
@@ -183,6 +186,7 @@ CREATE TABLE "notifications" (
     "customer_id" TEXT,
     "loan_id" TEXT,
     "reservation_id" TEXT,
+    "saving_id" TEXT,
 
     CONSTRAINT "notifications_pkey" PRIMARY KEY ("id")
 );
@@ -213,6 +217,9 @@ ALTER TABLE "customers" ADD CONSTRAINT "customers_user_id_fkey" FOREIGN KEY ("us
 
 -- AddForeignKey
 ALTER TABLE "users" ADD CONSTRAINT "users_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "images" ADD CONSTRAINT "images_tenant_id_fkey" FOREIGN KEY ("tenant_id") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "reservations" ADD CONSTRAINT "reservations_destination_service_fkey" FOREIGN KEY ("destination_service") REFERENCES "tenants"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -279,3 +286,6 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_loan_id_fkey" FOREIGN 
 
 -- AddForeignKey
 ALTER TABLE "notifications" ADD CONSTRAINT "notifications_customer_id_fkey" FOREIGN KEY ("customer_id") REFERENCES "customers"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "notifications" ADD CONSTRAINT "notifications_saving_id_fkey" FOREIGN KEY ("saving_id") REFERENCES "savings"("id") ON DELETE SET NULL ON UPDATE CASCADE;

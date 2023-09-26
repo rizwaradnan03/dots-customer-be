@@ -7,7 +7,7 @@ import { CreateSavingDto } from './dto/create-saving.dto';
 export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createSavingDto: CreateSavingDto, customerId: string) {
+  async create(createSavingDto: CreateSavingDto, customerId: string, tenantId: number) {
     const customer = await this.prisma.customers.findFirst({
       where: { id: customerId }
     })
@@ -25,13 +25,14 @@ export class SavingsService {
         ...createSavingDto,
         customerId,
         createdBy: customer.userId,
-        accountNumber: randomInt
+        accountNumber: randomInt,
+        tenantId
       }
     })
 
     await this.prisma.notifications.create({
       data: {
-        customersId: customer.id,
+        customerId: customer.id,
         status: 1,
         message: "Customer " + customer.fullName + " Berhasil Membuat Akun Tabungan!",
         savingId: saving.id
@@ -60,7 +61,7 @@ export class SavingsService {
 
     await this.prisma.notifications.create({
       data: {
-        customersId: customer.id,
+        customerId: customer.id,
         status: 1,
         message: "Customer a.n " + customer.fullName + " Berhasil Melakukan Setor Tabungan Sebanyak " + data.amount,
         savingId: saving.id,
@@ -85,6 +86,31 @@ export class SavingsService {
       },
       where: { customerId }
     });
+  }
+
+  async findAllByTenant (customerId: string, tenantId: number) {
+    return await this.prisma.savings.findMany({
+      select: {
+        id: true,
+        accountNumber: true,
+        tenantId: true,
+        tenants: {
+          select: {
+            name: true
+          }
+        }
+      },
+      where: {
+        AND: [
+          {
+            customerId: customerId
+          },
+          {
+            tenantId: tenantId
+          }
+        ]
+      }
+    })
   }
 
   async findOne(id: string) {

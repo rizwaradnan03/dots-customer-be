@@ -60,7 +60,7 @@ export class AuthService {
 
         const notifications = await this.prisma.notifications.create({
             data: {
-                customersId: customer.id,
+                customerId: customer.id,
                 status: 1,
                 message: "Selamat Datang " + customer.fullName + "!"
             }
