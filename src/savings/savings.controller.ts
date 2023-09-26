@@ -16,17 +16,23 @@ export class SavingsController {
     private readonly transactionService: TransactionsService
   ) { }
 
-  @UseGuards(JwtAuthGuard)
-  @Post(':id')
-  async create(@Req() req, @Body() createSavingDto: CreateSavingDto, @Param('id') tenantId: number) {
-    const customerId = req.user.customerId
+ // Controller
+@UseGuards(JwtAuthGuard)
+@Post()
+async create(@Req() req, @Body() createSavingDto: CreateSavingDto) {
+  const customerId = req.user.customerId;
 
-    if (!customerId) {
-      throw new Error('customerId tidak valid atau kosong');
-    }
-
-    return await this.savingService.create(createSavingDto, customerId, tenantId)
+  if (!customerId) {
+    throw new Error('customerId tidak valid atau kosong');
   }
+
+  // const numericTenantId = parseInt(tenantId, 10);
+  // if (isNaN(numericTenantId)) {
+  //   throw new Error('tenantId tidak valid');
+  // }
+
+  return await this.savingService.create(createSavingDto, customerId);
+}
 
   @UseGuards(JwtAuthGuard)
   @Post('deposit/:id')

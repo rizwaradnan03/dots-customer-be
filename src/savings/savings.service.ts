@@ -7,7 +7,7 @@ import { CreateSavingDto } from './dto/create-saving.dto';
 export class SavingsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createSavingDto: CreateSavingDto, customerId: string, tenantId: number) {
+  async create(createSavingDto: CreateSavingDto, customerId: string) {
     const customer = await this.prisma.customers.findFirst({
       where: { id: customerId }
     })
@@ -25,8 +25,7 @@ export class SavingsService {
         ...createSavingDto,
         customerId,
         createdBy: customer.userId,
-        accountNumber: randomInt,
-        tenantId
+        accountNumber: randomInt
       }
     })
 

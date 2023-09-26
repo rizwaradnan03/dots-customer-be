@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class DepositsService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createDepositDto: CreateDepositDto, customerId) {
+  async create(createDepositDto: CreateDepositDto, customerId: string) {
     const customer = await this.prisma.customers.findUnique({
       where: { id: customerId }
     })

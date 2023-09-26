@@ -78,7 +78,7 @@ export class LoansService {
     return { loan: updatedLoan, loanInstallment: loanInstallment }
   }
 
-  async create(createLoanDto: CreateLoanDto, customerId: string, tenantId: number) {
+  async create(createLoanDto: CreateLoanDto, customerId: string) {
     const customer = await this.prisma.customers.findUnique({
       where: { id: customerId }
     })
@@ -95,8 +95,7 @@ export class LoansService {
       data: {
         ...createLoanDto,
         customerId,
-        accountNumber: randomInt,
-        tenantId
+        accountNumber: randomInt
       }
     })
 

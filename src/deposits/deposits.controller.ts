@@ -50,6 +50,7 @@ export class DepositsController {
       throw new Error('tenantId tidak valid');
     }
   
+    console.log(tenantId)
     return await this.depositsService.findAllByTenant(customerId, numericTenantId);
   }
   

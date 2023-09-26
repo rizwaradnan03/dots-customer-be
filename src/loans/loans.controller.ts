@@ -15,15 +15,15 @@ export class LoansController {
   ) { }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':id')
-  async create(@Req() req, @Body() createLoanDto: CreateLoanDto, @Param('id') tenantId: number) {
+  @Post()
+  async create(@Req() req, @Body() createLoanDto: CreateLoanDto) {
     const customerId = req.user.customerId
 
     if (!customerId) {
       throw new Error('customerId tidak valid atau kosong');
     }
 
-    return await this.loansService.create(createLoanDto, customerId, tenantId);
+    return await this.loansService.create(createLoanDto, customerId);
   }
 
   @UseGuards(JwtAuthGuard)
