@@ -111,7 +111,10 @@ export class SavingsService {
         ]
       }
     })
+    console.log(tenantId)
   }
+
+  
 
   async findOne(id: string) {
     return await this.prisma.savings.findUnique({

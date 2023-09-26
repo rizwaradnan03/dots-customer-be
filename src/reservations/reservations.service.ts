@@ -17,8 +17,6 @@ export class ReservationsService {
       where: { id: customerId }
     })
 
-    
-
     const notification = await this.prisma.notifications.create({
       data: {
         customerId,
@@ -27,10 +25,7 @@ export class ReservationsService {
         reservationId: reservation.id
       }
     })
-
-    
     return reservation
-
   }
 
   async findAll() {

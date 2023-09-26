@@ -53,7 +53,6 @@ CREATE TABLE "tenants" (
 CREATE TABLE "images" (
     "id" TEXT NOT NULL,
     "url_base_64" TEXT,
-    "is_on_carousel" BOOLEAN,
     "tenant_id" INTEGER,
 
     CONSTRAINT "images_pkey" PRIMARY KEY ("id")
