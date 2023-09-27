@@ -40,7 +40,8 @@ export class LoansService {
       }
     })
 
-    const interestPerMonth = updatedLoan.loan * 0.03
+    const amountPerMonth =  updatedLoan.loan / loanOpening.tenor
+    const interestPerMonth = amountPerMonth * 0.03
     const monthlyInstallment = (updatedLoan.loan + interestPerMonth) / loanOpening.tenor
     const currentDate = new Date()
     const paymentSchedule = []
@@ -53,8 +54,8 @@ export class LoansService {
         loanId: updatedLoan.id,
         loanOpeningId: loanOpening.id,
         paymentDate,
-        totalAmount: updatedLoan.loan + interestPerMonth,
-        amount: monthlyInstallment,
+        totalAmount: monthlyInstallment + interestPerMonth,
+        amount: amountPerMonth,
         interest: interestPerMonth,
         penalty: 0,
         payment: i
@@ -71,7 +72,8 @@ export class LoansService {
       data: {
         customerId: customer.id,
         status: 1,
-        message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit sebesar Rp. " + loanOpening.amount + " jangan lupa bayar tepat waktu ya pak / Bu " + customer.fullName,
+        message: "Customer " + customer.fullName + " Berhasil Melakukan Top-Up Kredit Sebesar ",
+        amount: loanOpening.amount, 
         loanId
       }
     })
@@ -129,27 +131,27 @@ export class LoansService {
     })
   }
 
-  async findAllByTenant(customerId: string, tenantId: number) {
-    return await this.prisma.loans.findMany({
-      include: {
-        tenant: {
-          select: {
-            name: true
-          }
-        }
-      },
-      where: {
-        AND: [
-          {
-            customerId: customerId
-          },
-          {
-            tenantId: tenantId
-          }
-        ]
-      }
-    })
-  }
+  // async findAllByTenant(customerId: string, tenantId: number) {
+  //   return await this.prisma.loans.findMany({
+  //     include: {
+  //       tenant: {
+  //         select: {
+  //           name: true
+  //         }
+  //       }
+  //     },
+  //     where: {
+  //       AND: [
+  //         {
+  //           customerId: customerId
+  //         },
+  //         {
+  //           tenantId: tenantId
+  //         }
+  //       ]
+  //     }
+  //   })
+  // }
 
   async findOne(id: string) {
     return await this.prisma.loans.findFirst({

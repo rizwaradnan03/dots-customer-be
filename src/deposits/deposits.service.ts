@@ -52,27 +52,27 @@ export class DepositsService {
     })
   }
 
-  async findAllByTenant(customerId: string, tenantId: number) {
-    return await this.prisma.deposits.findMany({
-      include: {
-        tenant: {
-          select: {
-            name: true
-          }
-        }
-      },
-      where: {
-        AND: [
-          {
-            customerId: customerId
-          },
-          {
-            tenantId: tenantId
-          }
-        ]
-      }
-    })
-  }
+  // async findAllByTenant(customerId: string, tenantId: number) {
+  //   return await this.prisma.deposits.findMany({
+  //     include: {
+  //       tenant: {
+  //         select: {
+  //           name: true
+  //         }
+  //       }
+  //     },
+  //     where: {
+  //       AND: [
+  //         {
+  //           customerId: customerId
+  //         },
+  //         {
+  //           tenantId: tenantId
+  //         }
+  //       ]
+  //     }
+  //   })
+  // }
 
   async findOne(id: string) {
     return await this.prisma.deposits.findFirst({

@@ -35,24 +35,24 @@ export class DepositsController {
     return await this.depositsService.findAll(customerId);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findAllByTenant(@Req() req, @Param('id') tenantId: string) {
-    const customerId = req.user.customerId;
+  // @UseGuards(JwtAuthGuard)
+  // @Get(':id')
+  // async findAllByTenant(@Req() req, @Param('id') tenantId: string) {
+  //   const customerId = req.user.customerId;
   
-    if (!customerId) {
-      throw new Error('customerId tidak valid atau kosong');
-    }
+  //   if (!customerId) {
+  //     throw new Error('customerId tidak valid atau kosong');
+  //   }
   
-    const numericTenantId = parseInt(tenantId, 10);
+  //   const numericTenantId = parseInt(tenantId, 10);
   
-    if (isNaN(numericTenantId)) {
-      throw new Error('tenantId tidak valid');
-    }
+  //   if (isNaN(numericTenantId)) {
+  //     throw new Error('tenantId tidak valid');
+  //   }
   
-    console.log(tenantId)
-    return await this.depositsService.findAllByTenant(customerId, numericTenantId);
-  }
+  //   console.log(tenantId)
+  //   return await this.depositsService.findAllByTenant(customerId, numericTenantId);
+  // }
   
 
   @UseGuards(JwtAuthGuard)

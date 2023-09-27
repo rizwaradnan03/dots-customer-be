@@ -94,7 +94,11 @@ export class AuthService {
             where: { userId: isUserValid.id }
         })
 
-        const payload = { sub: isUserValid.id, name: isUserValid.username, email: isUserValid.email, customerId: customer.id };
+        const user = await this.prisma.users.findFirst({
+            where: { id: customer.userId }
+        })
+
+        const payload = { sub: isUserValid.id, name: customer.fullName, email: isUserValid.email, customerId: customer.id, tenant: user.tenantId };
 
         return { token: this.jwt.sign(payload) }
     }

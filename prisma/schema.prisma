@@ -79,9 +79,9 @@ model tenants {
 }
 
 model images {
-  id           String   @id @default(uuid())
-  urlBase64    String?  @map(name: "url_base_64")
-  tenantId     Int?     @map(name: "tenant_id")
+  id        String  @id @default(uuid())
+  urlBase64 String? @map(name: "url_base_64")
+  tenantId  Int?    @map(name: "tenant_id")
 
   tenant tenants? @relation("imageId", fields: [tenantId], references: [id])
 }
@@ -226,8 +226,10 @@ model notifications {
   id            String  @id @default(uuid())
   status        Int?
   message       String?
+  messageDetail String? @map(name: "message_detail")
+  amount        Int?
   isOpened      Int?    @default(0) @map(name: "is_opened")
-  customerId   String? @map(name: "customer_id")
+  customerId    String? @map(name: "customer_id")
   loanId        String? @map(name: "loan_id")
   reservationId String? @map(name: "reservation_id")
   savingId      String? @map(name: "saving_id")

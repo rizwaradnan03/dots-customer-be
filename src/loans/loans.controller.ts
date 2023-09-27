@@ -51,23 +51,23 @@ export class LoansController {
     return await this.loansService.findAll(customerId);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findAllByTenant(@Req() req, @Param('id') tenantId: string) {
-    const customerId = req.user.customerId;
+  // @UseGuards(JwtAuthGuard)
+  // @Get(':id')
+  // async findAllByTenant(@Req() req, @Param('id') tenantId: string) {
+  //   const customerId = req.user.customerId;
   
-    if (!customerId) {
-      throw new Error('customerId tidak valid atau kosong');
-    }
+  //   if (!customerId) {
+  //     throw new Error('customerId tidak valid atau kosong');
+  //   }
   
-    const numericTenantId = parseInt(tenantId, 10);
+  //   const numericTenantId = parseInt(tenantId, 10);
   
-    if (isNaN(numericTenantId)) {
-      throw new Error('tenantId tidak valid');
-    }
+  //   if (isNaN(numericTenantId)) {
+  //     throw new Error('tenantId tidak valid');
+  //   }
   
-    return await this.loansService.findAllByTenant(customerId, numericTenantId);
-  }
+  //   return await this.loansService.findAllByTenant(customerId, numericTenantId);
+  // }
   
 
   @UseGuards(JwtAuthGuard)

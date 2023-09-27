@@ -47,35 +47,34 @@ async create(@Req() req, @Body() createSavingDto: CreateSavingDto) {
     return { saving: depositSaving, transaction };
   }
 
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
     const customerId = req.user.customerId
-
+    console.log(customerId)
     if (!customerId) {
       throw new Error('customerId tidak valid atau kosong');
     }
     return await this.savingService.findAll(customerId);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findAllByTenant(@Req() req, @Param('id') tenantId: string) {
-    const customerId = req.user.customerId;
+  // @UseGuards(JwtAuthGuard)
+  // @Get(':id')
+  // async findAllByTenant(@Req() req, @Param('id') tenantId: string) {
+  //   const customerId = req.user.customerId;
   
-    if (!customerId) {
-      throw new Error('customerId tidak valid atau kosong');
-    }
+  //   if (!customerId) {
+  //     throw new Error('customerId tidak valid atau kosong');
+  //   }
   
-    const numericTenantId = parseInt(tenantId, 10);
+  //   const numericTenantId = parseInt(tenantId, 10);
   
-    if (isNaN(numericTenantId)) {
-      throw new Error('tenantId tidak valid');
-    }
+  //   if (isNaN(numericTenantId)) {
+  //     throw new Error('tenantId tidak valid');
+  //   }
   
-    return await this.savingService.findAllByTenant(customerId, numericTenantId);
-  }
-  
+  //   return await this.savingService.findAllByTenant(customerId, numericTenantId);
+  // }
 
   @UseGuards(JwtAuthGuard)
   @Get('find/:id')

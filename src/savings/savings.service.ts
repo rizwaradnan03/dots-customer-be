@@ -62,7 +62,9 @@ export class SavingsService {
       data: {
         customerId: customer.id,
         status: 1,
-        message: "Customer a.n " + customer.fullName + " Berhasil Melakukan Setor Tabungan Sebanyak " + data.amount,
+        message: "Customer a.n " + customer.fullName + " Berhasil Melakukan Setor Tabungan Sebesar ",
+        // messageDetail: "Muhahaha",
+        amount: data.amount,
         savingId: saving.id,
       }
     })
@@ -83,37 +85,35 @@ export class SavingsService {
           }
         }
       },
-      where: { customerId }
+      where: { customerId: customerId }
     });
   }
 
-  async findAllByTenant (customerId: string, tenantId: number) {
-    return await this.prisma.savings.findMany({
-      select: {
-        id: true,
-        accountNumber: true,
-        tenantId: true,
-        tenants: {
-          select: {
-            name: true
-          }
-        }
-      },
-      where: {
-        AND: [
-          {
-            customerId: customerId
-          },
-          {
-            tenantId: tenantId
-          }
-        ]
-      }
-    })
-    console.log(tenantId)
-  }
-
-  
+  // async findAllByTenant (customerId: string, tenantId: number) {
+  //   return await this.prisma.savings.findMany({
+  //     select: {
+  //       id: true,
+  //       accountNumber: true,
+  //       tenantId: true,
+  //       tenants: {
+  //         select: {
+  //           name: true
+  //         }
+  //       }
+  //     },
+  //     where: {
+  //       AND: [
+  //         {
+  //           customerId: customerId
+  //         },
+  //         {
+  //           tenantId: tenantId
+  //         }
+  //       ]
+  //     }
+  //   })
+  //   console.log(tenantId)
+  // }
 
   async findOne(id: string) {
     return await this.prisma.savings.findUnique({

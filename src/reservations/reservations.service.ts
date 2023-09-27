@@ -17,6 +17,17 @@ export class ReservationsService {
       where: { id: customerId }
     })
 
+    const findReservation = await this.prisma.reservations.findFirst({
+      where: {id: reservation.id},
+      include: {
+        tenants: {
+          select: {
+            name: true
+          }
+        }
+      }
+    })
+
     const notification = await this.prisma.notifications.create({
       data: {
         customerId,
@@ -25,7 +36,7 @@ export class ReservationsService {
         reservationId: reservation.id
       }
     })
-    return reservation
+    return findReservation
   }
 
   async findAll() {
