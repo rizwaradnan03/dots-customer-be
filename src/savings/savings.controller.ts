@@ -47,7 +47,7 @@ async create(@Req() req, @Body() createSavingDto: CreateSavingDto) {
     return { saving: depositSaving, transaction };
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(@Req() req) {
     const customerId = req.user.customerId
